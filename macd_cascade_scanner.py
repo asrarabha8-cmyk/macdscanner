@@ -48,7 +48,17 @@ LIN APD SHW FCX NEM NUE
 SPY QQQ IWM DIA SMH XLF XLE XLK XLV ARKK TQQQ SOXL
 MSTR MARA RIOT CLSK HUT
 """
-TICKERS = sorted(set(UNIVERSE.split()))
+
+# مراكزي والرموز التي طلبتها — تُفحص دائماً، ولا يسقطها فلتر السيولة
+PORTFOLIO = """
+MSTU MSTY PAY VCET DGXX
+ASTX RKLX SOXL ONDG AVGU SMH DRAM DELL ANET SEDG MRVL IREN MU NOW MSFT
+OUST INFQ META AMD NBIS CBRS HUBS ARM BZAI POET ORCL ACLS OKTA AMZN ONDS
+SECZ IQV VECO NRXS FRMI BRKR APLD
+"""
+
+ALWAYS = set(PORTFOLIO.split())
+TICKERS = sorted(set(UNIVERSE.split()) | ALWAYS)
 
 
 # ------------------------------------------------------------------
@@ -186,7 +196,7 @@ def liquid(h1: dict) -> list[str]:
             continue
         tail = df.tail(140)  # ~20 جلسة
         dv = float((tail["Close"] * tail["Volume"]).sum() / 20)
-        if dv >= MIN_DOLLAR_VOL:
+        if t in ALWAYS or dv >= MIN_DOLLAR_VOL:
             keep.append(t)
     return keep
 
