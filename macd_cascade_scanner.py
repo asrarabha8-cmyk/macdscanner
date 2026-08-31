@@ -58,6 +58,11 @@ SECZ IQV VECO NRXS FRMI BRKR APLD
 """
 
 ALWAYS = set(PORTFOLIO.split())
+
+# العملات — تُعامل بتقسيم 4H مختلف (24 ساعة بلا جلسة)
+CRYPTO = {"BTC-USD"}
+ALWAYS |= CRYPTO
+
 TICKERS = sorted(set(UNIVERSE.split()) | ALWAYS)
 
 
@@ -82,8 +87,13 @@ def atr(df: pd.DataFrame, length: int = 14) -> pd.Series:
     return tr.ewm(alpha=1 / length, adjust=False).mean()
 
 
-def to_4h(df: pd.DataFrame) -> pd.DataFrame:
-    """يجمّع شمعات الساعة إلى 4H بدءاً من افتتاح كل جلسة — مثل تقسيم TradingView للأسهم."""
+def to_4h(df: pd.DataFrame, crypto: bool = False) -> pd.DataFrame:
+    """يجمّع شمعات الساعة إلى 4H — للعملات على حدود UTC، وللأسهم بدءاً من افتتاح كل جلسة."""
+    if crypto:
+        return df.resample("4h").agg(
+            Open=("Open", "first"), High=("High", "max"),
+            Low=("Low", "min"), Close=("Close", "last"),
+        ).dropna()
     idx_ny = df.index.tz_convert("America/New_York")
     out = []
     for _, g in df.groupby(idx_ny.date):
@@ -113,11 +123,11 @@ def zero_crossings(line: pd.Series, look: int) -> int:
 # ------------------------------------------------------------------
 # التحليل
 # ------------------------------------------------------------------
-def analyse(h1: pd.DataFrame, m15: pd.DataFrame) -> dict | None:
+def analyse(h1: pd.DataFrame, m15: pd.DataFrame, crypto: bool = False) -> dict | None:
     if len(h1) < 200 or len(m15) < 120:
         return None
 
-    h4 = to_4h(h1)
+    h4 = to_4h(h1, crypto)
     if len(h4) < 60:
         return None
 
@@ -234,7 +244,7 @@ def main():
         if t not in m15:
             continue
         try:
-            res = analyse(h1[t], m15[t])
+            res = analyse(h1[t], m15[t], t in CRYPTO)
         except Exception as e:
             print(f"{t}: {e}", file=sys.stderr)
             continue
