@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-MACD Cascade Scanner — يفحص أسهماً أمريكية سائلة ويرسل إشارات الدخول إلى تيليجرام.
+MACD Cascade Scanner — يفحص أسهماً أمريكية سائلة وعملات ويرسل إشارات الدخول إلى تيليجرام.
 نفس منطق مؤشر macd_cascade.pine:
-  الحالة ١ راقب  : ماكد 4H تحت الصفر، منحنٍ للأعلى، قريب من الصفر
-  الحالة ٢ إذن   : ماكد 4H قطع الصفر صاعداً وما زال طازجاً وغير متذبذب
-  الحالة ٣ دخول  : إذن مفتوح + تأكيد 1H + تقاطع صاعد على 15m
+  الحالة ١ راقب : ماكد 4H تحت الصفر، منحنٍ للأعلى، قريب من الصفر
+  الحالة ٢ إذن  : ماكد 4H قطع الصفر صاعداً وما زال طازجاً وغير متذبذب
+  الحالة ٣ دخول : إذن مفتوح + تأكيد 1H + تقاطع صاعد على 15m
+
+يعمل على مدار الساعة: العملات تُفحص دائماً، والأسهم داخل الجلسة الأمريكية فقط.
 """
 
 import os
@@ -20,18 +22,17 @@ import yfinance as yf
 # الإعدادات
 # ------------------------------------------------------------------
 FAST, SLOW, SIGNAL = 12, 26, 9
-
-PERMIT_BARS   = 10     # عمر الإذن بشمعات 4H
-CHOP_LOOK     = 50     # نافذة فحص التذبذب على 4H
-CHOP_MAX      = 5      # أقصى عدد تقاطعات للصفر
-DIST_CAP_PCT  = 60     # أقصى بُعد لماكد 4H عن الصفر (% من مداه)
-ENTRY_TOL_PCT = 50     # حد قرب تقاطع 15m من الصفر
-WATCH_TOL_PCT = 25     # حد "قريب من الصفر" لحالة راقب
-SWING_LOOK    = 20     # نافذة القاع للستوب (شمعات 15m)
-ATR_BUF       = 0.5    # هامش الستوب
-
-MIN_DOLLAR_VOL = 20_000_000   # حد السيولة اليومي
-MAX_RISK_PCT   = 3.0          # تجاهل الإشارات ذات الستوب الواسع
+PERMIT_BARS = 10               # عمر الإذن بشمعات 4H
+CHOP_LOOK = 50                 # نافذة فحص التذبذب على 4H
+CHOP_MAX = 5                   # أقصى عدد تقاطعات للصفر
+DIST_CAP_PCT = 60              # أقصى بُعد لماكد 4H عن الصفر (% من مداه)
+ENTRY_TOL_PCT = 50             # حد قرب تقاطع 15m من الصفر
+WATCH_TOL_PCT = 25             # حد "قريب من الصفر" لحالة راقب
+SWING_LOOK = 20                # نافذة القاع للستوب (شمعات 15m)
+ATR_BUF = 0.5                  # هامش الستوب
+MIN_DOLLAR_VOL = 20_000_000    # حد السيولة اليومي
+MAX_RISK_PCT = 3.0             # تجاهل الإشارات ذات الستوب الواسع
+STALE_MIN = 45                 # أقصى عمر لآخر شمعة 15m في الأسهم (دقائق)
 
 UNIVERSE = """
 AAPL MSFT NVDA AMZN META GOOGL GOOG TSLA AVGO AMD NFLX ADBE CRM ORCL CSCO INTC
@@ -49,18 +50,16 @@ SPY QQQ IWM DIA SMH XLF XLE XLK XLV ARKK TQQQ SOXL
 MSTR MARA RIOT CLSK HUT
 """
 
-# مراكزي والرموز التي طلبتها — تُفحص دائماً، ولا يسقطها فلتر السيولة
-PORTFOLIO = """
-MSTU MSTY PAY VCEL DGXX
-ASTX RKLX SOXL ONDG AVGU SMH DRAM DELL ANET SEDG MRVL IREN MU NOW MSFT
-OUST INFQ META AMD NBIS CBRS HUBS ARM BZAI POET ORCL ACLS OKTA AMZN ONDS
-SECZ IQV VECO NRXS FRMI BRKR APLD
-"""
+# مراكزي — تُقرأ من Secret اسمه PORTFOLIO حتى لا تظهر في مستودع عام.
+# الصيغة: رموز مفصولة بمسافات أو أسطر.
+PORTFOLIO = os.environ.get("PORTFOLIO", "")
+if not PORTFOLIO.strip():
+    print("تنبيه: متغير PORTFOLIO فارغ — تُفحص القائمة العامة فقط.", file=sys.stderr)
 
 ALWAYS = set(PORTFOLIO.split())
 
-# العملات — تُعامل بتقسيم 4H مختلف (24 ساعة بلا جلسة)
-CRYPTO = {"BTC-USD"}
+# العملات — تُعامل بتقسيم 4H مختلف (24 ساعة بلا جلسة) وتُفحص على مدار اليوم
+CRYPTO = {"BTC-USD", "ETH-USD", "SOL-USD"}
 ALWAYS |= CRYPTO
 
 TICKERS = sorted(set(UNIVERSE.split()) | ALWAYS)
@@ -94,6 +93,7 @@ def to_4h(df: pd.DataFrame, crypto: bool = False) -> pd.DataFrame:
             Open=("Open", "first"), High=("High", "max"),
             Low=("Low", "min"), Close=("Close", "last"),
         ).dropna()
+
     idx_ny = df.index.tz_convert("America/New_York")
     out = []
     for _, g in df.groupby(idx_ny.date):
@@ -118,6 +118,11 @@ def bars_since_cross_up(line: pd.Series) -> int:
 def zero_crossings(line: pd.Series, look: int) -> int:
     tail = line.tail(look)
     return int(((tail > 0) != (tail.shift(1) > 0)).sum())
+
+
+def us_session(now: dt.datetime) -> bool:
+    """تقريب لجلسة نيويورك بالتوقيت العالمي — يغطي التوقيتين الصيفي والشتوي."""
+    return now.weekday() < 5 and 13 <= now.hour <= 21
 
 
 # ------------------------------------------------------------------
@@ -158,7 +163,6 @@ def analyse(h1: pd.DataFrame, m15: pd.DataFrame, crypto: bool = False) -> dict |
     crossed = m0.iloc[-2] > s0.iloc[-2] and m0.iloc[-3] <= s0.iloc[-3]
     rng0 = m0.abs().tail(100).max()
     near0 = rng0 > 0 and abs(m0.iloc[-2]) <= rng0 * ENTRY_TOL_PCT / 100
-
     if not (crossed and near0):
         return {"state": "permit", "age": age}
 
@@ -227,11 +231,21 @@ def notify(text: str):
         print("Telegram error:", r.text, file=sys.stderr)
 
 
+def fmt(x: float) -> str:
+    """تنسيق السعر — أربع خانات للرموز الصغيرة، خانتان لغيرها."""
+    return f"{x:,.4f}" if abs(x) < 10 else f"{x:,.2f}"
+
+
 def main():
     now = dt.datetime.now(dt.timezone.utc)
-    print(f"scan {now:%Y-%m-%d %H:%M} UTC — {len(TICKERS)} رمز")
 
-    h1 = fetch(TICKERS, "180d", "1h")
+    # داخل الجلسة نفحص كل شيء، وخارجها العملات وحدها
+    session = us_session(now)
+    tickers = TICKERS if session else sorted(CRYPTO)
+    mode = "أسهم + عملات" if session else "عملات فقط"
+    print(f"scan {now:%Y-%m-%d %H:%M} UTC — {mode} — {len(tickers)} رمز")
+
+    h1 = fetch(tickers, "180d", "1h")
     names = liquid(h1)
     print(f"بعد فلتر السيولة: {len(names)}")
     if not names:
@@ -239,10 +253,19 @@ def main():
 
     m15 = fetch(names, "10d", "15m")
 
-    entries, permits = [], []
+    entries, permits, stale = [], [], []
     for t in names:
         if t not in m15:
             continue
+
+        # حارس ضد البيانات القديمة: سهم آخر شمعته متأخرة يعني السوق مغلق —
+        # بدون هذا الفحص تتكرر نفس الإشارة كل ربع ساعة طوال الليل
+        if t not in CRYPTO:
+            last = m15[t].index[-1]
+            if (now - last) > dt.timedelta(minutes=STALE_MIN):
+                stale.append(t)
+                continue
+
         try:
             res = analyse(h1[t], m15[t], t in CRYPTO)
         except Exception as e:
@@ -255,6 +278,9 @@ def main():
         elif res["state"] == "permit":
             permits.append(t)
 
+    if stale:
+        print(f"تُخطّي {len(stale)} رمزاً ببيانات قديمة (السوق مغلق أو عطلة)")
+
     if not entries:
         print(f"لا إشارات دخول. إذن مفتوح على: {', '.join(permits) or 'لا شيء'}")
         return
@@ -263,9 +289,9 @@ def main():
     lines = [f"<b>إشارات دخول — {now:%H:%M} UTC</b>", ""]
     for t, r in entries:
         lines += [
-            f"<b>{t}</b>  {r['price']:.2f}",
-            f"ستوب {r['stop']:.2f}  ({r['risk_pct']:.2f}%)",
-            f"أهداف {r['tp1']:.2f} / {r['tp2']:.2f} / {r['tp3']:.2f}",
+            f"<b>{t}</b>  {fmt(r['price'])}",
+            f"ستوب {fmt(r['stop'])}  ({r['risk_pct']:.2f}%)",
+            f"أهداف {fmt(r['tp1'])} / {fmt(r['tp2'])} / {fmt(r['tp3'])}",
             f"عمر الإذن {r['age']}/{PERMIT_BARS} · تذبذب {r['chop']}/{CHOP_MAX}",
             "",
         ]
