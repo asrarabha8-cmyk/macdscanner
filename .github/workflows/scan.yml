@@ -1,12 +1,11 @@
 name: MACD Cascade Scan
 
 on:
+  repository_dispatch:
+    types: [scan]
   schedule:
-    # كل نصف ساعة على مدار اليوم — تغطي العملات ليلاً ونهاراً
     - cron: "2,32 * * * *"
-    # الفتحتان الوسطيتان داخل الجلسة الأمريكية فقط — بهما يصير الفحص كل ربع ساعة
-    - cron: "17,47 13-20 * * 1-5"
-  workflow_dispatch:        # زر تشغيل يدوي للتجربة
+  workflow_dispatch:
 
 jobs:
   scan:
