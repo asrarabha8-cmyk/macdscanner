@@ -3,7 +3,6 @@ name: SMC Breakout Scanner
 on:
   schedule:
     # إغلاقات شموع 4 ساعات للسوق الأمريكي (UTC)
-    # 13:30 فتح · 17:30 · 21:00 إغلاق — نفحص بعد كل إغلاق بخمس دقائق
     - cron: "35 17 * * 1-5"
     - cron: "05 21 * * 1-5"
   workflow_dispatch:        # تشغيل يدوي من زر في GitHub
@@ -20,16 +19,6 @@ jobs:
 
       - name: تثبيت المكتبات
         run: pip install yfinance pandas requests lxml
-
-      # نستعيد سجل التنبيهات السابق حتى لا يتكرر التنبيه ولا يضيع السجل
-      - name: استعادة الحالة
-        uses: actions/cache@v4
-        with:
-          path: |
-            scanner_state.json
-            alerts_log.csv
-          key: smc-state-${{ github.run_id }}
-          restore-keys: smc-state-
 
       - name: تشغيل الماسح
         env:
