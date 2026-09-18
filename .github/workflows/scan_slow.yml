@@ -1,0 +1,27 @@
+name: MACD Slow Scan
+
+on:
+  schedule:
+    # مرة كل ساعة أثناء الجلسة الأمريكية — الزناد على فاصل الساعة
+    - cron: "5 13-20 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: تثبيت المكتبات
+        run: pip install --quiet yfinance pandas numpy requests
+
+      - name: الفحص
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: python macd_slow_scanner.py
