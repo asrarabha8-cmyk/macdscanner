@@ -395,6 +395,7 @@ class Candidate:
     prev_close: float = 0.0
     pm_high: float = 0.0
     pm_low: float = 0.0
+    now_price: float = 0.0
 
 
 @dataclass
@@ -456,7 +457,8 @@ class Sim:
                 score = abs(gap) * (1 + math.log1p(min(ratio, 10)))
                 rows.append(Candidate(s, "CALL" if gap > 0 else "PUT", gap, ratio, score, vol_label=vlabel,
                                      last=last, prev_close=pc, pm_high=float(pm["High"].max()),
-                                     pm_low=float(pm["Low"].min())))
+                                     pm_low=float(pm["Low"].min()),
+                                     now_price=float(df["Close"].iloc[-1])))
             except Exception as e:  # keep going on bad tickers
                 print(f"rank {s}: {e}")
         rows.sort(key=lambda c: c.score, reverse=True)
@@ -469,11 +471,13 @@ class Sim:
             arrow = "📈" if c.bias == "CALL" else "📉"
             lines.append(f"{i}. <b>{c.symbol} — {c.bias}</b> {arrow}")
             lines.append(f"   السعر {c.last:.2f} | إغلاق أمس {c.prev_close:.2f} | فجوة {c.gap_pct:+.2f}%")
+            if now.time() >= dtime(9, 30) and c.now_price:
+                lines.append(f"   ⏱️ السوق مفتوح — السعر الآن {c.now_price:.2f} ({(c.now_price / c.prev_close - 1) * 100:+.2f}%)")
             lines.append(f"   ما قبل الافتتاح: أعلى {c.pm_high:.2f} / أدنى {c.pm_low:.2f} | {c.vol_label} ×{c.pm_vol_ratio:.1f}")
             side = "فوق أعلى" if c.bias == "CALL" else "تحت أدنى"
             lines.append(f"   الدخول: إغلاق 5د {side} أول {OR_MINUTES} دقيقة + {'فوق' if c.bias=='CALL' else 'تحت'} VWAP + {MARKET_ETF} معه")
             try:
-                exp, row, _ = self.pick_contract(c.symbol, c.bias, c.last, now)
+                exp, row, _ = self.pick_contract(c.symbol, c.bias, c.now_price or c.last, now)
             except Exception as e:
                 exp, row = None, None
                 print(f"preview {c.symbol}: {e}")
