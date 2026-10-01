@@ -456,6 +456,9 @@ class Sim:
             pv.sleep(min(60, (start - pv.now()).total_seconds()))
         if pv.now().weekday() >= 5:
             print("weekend"); return
+        # a late/duplicate scheduled run must not spam; manual runs (FORCE_RUN=1) still go
+        if pv.now().time() >= _hm(SIGNAL_END_ET) and os.getenv("FORCE_RUN") != "1":
+            print("started after the signal window — nothing to do"); return
         self.rank()
         if not self.candidates:
             return
