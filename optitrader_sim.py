@@ -167,6 +167,16 @@ class YFProvider:
         d = d[d.index.date < today]
         return float(d["Close"].iloc[-1])
 
+    def last_rvol(self, s) -> float:
+        """Yesterday's volume vs its 20-day average (Yahoo often reports 0 pre-market volume)."""
+        d = self._tk(s).history(period="2mo", interval="1d")
+        d.index = d.index.tz_convert(NY)
+        d = d[d.index.date < self.now().date()]
+        if len(d) < 5:
+            return 1.0
+        avg = float(d["Volume"].iloc[-21:-1].mean())
+        return float(d["Volume"].iloc[-1]) / avg if avg > 0 else 1.0
+
     def expiries(self, s) -> list[str]:
         return list(self._tk(s).options)
 
@@ -185,6 +195,7 @@ class Candidate:
     score: float
     traded: bool = False
     rejects: int = 0
+    vol_label: str = "حجم ما قبل الافتتاح"
 
 
 @dataclass
@@ -238,9 +249,12 @@ class Sim:
                 past = df[(df.index.date < self.day) & (df.index.time < dtime(9, 30))]
                 n_days = max(1, len(set(past.index.date)))
                 avg_pm = float(past["Volume"].sum()) / n_days if not past.empty else 0
-                ratio = pm_vol / avg_pm if avg_pm > 0 else 1.0
+                if pm_vol > 0 and avg_pm > 0:
+                    ratio, vlabel = pm_vol / avg_pm, "حجم ما قبل الافتتاح"
+                else:   # Yahoo gave no pre-market volume → use yesterday's relative volume
+                    ratio, vlabel = self.provider.last_rvol(s), "حجم أمس"
                 score = abs(gap) * (1 + math.log1p(min(ratio, 10)))
-                rows.append(Candidate(s, "CALL" if gap > 0 else "PUT", gap, ratio, score))
+                rows.append(Candidate(s, "CALL" if gap > 0 else "PUT", gap, ratio, score, vol_label=vlabel))
             except Exception as e:  # keep going on bad tickers
                 print(f"rank {s}: {e}")
         rows.sort(key=lambda c: c.score, reverse=True)
@@ -250,7 +264,7 @@ class Sim:
             return
         lines = [f"🧭 <b>قبل الافتتاح — أفضل {len(self.candidates)} فرص</b>"]
         for i, c in enumerate(self.candidates, 1):
-            lines.append(f"{i}. <b>{c.symbol}</b> {c.bias} | فجوة {c.gap_pct:+.2f}% | حجم ما قبل الافتتاح ×{c.pm_vol_ratio:.1f}")
+            lines.append(f"{i}. <b>{c.symbol}</b> {c.bias} | فجوة {c.gap_pct:+.2f}% | {c.vol_label} ×{c.pm_vol_ratio:.1f}")
         lines.append(f"التأكيد: {MARKET_ETF} مع VWAP • الافتتاح {riyadh(now.replace(hour=9, minute=30))} الرياض")
         self.notify("\n".join(lines))
 
@@ -590,6 +604,9 @@ class FakeProvider:
 
     def prev_close(self, s):
         return self.paths[s][0]
+
+    def last_rvol(self, s):
+        return 1.0
 
     def expiries(self, s):
         return [str(self.day + timedelta(days=4)), str(self.day + timedelta(days=11))]
