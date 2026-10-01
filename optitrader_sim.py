@@ -40,6 +40,7 @@ import math
 import os
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field, asdict
@@ -110,6 +111,22 @@ def bs_delta(S, K, T, iv, r, kind):
         return float("nan")
     d1 = (math.log(S / K) + (r + iv * iv / 2) * T) / (iv * math.sqrt(T))
     return norm_cdf(d1) if kind == "CALL" else norm_cdf(d1) - 1
+
+
+AR_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو",
+             "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+
+
+def exp_label(exp: str, today: date) -> str:
+    d = date.fromisoformat(exp)
+    n = (d - today).days
+    days = "اليوم" if n == 0 else "يوم" if n == 1 else "يومين" if n == 2 else f"{n} أيام" if n <= 10 else f"{n} يوم"
+    return f"{d.day} {AR_MONTHS[d.month-1]} ({days})"
+
+
+def contract_name(sym, strike, kind, exp):
+    d = date.fromisoformat(exp)
+    return f"{sym} {strike:g}{'C' if kind == 'CALL' else 'P'} {d:%d/%m}"
 
 
 def riyadh(ts: datetime) -> str:
@@ -185,6 +202,148 @@ class YFProvider:
         return (oc.calls if kind == "CALL" else oc.puts).copy()
 
 
+
+# ───────────────────────── Polygon / Massive provider (falls back to Yahoo) ─────────────────────────
+class PolygonProvider:
+    """Uses Polygon/Massive when the key's plan allows it; any endpoint that is not
+    in the plan (403) or rate-limited (429) silently falls back to Yahoo."""
+
+    def __init__(self, key, base=None, fallback=None):
+        self.key = key
+        self.base = (base or os.getenv("POLYGON_BASE_URL") or "https://api.polygon.io").rstrip("/")
+        self.fb = fallback
+        self.blocked = set()          # endpoint groups the plan does not include
+        self.used = {}                # group -> "polygon"/"yahoo" (for the daily report)
+
+    # plumbing
+    def now(self):
+        return datetime.now(NY)
+
+    def sleep(self, sec):
+        time.sleep(sec)
+
+    def _get(self, path_or_url, params=None):
+        url = path_or_url if path_or_url.startswith("http") else self.base + path_or_url
+        q = dict(params or {})
+        q["apiKey"] = self.key
+        sep = "&" if "?" in url else "?"
+        req = urllib.request.Request(url + sep + urllib.parse.urlencode(q),
+                                     headers={"User-Agent": "optitrader-sim"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.loads(r.read().decode())
+
+    def _try(self, group, fn, fb_fn):
+        if group not in self.blocked:
+            try:
+                out = fn()
+                self.used[group] = "Polygon"
+                return out
+            except urllib.error.HTTPError as e:
+                if e.code in (401, 403):
+                    self.blocked.add(group)
+                    print(f"polygon: '{group}' not in plan ({e.code}) → Yahoo")
+                else:
+                    print(f"polygon {group} HTTP {e.code} → Yahoo this time")
+            except Exception as e:
+                print(f"polygon {group} error {e} → Yahoo this time")
+        if self.fb is None:
+            raise RuntimeError(f"no data for {group}")
+        self.used[group] = "Yahoo"
+        return fb_fn()
+
+    def _aggs(self, s, mult, span, start, end):
+        out, url = [], f"/v2/aggs/ticker/{s}/range/{mult}/{span}/{start}/{end}"
+        params = {"adjusted": "true", "sort": "asc", "limit": 50000}
+        while url:
+            j = self._get(url, params)
+            out += j.get("results") or []
+            url, params = j.get("next_url"), None
+        if not out:
+            return pd.DataFrame(columns=["Open", "High", "Low", "Close", "Volume"])
+        df = pd.DataFrame(out)
+        df.index = pd.to_datetime(df["t"], unit="ms", utc=True).dt.tz_convert(NY)
+        df = df.rename(columns={"o": "Open", "h": "High", "l": "Low", "c": "Close", "v": "Volume"})
+        return df[["Open", "High", "Low", "Close", "Volume"]]
+
+    # data API used by Sim
+    def bars(self, s):
+        end = self.now().date()
+        start = end - timedelta(days=7)
+        return self._try("stock bars", lambda: self._aggs(s, 5, "minute", start, end),
+                         lambda: self.fb.bars(s))
+
+    def _daily(self, s, days):
+        end = self.now().date() - timedelta(days=1)
+        d = self._aggs(s, 1, "day", end - timedelta(days=days), end)
+        return d[d.index.date < self.now().date()]
+
+    def prev_close(self, s):
+        return self._try("daily", lambda: float(self._daily(s, 10)["Close"].iloc[-1]),
+                         lambda: self.fb.prev_close(s))
+
+    def last_rvol(self, s):
+        def poly():
+            d = self._daily(s, 45)
+            avg = float(d["Volume"].iloc[-21:-1].mean())
+            return float(d["Volume"].iloc[-1]) / avg if avg > 0 else 1.0
+        return self._try("daily", poly, lambda: self.fb.last_rvol(s))
+
+    def expiries(self, s):
+        def poly():
+            today = self.now().date()
+            j = self._get("/v3/reference/options/contracts", {
+                "underlying_ticker": s, "expired": "false", "limit": 1000,
+                "expiration_date.gte": str(today),
+                "expiration_date.lte": str(today + timedelta(days=MAX_DTE + 7))})
+            return sorted({r["expiration_date"] for r in j.get("results", [])})
+        return self._try("contracts", poly, lambda: self.fb.expiries(s))
+
+    def chain(self, s, exp, kind):
+        def poly():
+            rows, url = [], f"/v3/snapshot/options/{s}"
+            params = {"expiration_date": exp, "contract_type": kind.lower(), "limit": 250}
+            while url:
+                j = self._get(url, params)
+                for r in j.get("results") or []:
+                    q = r.get("last_quote") or {}
+                    d = r.get("details") or {}
+                    rows.append(dict(
+                        contractSymbol=d.get("ticker", ""), strike=float(d.get("strike_price", 0)),
+                        bid=float(q.get("bid") or 0), ask=float(q.get("ask") or 0),
+                        delta=(r.get("greeks") or {}).get("delta"),
+                        impliedVolatility=float(r.get("implied_volatility") or 0),
+                        volume=float((r.get("day") or {}).get("volume") or 0),
+                        openInterest=float(r.get("open_interest") or 0)))
+                url, params = j.get("next_url"), None
+            df = pd.DataFrame(rows)
+            if df.empty or (df["ask"] <= 0).all():
+                raise RuntimeError("snapshot has no quotes on this plan")
+            return df
+
+        def yahoo_with_poly_greeks():
+            ch = self.fb.chain(s, exp, kind)
+            return ch
+        return self._try("options snapshot", poly, yahoo_with_poly_greeks)
+
+    def source_note(self):
+        if not self.used:
+            return ""
+        return " • ".join(f"{k}: {v}" for k, v in self.used.items())
+
+
+def make_provider():
+    key = os.getenv("POLYGON_API_KEY", "").strip()
+    yahoo = None
+    try:
+        yahoo = YFProvider()
+    except Exception as e:
+        print("yfinance unavailable:", e)
+    if key:
+        print("data: Polygon/Massive (Yahoo as fallback)")
+        return PolygonProvider(key, fallback=yahoo)
+    print("data: Yahoo")
+    return yahoo
+
 # ───────────────────────── state ─────────────────────────
 @dataclass
 class Candidate:
@@ -196,6 +355,10 @@ class Candidate:
     traded: bool = False
     rejects: int = 0
     vol_label: str = "حجم ما قبل الافتتاح"
+    last: float = 0.0
+    prev_close: float = 0.0
+    pm_high: float = 0.0
+    pm_low: float = 0.0
 
 
 @dataclass
@@ -254,7 +417,9 @@ class Sim:
                 else:   # Yahoo gave no pre-market volume → use yesterday's relative volume
                     ratio, vlabel = self.provider.last_rvol(s), "حجم أمس"
                 score = abs(gap) * (1 + math.log1p(min(ratio, 10)))
-                rows.append(Candidate(s, "CALL" if gap > 0 else "PUT", gap, ratio, score, vol_label=vlabel))
+                rows.append(Candidate(s, "CALL" if gap > 0 else "PUT", gap, ratio, score, vol_label=vlabel,
+                                     last=last, prev_close=pc, pm_high=float(pm["High"].max()),
+                                     pm_low=float(pm["Low"].min())))
             except Exception as e:  # keep going on bad tickers
                 print(f"rank {s}: {e}")
         rows.sort(key=lambda c: c.score, reverse=True)
@@ -262,10 +427,27 @@ class Sim:
         if not self.candidates:
             self.notify("⚠️ ما قدرت أرتب فرص اليوم (لا توجد بيانات ما قبل الافتتاح).")
             return
-        lines = [f"🧭 <b>قبل الافتتاح — أفضل {len(self.candidates)} فرص</b>"]
+        lines = [f"🧭 <b>قبل الافتتاح — أفضل {len(self.candidates)} فرص</b>", ""]
         for i, c in enumerate(self.candidates, 1):
-            lines.append(f"{i}. <b>{c.symbol}</b> {c.bias} | فجوة {c.gap_pct:+.2f}% | {c.vol_label} ×{c.pm_vol_ratio:.1f}")
-        lines.append(f"التأكيد: {MARKET_ETF} مع VWAP • الافتتاح {riyadh(now.replace(hour=9, minute=30))} الرياض")
+            arrow = "📈" if c.bias == "CALL" else "📉"
+            lines.append(f"{i}. <b>{c.symbol} — {c.bias}</b> {arrow}")
+            lines.append(f"   السعر {c.last:.2f} | إغلاق أمس {c.prev_close:.2f} | فجوة {c.gap_pct:+.2f}%")
+            lines.append(f"   ما قبل الافتتاح: أعلى {c.pm_high:.2f} / أدنى {c.pm_low:.2f} | {c.vol_label} ×{c.pm_vol_ratio:.1f}")
+            side = "فوق أعلى" if c.bias == "CALL" else "تحت أدنى"
+            lines.append(f"   الدخول: إغلاق 5د {side} أول {OR_MINUTES} دقيقة + {'فوق' if c.bias=='CALL' else 'تحت'} VWAP + {MARKET_ETF} معه")
+            try:
+                exp, row, _ = self.pick_contract(c.symbol, c.bias, c.last, now)
+            except Exception as e:
+                exp, row = None, None
+                print(f"preview {c.symbol}: {e}")
+            if row is not None:
+                lines.append(f"   العقد المبدئي: <b>{contract_name(c.symbol, float(row['strike']), c.bias, exp)}</b> — ينتهي {exp_label(exp, now.date())}")
+                lines.append(f"   Bid {row['bid']:.2f} / Ask {row['ask']:.2f} • سبريد {row['spread']:.2f} • دلتا {row['delta']:+.2f} • التكلفة ${row['ask']*100:.0f}")
+            else:
+                lines.append("   العقد المبدئي: أسعار الأوبشن ما تحدّثت قبل الافتتاح — يتحدد عند الإشارة")
+            lines.append("")
+        lines.append(f"⚙️ القواعد: Ask {ASK_MIN:.2f}–{ASK_MAX:.2f} • دلتا {DELTA_MIN}–{DELTA_MAX} • سبريد ≤ {MAX_SPREAD:.2f} • ميزانية ${BUDGET:.0f} • انتهاء {MIN_DTE}–{MAX_DTE} أيام")
+        lines.append(f"ℹ️ العقد النهائي يتحدد لحظة الإشارة (الأسعار تتغير بعد الافتتاح) • الافتتاح {riyadh(now.replace(hour=9, minute=30))} الرياض")
         self.notify("\n".join(lines))
 
     # ── 2-3. opening range + signal
@@ -342,8 +524,12 @@ class Sim:
             T = max((exp_dt - now).total_seconds(), 60) / (365 * 24 * 3600)
             ch = ch[(ch["bid"] > 0) & (ch["ask"] > 0)].copy()
             ch["spread"] = (ch["ask"] - ch["bid"]).round(2)
-            ch["delta"] = [bs_delta(S, k, T, iv, RISK_FREE, kind)
-                           for k, iv in zip(ch["strike"], ch["impliedVolatility"])]
+            bs = [bs_delta(S, k, T, iv, RISK_FREE, kind)
+                  for k, iv in zip(ch["strike"], ch["impliedVolatility"])]
+            if "delta" in ch.columns:   # real greeks from Polygon; Black-Scholes only where missing
+                ch["delta"] = pd.to_numeric(ch["delta"], errors="coerce").fillna(pd.Series(bs, index=ch.index))
+            else:
+                ch["delta"] = bs
             ch["absd"] = ch["delta"].abs()
             ok = ch[(ch["ask"].between(ASK_MIN, ASK_MAX)) &
                     (ch["absd"].between(DELTA_MIN, DELTA_MAX)) &
@@ -383,12 +569,25 @@ class Sim:
         self.position = p
         cost = p.entry_ask * 100
         letter = "C" if p.kind == "CALL" else "P"
+        T = max((datetime.combine(date.fromisoformat(exp), dtime(16, 0), NY) - now).total_seconds(), 60) / (365*24*3600)
+        iv = float(row.get("impliedVolatility", float("nan")))
+        be = p.strike + p.entry_ask if p.kind == "CALL" else p.strike - p.entry_ask
+        stop_val = p.entry_ask * (1 - HARD_STOP_PCT) * 100
+        arm_val = p.entry_ask * (1 + PROTECT_ARM_PCT) * 100
         self.notify(
-            f"🎯 <b>دخول (محاكاة): {p.symbol} {p.strike:g}{letter}</b> انتهاء {p.expiry}\n"
-            f"Ask {p.entry_ask:.2f} • سبريد {p.spread:.2f} • دلتا {p.delta:+.2f}\n"
-            f"التكلفة ${cost:.0f} (الميزانية ${BUDGET:.0f}) • الوقت {riyadh(now)} الرياض\n"
-            f"السهم {p.stock_entry:.2f} | تريقر {p.trigger} | إبطال {p.invalidation} | هدف {p.target}\n"
-            f"تأكيد: {why}\n🔒 مقفول قبل النتيجة SHA-256 {p.lock_hash[:12]}…"
+            f"🎯 <b>دخول (محاكاة): {contract_name(p.symbol, p.strike, p.kind, p.expiry)}</b>\n"
+            f"النوع: {'شراء CALL — رهان على الصعود 📈' if p.kind=='CALL' else 'شراء PUT — رهان على النزول 📉'} • السترايك <b>{p.strike:g}</b>\n"
+            f"الانتهاء: {exp_label(p.expiry, now.date())}\n"
+            f"Bid {float(row['bid']):.2f} / Ask {p.entry_ask:.2f} • سبريد {p.spread:.2f}\n"
+            f"دلتا {p.delta:+.2f} • IV {iv*100:.0f}% • التعادل عند الانتهاء {be:.2f}\n"
+            f"💵 الدخول ${cost:.0f} (عقد واحد = 100 سهم) • أقصى خسارة ${cost:.0f}\n"
+            f"\n📊 السهم {p.stock_entry:.2f}\n"
+            f"   تريقر {p.trigger} | إبطال {p.invalidation} | هدف {p.target}\n"
+            f"🛑 وقف العقد عند ${stop_val:.0f} (−{HARD_STOP_PCT:.0%})\n"
+            f"🛡️ حماية الربح تشتغل عند ${arm_val:.0f} (+{PROTECT_ARM_PCT:.0%}) وتثبت {PROTECT_LOCK_PCT:.0%} من أفضل ربح\n"
+            f"⏰ خروج بالوقت {riyadh(datetime.combine(now.date(), _hm(EXIT_ET), NY))} الرياض\n"
+            f"✅ تأكيد: {why}\n"
+            f"🕒 {riyadh(now)} الرياض • 🔒 SHA-256 {p.lock_hash[:12]}…"
         )
 
     # ── 6. management
@@ -424,7 +623,7 @@ class Sim:
         self.trades.append(t)
         self._append_csv("trades.csv", t)
         self.notify(
-            f"🏁 <b>خروج: {p.symbol} {p.strike:g}{'C' if p.kind=='CALL' else 'P'}</b> — {reason}\n"
+            f"🏁 <b>خروج: {contract_name(p.symbol, p.strike, p.kind, p.expiry)}</b> — {reason}\n"
             f"الدخول ${p.entry_ask*100:.0f} → الخروج ${bid*100:.0f} = <b>{pnl:+.0f}$ ({pct:+.2f}%)</b>\n"
             f"أفضل ربح غير محقق كان {best:+.0f}$ • {riyadh(now)} الرياض"
         )
@@ -450,6 +649,9 @@ class Sim:
 
     def summary(self):
         lines = [f"📒 <b>ملخص المحاكاة {self.day}</b>"]
+        note = getattr(self.provider, "source_note", lambda: "")()
+        if note:
+            lines.append(f"📡 مصدر البيانات — {note}")
         if not self.trades:
             lines.append("0 دخول — ما أجبرنا الدخول بدون شروط.")
         for t in self.trades:
@@ -655,4 +857,4 @@ if __name__ == "__main__":
     if "--selftest" in sys.argv:
         selftest()
     else:
-        Sim(provider=YFProvider(), notify=telegram, watchlist=load_watchlist()).run()
+        Sim(provider=make_provider(), notify=telegram, watchlist=load_watchlist()).run()
