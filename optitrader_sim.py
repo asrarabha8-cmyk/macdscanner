@@ -69,8 +69,9 @@ SHORT_DELTA_MAX = _env("SHORT_DELTA_MAX", 0.30)
 LEG_MAX_SPREAD = _env("LEG_MAX_SPREAD", 0.15)        # bid/ask width allowed on each spread leg
 SPREAD_DEBIT_MIN = _env("SPREAD_DEBIT_MIN", 0.80)
 MIN_REWARD_RISK = _env("MIN_REWARD_RISK", 0.8)        # max profit must be ≥ 0.8 × cost
+MAX_REWARD_RISK = _env("MAX_REWARD_RISK", 4.0)        # above this the quotes are almost surely stale
 MIN_DTE = _env("MIN_DTE", 2, int)
-MAX_DTE = _env("MAX_DTE", 7, int)
+MAX_DTE = _env("MAX_DTE", 9, int)   # 9 so Thu/Fri still reach next Friday weekly
 OR_MINUTES = _env("OR_MINUTES", 15, int)
 MIN_RISK_PCT = _env("MIN_RISK_PCT", 0.006)   # stop at least 0.6% away from trigger
 MAX_CHASE_R = _env("MAX_CHASE_R", 0.5)       # skip if price already ran > 0.5R past trigger
@@ -557,6 +558,13 @@ class Sim:
             else:
                 ch["delta"] = bs
             ch["absd"] = ch["delta"].abs()
+            # drop stale/broken quotes: price far from the IV-implied value
+            theo = pd.Series([bs_price(S, k, T, iv, RISK_FREE, kind) if iv and iv > 0.01 else float("nan")
+                              for k, iv in zip(ch["strike"], ch["impliedVolatility"])], index=ch.index)
+            stale = theo.notna() & ((ch["ask"] < 0.5 * theo - 0.05) | (ch["bid"] > 2 * theo + 0.10))
+            if stale.any():
+                print(f"{s} {e}: dropped {int(stale.sum())} stale quotes")
+            ch = ch[~stale]
             ok = ch[(ch["ask"].between(ASK_MIN, ASK_MAX)) &
                     (ch["absd"].between(DELTA_MIN, DELTA_MAX)) &
                     (ch["spread"] <= MAX_SPREAD + 1e-9) &
@@ -606,12 +614,14 @@ class Sim:
                 further = S_["strike"] > L["strike"] if kind == "CALL" else S_["strike"] < L["strike"]
                 if not further:
                     continue
+                if L["bid"] < S_["ask"]:      # the nearer leg must always be worth more
+                    continue
                 debit = round(float(L["ask"] - S_["bid"]), 2)
                 width = abs(float(S_["strike"] - L["strike"]))
-                if not (SPREAD_DEBIT_MIN <= debit <= ASK_MAX) or debit * 100 > BUDGET:
+                if not (SPREAD_DEBIT_MIN <= debit <= ASK_MAX) or debit * 100 > BUDGET or debit >= width:
                     continue
                 rr = (width - debit) / debit
-                if rr < MIN_REWARD_RISK:
+                if not (MIN_REWARD_RISK <= rr <= MAX_REWARD_RISK):
                     continue
                 key = (abs(abs(L["delta"]) - 0.40), -rr)
                 if best is None or key < best[0]:
