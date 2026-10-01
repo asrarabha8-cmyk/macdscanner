@@ -35,6 +35,7 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
           FORCE_RUN: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
           # Rules from the clip (+ profit protection). Change here if you like:
           BUDGET: "350"
