@@ -1,0 +1,54 @@
+name: OptiTrader Options Sim
+
+on:
+  schedule:
+    # 13:15 UTC Mon–Fri. The script waits by itself until 09:25 New York time,
+    # so it works in both US summer and winter time without editing.
+    - cron: "15 13 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # to commit the daily logs back to the repo
+
+concurrency:
+  group: optitrader-sim
+  cancel-in-progress: false
+
+jobs:
+  sim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install yfinance pandas
+
+      - name: Run live paper session
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          # Rules from the clip (+ profit protection). Change here if you like:
+          BUDGET: "350"
+          ASK_MIN: "2.00"
+          ASK_MAX: "3.50"
+          DELTA_MIN: "0.35"
+          DELTA_MAX: "0.65"
+          MAX_SPREAD: "0.10"
+          PROTECT_ARM_PCT: "0.25"
+          PROTECT_LOCK_PCT: "0.50"
+          EXIT_ET: "13:45"
+        run: python optitrader_sim.py
+
+      - name: Save logs
+        if: always()
+        run: |
+          git config user.name "optitrader-bot"
+          git config user.email "optitrader-bot@users.noreply.github.com"
+          git add logs || true
+          git diff --cached --quiet || git commit -m "sim logs $(date -u +%F)"
+          git push || true
