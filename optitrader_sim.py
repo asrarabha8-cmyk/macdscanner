@@ -63,6 +63,12 @@ ASK_MAX = _env("ASK_MAX", 3.50)
 DELTA_MIN = _env("DELTA_MIN", 0.35)
 DELTA_MAX = _env("DELTA_MAX", 0.65)
 MAX_SPREAD = _env("MAX_SPREAD", 0.10)
+SPREAD_MODE = _env("SPREAD_MODE", "auto", str)     # auto: spread only when the single contract doesn't fit • off • always
+SHORT_DELTA_MIN = _env("SHORT_DELTA_MIN", 0.15)
+SHORT_DELTA_MAX = _env("SHORT_DELTA_MAX", 0.30)
+LEG_MAX_SPREAD = _env("LEG_MAX_SPREAD", 0.15)        # bid/ask width allowed on each spread leg
+SPREAD_DEBIT_MIN = _env("SPREAD_DEBIT_MIN", 0.80)
+MIN_REWARD_RISK = _env("MIN_REWARD_RISK", 0.8)        # max profit must be ≥ 0.8 × cost
 MIN_DTE = _env("MIN_DTE", 2, int)
 MAX_DTE = _env("MAX_DTE", 7, int)
 OR_MINUTES = _env("OR_MINUTES", 15, int)
@@ -124,9 +130,21 @@ def exp_label(exp: str, today: date) -> str:
     return f"{d.day} {AR_MONTHS[d.month-1]} ({days})"
 
 
-def contract_name(sym, strike, kind, exp):
+def contract_name(sym, strike, kind, exp, short=0.0):
     d = date.fromisoformat(exp)
-    return f"{sym} {strike:g}{'C' if kind == 'CALL' else 'P'} {d:%d/%m}"
+    k = "C" if kind == "CALL" else "P"
+    if short:
+        return f"{sym} {strike:g}/{short:g}{k} {d:%d/%m} (سبريد)"
+    return f"{sym} {strike:g}{k} {d:%d/%m}"
+
+
+def row_short(row):
+    v = row.get("short_strike", 0) if hasattr(row, "get") else 0
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return 0.0
+    return 0.0 if math.isnan(v) else v
 
 
 def riyadh(ts: datetime) -> str:
@@ -379,6 +397,7 @@ class Position:
     last_bid: float = 0.0
     contract: str = ""
     lock_hash: str = ""
+    short_strike: float = 0.0       # >0 → debit spread (long strike / short strike)
 
 
 @dataclass
@@ -441,8 +460,13 @@ class Sim:
                 exp, row = None, None
                 print(f"preview {c.symbol}: {e}")
             if row is not None:
-                lines.append(f"   العقد المبدئي: <b>{contract_name(c.symbol, float(row['strike']), c.bias, exp)}</b> — ينتهي {exp_label(exp, now.date())}")
-                lines.append(f"   Bid {row['bid']:.2f} / Ask {row['ask']:.2f} • سبريد {row['spread']:.2f} • دلتا {row['delta']:+.2f} • التكلفة ${row['ask']*100:.0f}")
+                lines.append(f"   العقد المبدئي: <b>{contract_name(c.symbol, float(row['strike']), c.bias, exp, row_short(row))}</b> — ينتهي {exp_label(exp, now.date())}")
+                if row_short(row):
+                    lines.append(f"   تكلفة ${row['ask']*100:.0f} • أقصى ربح ${row['max_profit']*100:.0f} • دلتا صافية {row['delta']:+.2f}")
+                else:
+                    lines.append(f"   Bid {row['bid']:.2f} / Ask {row['ask']:.2f} • سبريد {row['spread']:.2f} • دلتا {row['delta']:+.2f} • التكلفة ${row['ask']*100:.0f}")
+            elif getattr(self, "last_miss", None):
+                lines.append(f"   ⚠️ ما فيه عقد يطابق القواعد الحين: {self.last_miss}")
             else:
                 lines.append("   العقد المبدئي: أسعار الأوبشن ما تحدّثت قبل الافتتاح — يتحدد عند الإشارة")
             lines.append("")
@@ -516,6 +540,8 @@ class Sim:
             dte = (date.fromisoformat(e) - today).days
             if MIN_DTE <= dte <= MAX_DTE:
                 exps.append(e)
+        self.last_miss = None   # why nothing matched (shown in Telegram)
+        near = []
         for e in exps[:2]:
             ch = self.provider.chain(s, e, kind)
             if ch is None or ch.empty:
@@ -535,13 +561,69 @@ class Sim:
                     (ch["absd"].between(DELTA_MIN, DELTA_MAX)) &
                     (ch["spread"] <= MAX_SPREAD + 1e-9) &
                     (ch["ask"] * 100 <= BUDGET)]
+            if SPREAD_MODE == "always":
+                ok = ok.iloc[0:0]
+            if ok.empty and SPREAD_MODE in ("auto", "always"):
+                sp = self._debit_spread(ch, kind)
+                if sp is not None:
+                    return e, sp, ch
             if ok.empty:
+                # closest contract by delta, to explain what failed
+                dz = ch[ch["absd"].notna()].copy()
+                if not dz.empty:
+                    dz["gap"] = (dz["absd"] - 0.40).abs()
+                    r = dz.sort_values("gap").iloc[0]
+                    near.append((e, r))
                 continue
             ok = ok.assign(dd=(ok["absd"] - 0.40).abs(),
                            vol=ok.get("volume", pd.Series(0, index=ok.index)).fillna(0))
             best = ok.sort_values(["spread", "dd", "vol"], ascending=[True, True, False]).iloc[0]
             return e, best, ch
+        if not exps:
+            self.last_miss = f"ما فيه انتهاء بين {MIN_DTE} و{MAX_DTE} أيام"
+        elif near:
+            e, r = near[0]
+            why = []
+            if not (ASK_MIN <= r["ask"] <= ASK_MAX):
+                why.append(f"Ask {r['ask']:.2f} {'أغلى' if r['ask'] > ASK_MAX else 'أرخص'} من الحد")
+            if r["spread"] > MAX_SPREAD + 1e-9:
+                why.append(f"سبريد {r['spread']:.2f} أوسع من {MAX_SPREAD:.2f}")
+            if r["ask"] * 100 > BUDGET:
+                why.append(f"التكلفة ${r['ask']*100:.0f} فوق الميزانية")
+            self.last_miss = (f"أقرب عقد {contract_name(s, float(r['strike']), kind, e)} — "
+                              f"Ask {r['ask']:.2f} • دلتا {r['delta']:+.2f} • سبريد {r['spread']:.2f}"
+                              + (f" ← {'، '.join(why)}" if why else ""))
         return None, None, None
+
+    def _debit_spread(self, ch, kind):
+        """Buy the ~0.40-delta leg, sell a further OTM ~0.20-delta leg, same expiry.
+        Prices are conservative: pay long Ask, receive short Bid."""
+        longs = ch[ch["absd"].between(DELTA_MIN, DELTA_MAX) & (ch["spread"] <= LEG_MAX_SPREAD + 1e-9)]
+        shorts = ch[ch["absd"].between(SHORT_DELTA_MIN, SHORT_DELTA_MAX) & (ch["spread"] <= LEG_MAX_SPREAD + 1e-9)]
+        best = None
+        for _, L in longs.iterrows():
+            for _, S_ in shorts.iterrows():
+                further = S_["strike"] > L["strike"] if kind == "CALL" else S_["strike"] < L["strike"]
+                if not further:
+                    continue
+                debit = round(float(L["ask"] - S_["bid"]), 2)
+                width = abs(float(S_["strike"] - L["strike"]))
+                if not (SPREAD_DEBIT_MIN <= debit <= ASK_MAX) or debit * 100 > BUDGET:
+                    continue
+                rr = (width - debit) / debit
+                if rr < MIN_REWARD_RISK:
+                    continue
+                key = (abs(abs(L["delta"]) - 0.40), -rr)
+                if best is None or key < best[0]:
+                    exit_val = round(float(L["bid"] - S_["ask"]), 2)
+                    best = (key, pd.Series(dict(
+                        strike=float(L["strike"]), short_strike=float(S_["strike"]),
+                        ask=debit, bid=exit_val, spread=round(debit - exit_val, 2),
+                        delta=float(L["delta"] - S_["delta"]), long_delta=float(L["delta"]),
+                        impliedVolatility=float(L.get("impliedVolatility", float("nan"))),
+                        width=width, max_profit=round(width - debit, 2),
+                        contractSymbol=f"{L.get('contractSymbol','')} / {S_.get('contractSymbol','')}")))
+        return best[1] if best else None
 
     # ── 5. entry + lock
     def enter(self, c, lv, trigger, inval, target, why, now):
@@ -549,7 +631,7 @@ class Sim:
         if row is None:
             self.rejected.append((riyadh(now), c.symbol, c.bias, "لا يوجد عقد يطابق الشروط"))
             if sum(1 for r in self.rejected if r[1] == c.symbol and "عقد" in r[3]) == 1:
-                    self.notify(f"⚠️ إشارة {c.symbol} {c.bias} تحققت لكن ما فيه عقد يطابق القواعد (Ask {ASK_MIN}-{ASK_MAX}، دلتا {DELTA_MIN}-{DELTA_MAX}، سبريد ≤ {MAX_SPREAD}).")
+                    self.notify(f"⚠️ إشارة {c.symbol} {c.bias} تحققت لكن ما فيه عقد يطابق القواعد\n{getattr(self, 'last_miss', '') or ''}")
             return
         c.traded = True
         p = Position(
@@ -559,7 +641,7 @@ class Sim:
             stock_entry=lv["close"], trigger=round(trigger, 2),
             invalidation=round(inval, 2), target=round(target, 2),
             peak_bid=float(row["bid"]), last_bid=float(row["bid"]),
-            contract=str(row.get("contractSymbol", "")),
+            contract=str(row.get("contractSymbol", "")), short_strike=row_short(row),
         )
         blob = json.dumps(asdict(p), sort_keys=True, ensure_ascii=False)
         p.lock_hash = hashlib.sha256(blob.encode()).hexdigest()
@@ -574,16 +656,29 @@ class Sim:
         be = p.strike + p.entry_ask if p.kind == "CALL" else p.strike - p.entry_ask
         stop_val = p.entry_ask * (1 - HARD_STOP_PCT) * 100
         arm_val = p.entry_ask * (1 + PROTECT_ARM_PCT) * 100
+        name = contract_name(p.symbol, p.strike, p.kind, p.expiry, p.short_strike)
+        if p.short_strike:
+            k = "C" if p.kind == "CALL" else "P"
+            maxp = float(row["max_profit"]) * 100
+            be = p.strike + p.entry_ask if p.kind == "CALL" else p.strike - p.entry_ask
+            body = (f"النوع: سبريد شرائي {p.kind} {'📈' if p.kind=='CALL' else '📉'}\n"
+                    f"   شراء <b>{p.strike:g}{k}</b> (دلتا {float(row['long_delta']):+.2f}) + بيع <b>{p.short_strike:g}{k}</b>\n"
+                    f"الانتهاء: {exp_label(p.expiry, now.date())}\n"
+                    f"صافي الدخول {p.entry_ask:.2f} • قيمة الخروج الحالية {float(row['bid']):.2f} • دلتا صافية {p.delta:+.2f}\n"
+                    f"💵 التكلفة ${cost:.0f} = أقصى خسارة • أقصى ربح ${maxp:.0f} (لو السهم {'فوق' if p.kind=='CALL' else 'تحت'} {p.short_strike:g} عند الانتهاء)\n"
+                    f"التعادل عند الانتهاء {be:.2f}\n")
+        else:
+            be = p.strike + p.entry_ask if p.kind == "CALL" else p.strike - p.entry_ask
+            body = (f"النوع: {'شراء CALL — رهان على الصعود 📈' if p.kind=='CALL' else 'شراء PUT — رهان على النزول 📉'} • السترايك <b>{p.strike:g}</b>\n"
+                    f"الانتهاء: {exp_label(p.expiry, now.date())}\n"
+                    f"Bid {float(row['bid']):.2f} / Ask {p.entry_ask:.2f} • سبريد {p.spread:.2f}\n"
+                    f"دلتا {p.delta:+.2f} • IV {iv*100:.0f}% • التعادل عند الانتهاء {be:.2f}\n"
+                    f"💵 الدخول ${cost:.0f} (عقد واحد = 100 سهم) • أقصى خسارة ${cost:.0f}\n")
         self.notify(
-            f"🎯 <b>دخول (محاكاة): {contract_name(p.symbol, p.strike, p.kind, p.expiry)}</b>\n"
-            f"النوع: {'شراء CALL — رهان على الصعود 📈' if p.kind=='CALL' else 'شراء PUT — رهان على النزول 📉'} • السترايك <b>{p.strike:g}</b>\n"
-            f"الانتهاء: {exp_label(p.expiry, now.date())}\n"
-            f"Bid {float(row['bid']):.2f} / Ask {p.entry_ask:.2f} • سبريد {p.spread:.2f}\n"
-            f"دلتا {p.delta:+.2f} • IV {iv*100:.0f}% • التعادل عند الانتهاء {be:.2f}\n"
-            f"💵 الدخول ${cost:.0f} (عقد واحد = 100 سهم) • أقصى خسارة ${cost:.0f}\n"
+            f"🎯 <b>دخول (محاكاة): {name}</b>\n" + body +
             f"\n📊 السهم {p.stock_entry:.2f}\n"
             f"   تريقر {p.trigger} | إبطال {p.invalidation} | هدف {p.target}\n"
-            f"🛑 وقف العقد عند ${stop_val:.0f} (−{HARD_STOP_PCT:.0%})\n"
+            f"🛑 وقف عند قيمة ${stop_val:.0f} (−{HARD_STOP_PCT:.0%})\n"
             f"🛡️ حماية الربح تشتغل عند ${arm_val:.0f} (+{PROTECT_ARM_PCT:.0%}) وتثبت {PROTECT_LOCK_PCT:.0%} من أفضل ربح\n"
             f"⏰ خروج بالوقت {riyadh(datetime.combine(now.date(), _hm(EXIT_ET), NY))} الرياض\n"
             f"✅ تأكيد: {why}\n"
@@ -596,6 +691,9 @@ class Sim:
         ch = self.provider.chain(p.symbol, p.expiry, p.kind)
         row = ch[ch["strike"] == p.strike]
         bid = float(row["bid"].iloc[0]) if not row.empty else 0.0
+        if p.short_strike and bid > 0:      # spread exit value = long Bid − short Ask
+            srow = ch[ch["strike"] == p.short_strike]
+            bid = bid - float(srow["ask"].iloc[0]) if not srow.empty and float(srow["ask"].iloc[0]) > 0 else 0.0
         if bid > 0:
             p.last_bid = bid
             p.peak_bid = max(p.peak_bid, bid)
@@ -616,14 +714,14 @@ class Sim:
         pnl = (bid - p.entry_ask) * 100
         pct = (bid / p.entry_ask - 1) * 100
         best = (p.peak_bid - p.entry_ask) * 100
-        t = dict(date=str(self.day), symbol=p.symbol, kind=p.kind, strike=p.strike, expiry=p.expiry,
+        t = dict(date=str(self.day), symbol=p.symbol, kind=p.kind, strike=p.strike, short_strike=p.short_strike, expiry=p.expiry,
                  entry_riyadh=riyadh(datetime.fromisoformat(p.entry_time)), exit_riyadh=riyadh(now),
                  entry=p.entry_ask, exit=bid, pnl=round(pnl, 2), pnl_pct=round(pct, 2),
                  best_unrealised=round(best, 2), reason=reason, lock_hash=p.lock_hash)
         self.trades.append(t)
         self._append_csv("trades.csv", t)
         self.notify(
-            f"🏁 <b>خروج: {contract_name(p.symbol, p.strike, p.kind, p.expiry)}</b> — {reason}\n"
+            f"🏁 <b>خروج: {contract_name(p.symbol, p.strike, p.kind, p.expiry, p.short_strike)}</b> — {reason}\n"
             f"الدخول ${p.entry_ask*100:.0f} → الخروج ${bid*100:.0f} = <b>{pnl:+.0f}$ ({pct:+.2f}%)</b>\n"
             f"أفضل ربح غير محقق كان {best:+.0f}$ • {riyadh(now)} الرياض"
         )
