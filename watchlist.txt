@@ -1,0 +1,28 @@
+# الأسهم اللي يرتبها البوت قبل الافتتاح (سهم في كل سطر)
+# أسهم أوبشنها سيولة عالية — البوت يتجاهل أي سهم ما لقى له عقد يطابق الشروط
+NVDA
+AAPL
+TSLA
+AMZN
+MSFT
+META
+AMD
+INTC
+XOM
+GOOGL
+AVGO
+PLTR
+CRWV
+COIN
+MSTR
+NFLX
+CRM
+ORCL
+MU
+SMCI
+BA
+JPM
+UBER
+SHOP
+ARM
+HOOD
