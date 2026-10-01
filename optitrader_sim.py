@@ -148,6 +148,23 @@ def row_short(row):
     return 0.0 if math.isnan(v) else v
 
 
+def implied_vol(price, S, K, T, r, kind):
+    """IV from the option's own mid price (bisection) — Yahoo's IV field is often garbage."""
+    intrinsic = max(0.0, (S - K) if kind == "CALL" else (K - S))
+    if price <= intrinsic + 1e-4 or T <= 0:
+        return float("nan")
+    lo, hi = 0.01, 5.0
+    if bs_price(S, K, T, hi, r, kind) < price:
+        return float("nan")
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if bs_price(S, K, T, mid, r, kind) > price:
+            hi = mid
+        else:
+            lo = mid
+    return (lo + hi) / 2
+
+
 def riyadh(ts: datetime) -> str:
     return ts.astimezone(RIYADH).strftime("%H:%M")
 
@@ -551,20 +568,27 @@ class Sim:
             T = max((exp_dt - now).total_seconds(), 60) / (365 * 24 * 3600)
             ch = ch[(ch["bid"] > 0) & (ch["ask"] > 0)].copy()
             ch["spread"] = (ch["ask"] - ch["bid"]).round(2)
+            # our own IV from each quote's mid price, then drop quotes that don't make sense
+            mid = (ch["bid"] + ch["ask"]) / 2
+            ch["impliedVolatility"] = [implied_vol(m, S, k, T, RISK_FREE, kind)
+                                       for m, k in zip(mid, ch["strike"])]
+            near_atm = ch[(ch["strike"] / S - 1).abs() < 0.10]["impliedVolatility"].dropna()
+            med = float(near_atm.median()) if not near_atm.empty else float("nan")
+            bad = ch["impliedVolatility"].isna()
+            if med == med:   # not NaN
+                bad |= (ch["impliedVolatility"] < 0.4 * med) | (ch["impliedVolatility"] > 2.5 * med)
+            if bad.any():
+                print(f"{s} {e}: dropped {int(bad.sum())} stale/broken quotes (ATM IV {med:.0%})")
+            ch = ch[~bad].copy()
+            if ch.empty:
+                continue
             bs = [bs_delta(S, k, T, iv, RISK_FREE, kind)
                   for k, iv in zip(ch["strike"], ch["impliedVolatility"])]
-            if "delta" in ch.columns:   # real greeks from Polygon; Black-Scholes only where missing
+            if "delta" in ch.columns:   # real greeks from Polygon; ours only where missing
                 ch["delta"] = pd.to_numeric(ch["delta"], errors="coerce").fillna(pd.Series(bs, index=ch.index))
             else:
                 ch["delta"] = bs
             ch["absd"] = ch["delta"].abs()
-            # drop stale/broken quotes: price far from the IV-implied value
-            theo = pd.Series([bs_price(S, k, T, iv, RISK_FREE, kind) if iv and iv > 0.01 else float("nan")
-                              for k, iv in zip(ch["strike"], ch["impliedVolatility"])], index=ch.index)
-            stale = theo.notna() & ((ch["ask"] < 0.5 * theo - 0.05) | (ch["bid"] > 2 * theo + 0.10))
-            if stale.any():
-                print(f"{s} {e}: dropped {int(stale.sum())} stale quotes")
-            ch = ch[~stale]
             ok = ch[(ch["ask"].between(ASK_MIN, ASK_MAX)) &
                     (ch["absd"].between(DELTA_MIN, DELTA_MAX)) &
                     (ch["spread"] <= MAX_SPREAD + 1e-9) &
