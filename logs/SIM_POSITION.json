@@ -1,0 +1,19 @@
+{
+  "symbol": "AMD",
+  "kind": "CALL",
+  "expiry": "2026-10-05",
+  "strike": 647.5,
+  "entry_ask": 3.39,
+  "delta": 0.19,
+  "spread": 0.14,
+  "entry_time": "2026-10-02T10:35:03.578029-04:00",
+  "stock_entry": 641.62,
+  "trigger": 639.92,
+  "invalidation": 630.76,
+  "target": 658.24,
+  "peak_bid": 3.25,
+  "last_bid": 3.25,
+  "contract": "AMD261005C00647500 / AMD261005C00660000",
+  "lock_hash": "4f564cd76dca338766ebffa1cce4fc86425c885a430a75c047a70f2e6361234d",
+  "short_strike": 660.0
+}
