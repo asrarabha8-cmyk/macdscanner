@@ -804,6 +804,12 @@ class Sim:
     def run(self):
         pv = self.provider
         start = datetime.combine(pv.now().date(), dtime(9, 25), NY)
+        force = os.getenv("FORCE_RUN") == "1"
+        done_flag = os.path.join(LOG_DIR, f"done_{pv.now().date()}")
+        if not force and os.path.exists(done_flag):
+            print("today's session already ran — exiting"); return
+        if not force and pv.now() < start - timedelta(minutes=75):
+            print("too early — a later scheduled run will take today's session"); return
         while pv.now() < start:
             pv.sleep(min(60, (start - pv.now()).total_seconds()))
         if pv.now().weekday() >= 5:
@@ -834,6 +840,8 @@ class Sim:
                 break
             pv.sleep(POLL_SECONDS)
         self.summary()
+        os.makedirs(LOG_DIR, exist_ok=True)
+        open(done_flag, "w").write(datetime.now(NY).isoformat())
 
 
 

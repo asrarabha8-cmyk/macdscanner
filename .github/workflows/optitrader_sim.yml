@@ -4,8 +4,10 @@ on:
   schedule:
     # 13:15 UTC Mon–Fri. The script waits by itself until 09:25 New York time,
     # so it works in both US summer and winter time without editing.
-    - cron: "15 13 * * 1-5"
-    - cron: "45 13 * * 1-5"   # backup if GitHub skips/delays the first one
+    # GitHub often delays or drops scheduled runs, so we knock many times.
+    # The first one that starts runs the day; the rest wait in the queue and
+    # exit immediately once the signal window has passed.
+    - cron: "*/10 12-15 * * 1-5"
   workflow_dispatch: {}
   repository_dispatch:
     types: [optitrader]       # same external trigger style as MACD Cascade Scan
