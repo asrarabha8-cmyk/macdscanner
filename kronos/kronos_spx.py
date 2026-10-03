@@ -67,10 +67,21 @@ def load_candles(ticker: str, csv: str | None = None) -> pd.DataFrame:
         if df.index.tz is not None:
             df.index = df.index.tz_convert(NY).tz_localize(None)
     else:
+        import time
         import yfinance as yf
-        raw = yf.download(ticker, period="60d", interval="5m", progress=False, auto_adjust=False)
+        raw = pd.DataFrame()
+        for attempt in range(4):
+            try:
+                raw = yf.download(ticker, period="60d", interval="5m", progress=False, auto_adjust=False)
+                if raw.empty:
+                    raw = yf.Ticker(ticker).history(period="60d", interval="5m", auto_adjust=False)
+            except Exception as e:
+                print(f"yfinance attempt {attempt + 1} failed: {e}")
+            if not raw.empty:
+                break
+            time.sleep(15 * (attempt + 1))
         if raw.empty:
-            sys.exit(f"No data returned for {ticker}")
+            sys.exit(f"No data returned for {ticker} from Yahoo (rate-limited or bad symbol)")
         if isinstance(raw.columns, pd.MultiIndex):
             raw.columns = raw.columns.get_level_values(0)
         raw.columns = [c.lower() for c in raw.columns]
