@@ -28,6 +28,10 @@ on:
       days:
         description: "أيام التاريخ من Polygon (للاختبار الرجعي)"
         default: "90"
+  # تشغيل عن طريق تعديل ملف kronos/run.env (يقدر Claude يشغّله لك بدون الزر)
+  push:
+    branches: [main]
+    paths: [kronos/run.env]
   # تلقائياً كل يوم تداول بعد الإغلاق (21:15 UTC = 12:15 ص الرياض)
   schedule:
     - cron: "15 21 * * 1-5"
@@ -78,6 +82,8 @@ jobs:
           DAYS:   ${{ inputs.days   || '90' }}
           POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
         run: |
+          # عند التشغيل عبر run.env تؤخذ الإعدادات من الملف
+          if [ "${{ github.event_name }}" = "push" ] && [ -f run.env ]; then set -a; . ./run.env; set +a; fi
           ARGS="$MODE --ticker $TICKER --cutoff $CUTOFF --model $MODEL --paths $PATHS --days $DAYS --out results"
           [ -n "$DATE" ] && ARGS="$ARGS --date $DATE"
           set -o pipefail
