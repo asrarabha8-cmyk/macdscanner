@@ -25,6 +25,9 @@ on:
       paths:
         description: "عدد المسارات"
         default: "30"
+      days:
+        description: "أيام التاريخ من Polygon (للاختبار الرجعي)"
+        default: "90"
   # تلقائياً كل يوم تداول بعد الإغلاق (21:15 UTC = 12:15 ص الرياض)
   schedule:
     - cron: "15 21 * * 1-5"
@@ -72,8 +75,10 @@ jobs:
           CUTOFF: ${{ inputs.cutoff || '11:00' }}
           MODEL:  ${{ inputs.model  || 'base' }}
           PATHS:  ${{ inputs.paths  || '30' }}
+          DAYS:   ${{ inputs.days   || '90' }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
         run: |
-          ARGS="$MODE --ticker $TICKER --cutoff $CUTOFF --model $MODEL --paths $PATHS --out results"
+          ARGS="$MODE --ticker $TICKER --cutoff $CUTOFF --model $MODEL --paths $PATHS --days $DAYS --out results"
           [ -n "$DATE" ] && ARGS="$ARGS --date $DATE"
           set -o pipefail
           python kronos_spx.py $ARGS 2>&1 | tee run_log.txt

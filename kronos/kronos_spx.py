@@ -53,11 +53,66 @@ MODELS = {
 
 
 # ─────────────────────────────── data ───────────────────────────────
-def load_candles(ticker: str, csv: str | None = None) -> pd.DataFrame:
+POLY_MAP = {"^GSPC": "I:SPX", "^SPX": "I:SPX", "^NDX": "I:NDX", "^DJI": "I:DJI", "^RUT": "I:RUT", "^VIX": "I:VIX"}
+
+
+def _polygon(ticker: str, days: int, key: str) -> pd.DataFrame:
+    """5m aggregates from Polygon/Massive. Indices (I:SPX) need an Indices plan;
+    a 401/403 raises so the caller can fall back to Yahoo."""
+    import json
+    import urllib.parse
+    import urllib.request
+    sym = POLY_MAP.get(ticker.upper(), ticker.upper())
+    base = (os.getenv("POLYGON_BASE_URL") or "https://api.polygon.io").rstrip("/")
+    end = pd.Timestamp.now(tz=NY).date()
+    start = end - pd.Timedelta(days=days)
+    url = f"{base}/v2/aggs/ticker/{urllib.parse.quote(sym)}/range/5/minute/{start}/{end}?adjusted=true&sort=asc&limit=50000"
+    rows = []
+    while url:
+        sep = "&" if "?" in url else "?"
+        req = urllib.request.Request(url + f"{sep}apiKey={key}", headers={"User-Agent": "kronos-spx"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            d = json.loads(r.read().decode())
+        rows += d.get("results") or []
+        url = d.get("next_url")
+    if not rows:
+        raise RuntimeError(f"Polygon returned no bars for {sym}")
+    df = pd.DataFrame(rows)
+    df.index = pd.to_datetime(df["t"], unit="ms", utc=True).dt.tz_convert(NY).dt.tz_localize(None)
+    df = df.rename(columns={"o": "open", "h": "high", "l": "low", "c": "close", "v": "volume"})
+    print(f"Data source: Polygon ({sym}), {len(df)} raw bars")
+    return df
+
+
+def _yahoo(ticker: str) -> pd.DataFrame:
+    import time
+    import yfinance as yf
+    raw = pd.DataFrame()
+    for attempt in range(4):
+        try:
+            raw = yf.download(ticker, period="60d", interval="5m", progress=False, auto_adjust=False)
+            if raw.empty:
+                raw = yf.Ticker(ticker).history(period="60d", interval="5m", auto_adjust=False)
+        except Exception as e:
+            print(f"yfinance attempt {attempt + 1} failed: {e}")
+        if not raw.empty:
+            break
+        time.sleep(15 * (attempt + 1))
+    if raw.empty:
+        sys.exit(f"No data returned for {ticker} from Yahoo (rate-limited or bad symbol)")
+    if isinstance(raw.columns, pd.MultiIndex):
+        raw.columns = raw.columns.get_level_values(0)
+    raw.columns = [c.lower() for c in raw.columns]
+    raw.index = raw.index.tz_convert(NY).tz_localize(None)
+    print(f"Data source: Yahoo ({ticker}), {len(raw)} raw bars")
+    return raw
+
+
+def load_candles(ticker: str, csv: str | None = None, days: int = 90) -> pd.DataFrame:
     """5-minute regular-session candles, index = naive New York time.
 
-    Source: a CSV (columns: timestamps/open/high/low/close[/volume]) or
-    yfinance (Yahoo keeps ~60 days of 5m history).
+    Source order: CSV (if given) -> Polygon/Massive (if POLYGON_API_KEY is set)
+    -> Yahoo (~60 days of 5m history).
     """
     if csv:
         df = pd.read_csv(csv)
@@ -67,26 +122,17 @@ def load_candles(ticker: str, csv: str | None = None) -> pd.DataFrame:
         if df.index.tz is not None:
             df.index = df.index.tz_convert(NY).tz_localize(None)
     else:
-        import time
-        import yfinance as yf
-        raw = pd.DataFrame()
-        for attempt in range(4):
+        df = None
+        key = os.getenv("POLYGON_API_KEY", "").strip()
+        if key:
             try:
-                raw = yf.download(ticker, period="60d", interval="5m", progress=False, auto_adjust=False)
-                if raw.empty:
-                    raw = yf.Ticker(ticker).history(period="60d", interval="5m", auto_adjust=False)
+                df = _polygon(ticker, days, key)
             except Exception as e:
-                print(f"yfinance attempt {attempt + 1} failed: {e}")
-            if not raw.empty:
-                break
-            time.sleep(15 * (attempt + 1))
-        if raw.empty:
-            sys.exit(f"No data returned for {ticker} from Yahoo (rate-limited or bad symbol)")
-        if isinstance(raw.columns, pd.MultiIndex):
-            raw.columns = raw.columns.get_level_values(0)
-        raw.columns = [c.lower() for c in raw.columns]
-        df = raw
-        df.index = df.index.tz_convert(NY).tz_localize(None)
+                code = getattr(e, "code", "")
+                hint = " (not in your plan)" if code in (401, 403) else ""
+                print(f"Polygon failed for {ticker}{hint}: {e} -> falling back to Yahoo")
+        if df is None:
+            df = _yahoo(ticker)
 
     df = df[["open", "high", "low", "close"] + (["volume"] if "volume" in df.columns else [])].astype(float)
     df = df.between_time(SESSION_OPEN, LAST_BAR)
@@ -331,7 +377,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("mode", choices=["single", "backtest"])
     ap.add_argument("--ticker", default="^GSPC", help="Yahoo symbol: ^GSPC (SPX), ^NDX, SPY, QQQ, AAPL…")
-    ap.add_argument("--csv", help="use your own 5m CSV instead of yfinance")
+    ap.add_argument("--csv", help="use your own 5m CSV instead of Polygon/Yahoo")
+    ap.add_argument("--days", type=int, default=90, help="calendar days of history to pull from Polygon")
     ap.add_argument("--date", help="session date for single mode (default: latest)")
     ap.add_argument("--cutoff", default="11:00", help="New York time the model stops seeing data")
     ap.add_argument("--lookback", type=int, default=400)
@@ -346,7 +393,7 @@ def main():
     a = ap.parse_args()
 
     os.makedirs(a.out, exist_ok=True)
-    df = load_candles(a.ticker, a.csv)
+    df = load_candles(a.ticker, a.csv, a.days)
     days = sorted(set(df.index.normalize()))
     print(f"Loaded {len(df)} candles, {days[0].date()} → {days[-1].date()}")
     tag = a.ticker.replace("^", "")
