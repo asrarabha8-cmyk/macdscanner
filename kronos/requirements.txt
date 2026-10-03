@@ -1,0 +1,8 @@
+numpy
+pandas
+matplotlib
+einops==0.8.1
+huggingface_hub==0.33.1
+safetensors
+tqdm
+yfinance

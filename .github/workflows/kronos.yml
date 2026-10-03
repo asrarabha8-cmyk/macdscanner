@@ -1,0 +1,105 @@
+name: Kronos SPX Forecast
+
+on:
+  # تشغيل يدوي من تبويب Actions مع اختيار الإعدادات
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "single = جلسة واحدة | backtest = اختبار رجعي"
+        type: choice
+        options: [single, backtest]
+        default: single
+      date:
+        description: "تاريخ الجلسة YYYY-MM-DD (فارغ = آخر جلسة)"
+        default: ""
+      ticker:
+        description: "الرمز (^GSPC = SPX)"
+        default: "^GSPC"
+      cutoff:
+        description: "وقت القطع بتوقيت نيويورك"
+        default: "11:00"
+      model:
+        type: choice
+        options: [base, small, mini]
+        default: base
+      paths:
+        description: "عدد المسارات"
+        default: "30"
+  # تلقائياً كل يوم تداول بعد الإغلاق (21:15 UTC = 12:15 ص الرياض)
+  schedule:
+    - cron: "15 21 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kronos
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: kronos
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: kronos/requirements.txt
+
+      - name: Cache model weights
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-kronos-v1
+
+      - name: Install
+        run: |
+          git clone --depth 1 https://github.com/shiyu-coder/Kronos.git
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+
+      - name: Run Kronos
+        env:
+          MODE:   ${{ inputs.mode   || 'single' }}
+          DATE:   ${{ inputs.date   || '' }}
+          TICKER: ${{ inputs.ticker || '^GSPC' }}
+          CUTOFF: ${{ inputs.cutoff || '11:00' }}
+          MODEL:  ${{ inputs.model  || 'base' }}
+          PATHS:  ${{ inputs.paths  || '30' }}
+        run: |
+          ARGS="$MODE --ticker $TICKER --cutoff $CUTOFF --model $MODEL --paths $PATHS --out results"
+          [ -n "$DATE" ] && ARGS="$ARGS --date $DATE"
+          python kronos_spx.py $ARGS | tee run_log.txt
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: kronos-results
+          path: kronos/results/
+
+      - name: Commit results to repo
+        run: |
+          git config user.name  "kronos-bot"
+          git config user.email "kronos-bot@users.noreply.github.com"
+          git add results
+          git diff --cached --quiet || git commit -m "kronos results $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
+
+      # يرسل اللوحة لتيليجرام بنفس أسرار الماسحات الأخرى (TG_TOKEN / TG_CHAT)
+      - name: Telegram
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        if: env.TG_TOKEN != ''
+        run: |
+          IMG=$(ls -t results/*.png | head -1)
+          CAP=$(printf "🔮 Kronos / SPX\n%s" "$(tail -n 12 run_log.txt)" | head -c 1000)
+          curl -s -F chat_id="$TG_CHAT" -F photo=@"$IMG" -F caption="$CAP" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendPhoto" > /dev/null
