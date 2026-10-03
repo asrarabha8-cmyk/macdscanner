@@ -140,6 +140,18 @@ def load_candles(ticker: str, csv: str | None = None, days: int = 90) -> pd.Data
     return df
 
 
+def parse_date(text: str) -> pd.Timestamp:
+    """Accepts 2026-10-02, 2026/10/02, 02-10-2026 (day first), Arabic digits,
+    and strips invisible RTL marks that phones insert."""
+    import re
+    t = text.translate(str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789"))
+    t = re.sub(r"[^0-9/\-.]", "", t).replace("/", "-").replace(".", "-")
+    parts = t.split("-")
+    if len(parts) == 3 and len(parts[2]) == 4:          # DD-MM-YYYY
+        return pd.Timestamp(f"{parts[2]}-{parts[1]}-{parts[0]}")
+    return pd.Timestamp(t)
+
+
 @dataclass
 class Window:
     day: pd.Timestamp
@@ -401,10 +413,19 @@ def main():
     predictor = load_predictor(a.model, a.kronos_dir, a.device)
 
     if a.mode == "single":
-        day = pd.Timestamp(a.date) if a.date else days[-1]
+        day = parse_date(a.date) if a.date and a.date.strip() else days[-1]
+        if day not in days:
+            prev = [d for d in days if d <= day]
+            if not prev:
+                sys.exit(f"Requested {day.date()} is before the available data ({days[0].date()} → {days[-1].date()}).")
+            print(f"No session on {day.date()} (weekend/holiday?) → using {prev[-1].date()}")
+            day = prev[-1]
+        print(f"Session: {day.date()}  cutoff {a.cutoff} NY")
         w = make_window(df, day, a.cutoff, a.lookback, a.pred_len)
         if w is None:
-            sys.exit("Not enough data for that date/cutoff (need lookback candles before and the session after).")
+            n_ctx = int((df.index < day + pd.Timedelta(a.cutoff + ":00")).sum())
+            sys.exit(f"Not enough data for {day.date()} {a.cutoff}: have {n_ctx} candles before the cutoff "
+                     f"(need {a.lookback}). Pick a later date or lower --lookback.")
         paths = forecast_paths(predictor, w, a.paths, a.seed, use_volume=a.use_volume)
         s = score(w, paths)
         png = os.path.join(a.out, f"kronos_{tag}_{s['date']}.png")
