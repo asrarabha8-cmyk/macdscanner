@@ -70,13 +70,14 @@ LEG_MAX_SPREAD = _env("LEG_MAX_SPREAD", 0.15)        # bid/ask width allowed on 
 SPREAD_DEBIT_MIN = _env("SPREAD_DEBIT_MIN", 0.80)
 MIN_REWARD_RISK = _env("MIN_REWARD_RISK", 0.8)        # max profit must be ≥ 0.8 × cost
 MAX_REWARD_RISK = _env("MAX_REWARD_RISK", 4.0)        # above this the quotes are almost surely stale
-MIN_DTE = _env("MIN_DTE", 2, int)
-MAX_DTE = _env("MAX_DTE", 9, int)   # 9 so Thu/Fri still reach next Friday weekly
+MIN_DTE = _env("MIN_DTE", 2, int)   # TRADING days to expiry (Fri→Mon = 1, so it's skipped)
+MAX_DTE = _env("MAX_DTE", 7, int)
 OR_MINUTES = _env("OR_MINUTES", 15, int)
 MIN_RISK_PCT = _env("MIN_RISK_PCT", 0.006)   # stop at least 0.6% away from trigger
 MAX_CHASE_R = _env("MAX_CHASE_R", 0.5)       # skip if price already ran > 0.5R past trigger
 TARGET_R = _env("TARGET_R", 2.0)
 HARD_STOP_PCT = _env("HARD_STOP_PCT", 0.45)
+SPREAD_STOP_PCT = _env("SPREAD_STOP_PCT", 0.60)   # spreads swing hard; the stock invalidation is the real stop
 PROTECT_ARM_PCT = _env("PROTECT_ARM_PCT", 0.25)
 PROTECT_LOCK_PCT = _env("PROTECT_LOCK_PCT", 0.50)
 MAX_TRADES = _env("MAX_TRADES", 2, int)
@@ -124,10 +125,16 @@ AR_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو",
              "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
 
 
+def tdays(today: date, exp: date) -> int:
+    """Trading days left until expiry (weekends excluded; exchange holidays not modelled)."""
+    import numpy as np
+    return int(np.busday_count(today, exp))
+
+
 def exp_label(exp: str, today: date) -> str:
     d = date.fromisoformat(exp)
-    n = (d - today).days
-    days = "اليوم" if n == 0 else "يوم" if n == 1 else "يومين" if n == 2 else f"{n} أيام" if n <= 10 else f"{n} يوم"
+    n = tdays(today, d)
+    days = "اليوم" if n == 0 else "يوم تداول" if n == 1 else "يومين تداول" if n == 2 else f"{n} أيام تداول"
     return f"{d.day} {AR_MONTHS[d.month-1]} ({days})"
 
 
@@ -330,7 +337,7 @@ class PolygonProvider:
             j = self._get("/v3/reference/options/contracts", {
                 "underlying_ticker": s, "expired": "false", "limit": 1000,
                 "expiration_date.gte": str(today),
-                "expiration_date.lte": str(today + timedelta(days=MAX_DTE + 7))})
+                "expiration_date.lte": str(today + timedelta(days=MAX_DTE * 2 + 7))})
             return sorted({r["expiration_date"] for r in j.get("results", [])})
         return self._try("contracts", poly, lambda: self.fb.expiries(s))
 
@@ -481,6 +488,13 @@ class Sim:
             except Exception as e:
                 exp, row = None, None
                 print(f"preview {c.symbol}: {e}")
+            self._append_csv("picks.csv", dict(
+                date=str(now.date()), rank=i, symbol=c.symbol, bias=c.bias, gap_pct=round(c.gap_pct, 2),
+                vol=round(c.pm_vol_ratio, 2), vol_source=c.vol_label, last=round(c.last, 2),
+                prev_close=round(c.prev_close, 2), pm_high=round(c.pm_high, 2), pm_low=round(c.pm_low, 2),
+                preview=(contract_name(c.symbol, float(row["strike"]), c.bias, exp, row_short(row)) if row is not None else ""),
+                preview_cost=(round(float(row["ask"]) * 100) if row is not None else ""),
+                note=(getattr(self, "last_miss", "") or "") if row is None else ""))
             if row is not None:
                 lines.append(f"   العقد المبدئي: <b>{contract_name(c.symbol, float(row['strike']), c.bias, exp, row_short(row))}</b> — ينتهي {exp_label(exp, now.date())}")
                 if row_short(row):
@@ -492,7 +506,7 @@ class Sim:
             else:
                 lines.append("   العقد المبدئي: أسعار الأوبشن ما تحدّثت قبل الافتتاح — يتحدد عند الإشارة")
             lines.append("")
-        lines.append(f"⚙️ القواعد: Ask {ASK_MIN:.2f}–{ASK_MAX:.2f} • دلتا {DELTA_MIN}–{DELTA_MAX} • سبريد ≤ {MAX_SPREAD:.2f} • ميزانية ${BUDGET:.0f} • انتهاء {MIN_DTE}–{MAX_DTE} أيام")
+        lines.append(f"⚙️ القواعد: Ask {ASK_MIN:.2f}–{ASK_MAX:.2f} • دلتا {DELTA_MIN}–{DELTA_MAX} • سبريد ≤ {MAX_SPREAD:.2f} • ميزانية ${BUDGET:.0f} • انتهاء {MIN_DTE}–{MAX_DTE} أيام تداول")
         lines.append(f"ℹ️ العقد النهائي يتحدد لحظة الإشارة (الأسعار تتغير بعد الافتتاح) • الافتتاح {riyadh(now.replace(hour=9, minute=30))} الرياض")
         self.notify("\n".join(lines))
 
@@ -559,7 +573,7 @@ class Sim:
         today = now.date()
         exps = []
         for e in self.provider.expiries(s):
-            dte = (date.fromisoformat(e) - today).days
+            dte = tdays(today, date.fromisoformat(e))
             if MIN_DTE <= dte <= MAX_DTE:
                 exps.append(e)
         self.last_miss = None   # why nothing matched (shown in Telegram)
@@ -616,7 +630,7 @@ class Sim:
             best = ok.sort_values(["spread", "dd", "vol"], ascending=[True, True, False]).iloc[0]
             return e, best, ch
         if not exps:
-            self.last_miss = f"ما فيه انتهاء بين {MIN_DTE} و{MAX_DTE} أيام"
+            self.last_miss = f"ما فيه انتهاء بين {MIN_DTE} و{MAX_DTE} أيام تداول"
         elif near:
             e, r = near[0]
             why = []
@@ -692,7 +706,8 @@ class Sim:
         T = max((datetime.combine(date.fromisoformat(exp), dtime(16, 0), NY) - now).total_seconds(), 60) / (365*24*3600)
         iv = float(row.get("impliedVolatility", float("nan")))
         be = p.strike + p.entry_ask if p.kind == "CALL" else p.strike - p.entry_ask
-        stop_val = p.entry_ask * (1 - HARD_STOP_PCT) * 100
+        stop_pct = SPREAD_STOP_PCT if p.short_strike else HARD_STOP_PCT
+        stop_val = p.entry_ask * (1 - stop_pct) * 100
         arm_val = p.entry_ask * (1 + PROTECT_ARM_PCT) * 100
         name = contract_name(p.symbol, p.strike, p.kind, p.expiry, p.short_strike)
         if p.short_strike:
@@ -716,7 +731,7 @@ class Sim:
             f"🎯 <b>دخول (محاكاة): {name}</b>\n" + body +
             f"\n📊 السهم {p.stock_entry:.2f}\n"
             f"   تريقر {p.trigger} | إبطال {p.invalidation} | هدف {p.target}\n"
-            f"🛑 وقف عند قيمة ${stop_val:.0f} (−{HARD_STOP_PCT:.0%})\n"
+            f"🛑 الوقف الأساسي: إغلاق 5د بعد الإبطال {p.invalidation} • وقف أخير عند قيمة ${stop_val:.0f} (−{stop_pct:.0%})\n"
             f"🛡️ حماية الربح تشتغل عند ${arm_val:.0f} (+{PROTECT_ARM_PCT:.0%}) وتثبت {PROTECT_LOCK_PCT:.0%} من أفضل ربح\n"
             f"⏰ خروج بالوقت {riyadh(datetime.combine(now.date(), _hm(EXIT_ET), NY))} الرياض\n"
             f"✅ تأكيد: {why}\n"
@@ -854,8 +869,9 @@ def exit_reason(p, price, last_close, bid, now_t):
         return f"🎯 السهم وصل الهدف {p.target}"
     if (p.kind == "CALL" and last_close < p.invalidation) or (p.kind == "PUT" and last_close > p.invalidation):
         return f"❌ إغلاق 5 دقائق تجاوز مستوى الإبطال {p.invalidation}"
-    if bid <= p.entry_ask * (1 - HARD_STOP_PCT):
-        return f"🛑 وقف العقد −{HARD_STOP_PCT:.0%}"
+    stop_pct = SPREAD_STOP_PCT if p.short_strike else HARD_STOP_PCT
+    if bid <= p.entry_ask * (1 - stop_pct):
+        return f"🛑 وقف {'السبريد' if p.short_strike else 'العقد'} −{stop_pct:.0%}"
     if floor is not None and bid <= floor:
         return f"🛡️ حماية الربح: أفضل قيمة ${p.peak_bid*100:.0f}، ثبتنا ${floor*100:.0f}"
     if now_t >= _hm(EXIT_ET):

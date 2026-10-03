@@ -46,8 +46,9 @@ jobs:
           DELTA_MIN: "0.35"
           DELTA_MAX: "0.65"
           MAX_SPREAD: "0.10"
-          MIN_DTE: "2"
-          MAX_DTE: "9"
+          MIN_DTE: "2"           # أيام تداول (الجمعة→الإثنين = يوم واحد فيتخطاه)
+          MAX_DTE: "7"
+          SPREAD_STOP_PCT: "0.60" # وقف أخير للسبريد — الوقف الأساسي إبطال السهم
           SPREAD_MODE: "auto"   # auto = سبريد شرائي لما العقد العادي ما يطابق • off • always
           PROTECT_ARM_PCT: "0.25"
           PROTECT_LOCK_PCT: "0.50"
