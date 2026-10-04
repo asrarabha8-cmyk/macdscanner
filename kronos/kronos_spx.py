@@ -447,7 +447,9 @@ def main():
             paths = forecast_paths(predictor, w, a.paths, a.seed + i, use_volume=a.use_volume)
             s = score(w, paths)
             rows.append(s)
-            print(f"{s['date']}  kronos {s['err_mean']:7.2f}  naive {s['err_naive']:7.2f}  "
+            # save after every session so a timeout never loses finished work
+            pd.DataFrame(rows).to_csv(os.path.join(a.out, f"backtest_{tag}_{a.model}_partial.csv"), index=False)
+            print(f"[{len(rows)}/{len(days)}] {s['date']}  kronos {s['err_mean']:7.2f}  naive {s['err_naive']:7.2f}  "
                   f"P(up) {s['prob_up']:.0%}  {'✓' if s['dir_hit'] else '✗'}", flush=True)
         if not rows:
             sys.exit("No session had enough history; lower --lookback.")
