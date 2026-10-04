@@ -1,0 +1,9 @@
+Sessions tested                 : 55
+Median close error  Kronos mean : 36.15
+Median close error  single path : 27.11
+Median close error  naive       : 16.81
+Path MAE  Kronos / naive        : 31.81 / 15.95
+Sessions Kronos beat naive      : 31%
+Direction hit rate (all)        : 53%
+Direction hit rate (P>=65%/<=35%): 54%  on 46 sessions
+Actual inside 10–90% band       : 29% of bars (ideal ≈ 80%)
