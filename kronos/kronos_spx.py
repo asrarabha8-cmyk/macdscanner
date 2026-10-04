@@ -159,6 +159,7 @@ class Window:
     fut: pd.DataFrame        # hidden truth (cutoff -> 15:55)
     morning: pd.DataFrame    # same-day candles before cutoff (for the chart)
     naive_range: float = float("nan")   # avg high-low of the same clock window, previous sessions
+    morning_range: float = float("nan") # baseline that also sees today's morning (fair vs Kronos)
 
 
 def make_window(df: pd.DataFrame, day: str | pd.Timestamp, cutoff: str, lookback: int,
@@ -173,7 +174,28 @@ def make_window(df: pd.DataFrame, day: str | pd.Timestamp, cutoff: str, lookback
     if len(ctx) < lookback or len(fut) < 2:
         return None
     morning = ctx[ctx.index >= day]
-    return Window(day, ctx, fut, morning, _naive_range(df, day, fut))
+    return Window(day, ctx, fut, morning, _naive_range(df, day, fut), _morning_range(df, day, fut, morning))
+
+
+def _morning_range(df: pd.DataFrame, day: pd.Timestamp, fut: pd.DataFrame, morning: pd.DataFrame,
+                   n_days: int = 10) -> float:
+    """Stronger baseline that knows what Kronos knows about TODAY:
+    today's morning range x (typical window range / typical morning range)
+    over the previous n sessions. If this matches Kronos, Kronos adds nothing."""
+    if len(morning) < 3:
+        return float("nan")
+    m0, m1 = morning.index[0].time(), morning.index[-1].time()
+    f0, f1 = fut.index[0].time(), fut.index[-1].time()
+    past = df[df.index < day]
+    pm, pf = past.between_time(m0, m1), past.between_time(f0, f1)
+    gm, gf = pm.groupby(pm.index.normalize()), pf.groupby(pf.index.normalize())
+    rm = (gm["high"].max() - gm["low"].min())[gm.size() == len(morning)]
+    rf = (gf["high"].max() - gf["low"].min())[gf.size() == len(fut)]
+    both = pd.concat([rm, rf], axis=1, keys=["m", "f"]).dropna().iloc[-n_days:]
+    if len(both) < 3 or both["m"].mean() <= 0:
+        return float("nan")
+    today_m = float(morning["high"].max() - morning["low"].min())
+    return today_m * float(both["f"].mean() / both["m"].mean())
 
 
 def _naive_range(df: pd.DataFrame, day: pd.Timestamp, fut: pd.DataFrame, n_days: int = 10) -> float:
@@ -269,6 +291,8 @@ def score(w: Window, paths: np.ndarray) -> dict:
         "range_naive": w.naive_range,
         "range_err_kronos": abs(k_rng - a_rng),
         "range_err_naive": abs(w.naive_range - a_rng),
+        "range_morning": w.morning_range,
+        "range_err_morning": abs(w.morning_range - a_rng),
     }
 
 
@@ -418,6 +442,23 @@ def summarize(res: pd.DataFrame) -> str:
             f"Rank corr with actual  naive     : {sp(r['range_naive'], r['range_actual']):.2f}",
             "(naive = avg range of the same clock window over the previous 10 sessions;",
             " rank corr = does it tell big-move days from quiet days? higher is better)",
+        ]
+    r2 = res.dropna(subset=["range_morning"]) if "range_morning" in res else res.iloc[0:0]
+    if len(r2) >= 5:
+        sp = lambda a, b: a.rank().corr(b.rank())
+        # does Kronos explain anything the morning baseline does not? (rank residual)
+        ra, rm, rk = r2["range_actual"].rank(), r2["range_morning"].rank(), r2["range_kronos"].rank()
+        b = np.polyfit(rm, ra, 1)
+        resid = ra - np.polyval(b, rm)
+        lines += [
+            "",
+            "── Decisive test: Kronos vs morning-aware baseline ──",
+            f"Median range error Kronos / morning: {r2['range_err_kronos'].median():.2f} / {r2['range_err_morning'].median():.2f}",
+            f"Sessions Kronos beat morning      : {(r2['range_err_kronos'] < r2['range_err_morning']).mean():.0%}",
+            f"Rank corr with actual  morning    : {sp(r2['range_morning'], r2['range_actual']):.2f}",
+            f"Rank corr with actual  Kronos     : {sp(r2['range_kronos'], r2['range_actual']):.2f}",
+            f"Kronos extra info (corr w/ resid) : {rk.corr(resid):.2f}   (≈0 → Kronos adds nothing)",
+            f"Sessions in test                  : {len(r2)}",
         ]
     return "\n".join(lines)
 
