@@ -17,3 +17,11 @@ Rank corr with actual  Kronos    : 0.31
 Rank corr with actual  naive     : 0.01
 (naive = avg range of the same clock window over the previous 10 sessions;
  rank corr = does it tell big-move days from quiet days? higher is better)
+
+── Decisive test: Kronos vs morning-aware baseline ──
+Median range error Kronos / morning: 0.76 / 0.64
+Sessions Kronos beat morning      : 58%
+Rank corr with actual  morning    : 0.25
+Rank corr with actual  Kronos     : 0.31
+Kronos extra info (corr w/ resid) : 0.19   (≈0 → Kronos adds nothing)
+Sessions in test                  : 59
