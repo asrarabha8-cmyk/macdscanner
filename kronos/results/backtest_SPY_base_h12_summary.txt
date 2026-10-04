@@ -1,0 +1,19 @@
+Sessions tested                 : 59
+Median close error  Kronos mean : 1.25
+Median close error  single path : 1.06
+Median close error  naive       : 0.90
+Path MAE  Kronos / naive        : 1.19 / 0.87
+Sessions Kronos beat naive      : 39%
+Direction hit rate (all)        : 54%
+Direction hit rate (P>=65%/<=35%): 55%  on 49 sessions
+Actual inside 10–90% band       : 45% of bars (ideal ≈ 80%)
+
+── Volatility (high-low range of the forecast window) ──
+Median actual range              : 2.18
+Median range  Kronos / naive     : 1.98 / 2.16
+Median range error Kronos / naive: 0.76 / 0.62
+Sessions Kronos range beat naive : 44%
+Rank corr with actual  Kronos    : 0.31
+Rank corr with actual  naive     : 0.01
+(naive = avg range of the same clock window over the previous 10 sessions;
+ rank corr = does it tell big-move days from quiet days? higher is better)
