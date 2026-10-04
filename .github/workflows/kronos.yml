@@ -86,6 +86,8 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ] && [ -f run.env ]; then set -a; . ./run.env; set +a; fi
           ARGS="$MODE --ticker $TICKER --cutoff $CUTOFF --model $MODEL --paths $PATHS --days $DAYS --out results"
           [ -n "$DATE" ] && ARGS="$ARGS --date $DATE"
+          [ -n "${PRED_LEN:-}" ] && ARGS="$ARGS --pred-len $PRED_LEN"
+          [ "${USE_VOLUME:-0}" = "1" ] && ARGS="$ARGS --use-volume"
           set -o pipefail
           python kronos_spx.py $ARGS 2>&1 | tee run_log.txt
 
@@ -115,7 +117,7 @@ jobs:
         run: |
           IMG=$(ls -t results/*.png 2>/dev/null | head -1)
           if [ -n "$IMG" ]; then
-            CAP=$(printf "🔮 Kronos / SPX\n%s" "$(tail -n 12 run_log.txt)" | head -c 1000)
+            CAP=$(printf "🔮 Kronos / SPX\n%s" "$(tail -n 24 run_log.txt)" | head -c 1000)
             curl -s -F chat_id="$TG_CHAT" -F photo=@"$IMG" -F caption="$CAP" \
               "https://api.telegram.org/bot$TG_TOKEN/sendPhoto" > /dev/null
           else

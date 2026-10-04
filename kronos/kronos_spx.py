@@ -158,6 +158,7 @@ class Window:
     ctx: pd.DataFrame        # what the model sees
     fut: pd.DataFrame        # hidden truth (cutoff -> 15:55)
     morning: pd.DataFrame    # same-day candles before cutoff (for the chart)
+    naive_range: float = float("nan")   # avg high-low of the same clock window, previous sessions
 
 
 def make_window(df: pd.DataFrame, day: str | pd.Timestamp, cutoff: str, lookback: int,
@@ -172,7 +173,19 @@ def make_window(df: pd.DataFrame, day: str | pd.Timestamp, cutoff: str, lookback
     if len(ctx) < lookback or len(fut) < 2:
         return None
     morning = ctx[ctx.index >= day]
-    return Window(day, ctx, fut, morning)
+    return Window(day, ctx, fut, morning, _naive_range(df, day, fut))
+
+
+def _naive_range(df: pd.DataFrame, day: pd.Timestamp, fut: pd.DataFrame, n_days: int = 10) -> float:
+    """Baseline volatility forecast: average high-low range of the SAME clock
+    window (e.g. 11:00–11:55) over the previous n sessions."""
+    t0, t1 = fut.index[0].time(), fut.index[-1].time()
+    past = df[df.index < day].between_time(t0, t1)
+    if past.empty:
+        return float("nan")
+    g = past.groupby(past.index.normalize())
+    rng = (g["high"].max() - g["low"].min())[g.size() == len(fut)]
+    return float(rng.iloc[-n_days:].mean()) if len(rng) else float("nan")
 
 
 # ─────────────────────────────── model ──────────────────────────────
@@ -230,6 +243,10 @@ def score(w: Window, paths: np.ndarray) -> dict:
     mean = paths[:, :, 3].mean(0)
     lo, hi = np.percentile(paths[:, :, 3], [10, 90], axis=0)
     a_end = actual[-1]
+    a_rng = float(w.fut["high"].max() - w.fut["low"].min())
+    path_hi = paths.max(axis=2).max(axis=1)        # robust to high<low quirks in sampled candles
+    path_lo = paths.min(axis=2).min(axis=1)
+    k_rng = float(np.median(path_hi - path_lo))
     return {
         "date": w.day.date().isoformat(),
         "last_observed": last,
@@ -246,6 +263,12 @@ def score(w: Window, paths: np.ndarray) -> dict:
         "actual_up": int(a_end > last),
         "band_cover": float(((actual >= lo) & (actual <= hi)).mean()),
         "end_in_band": int(lo[-1] <= a_end <= hi[-1]),
+        # volatility: high-low range of the forecast window
+        "range_actual": a_rng,
+        "range_kronos": k_rng,
+        "range_naive": w.naive_range,
+        "range_err_kronos": abs(k_rng - a_rng),
+        "range_err_naive": abs(w.naive_range - a_rng),
     }
 
 
@@ -381,6 +404,21 @@ def summarize(res: pd.DataFrame) -> str:
         f"Direction hit rate (P>=65%/<=35%): {conv_hit:.0%}  on {len(conv)} sessions",
         f"Actual inside 10–90% band       : {res['band_cover'].mean():.0%} of bars (ideal ≈ 80%)",
     ]
+    r = res.dropna(subset=["range_naive"])
+    if len(r) >= 5:
+        sp = lambda a, b: a.rank().corr(b.rank())
+        lines += [
+            "",
+            "── Volatility (high-low range of the forecast window) ──",
+            f"Median actual range              : {r['range_actual'].median():.2f}",
+            f"Median range  Kronos / naive     : {r['range_kronos'].median():.2f} / {r['range_naive'].median():.2f}",
+            f"Median range error Kronos / naive: {r['range_err_kronos'].median():.2f} / {r['range_err_naive'].median():.2f}",
+            f"Sessions Kronos range beat naive : {(r['range_err_kronos'] < r['range_err_naive']).mean():.0%}",
+            f"Rank corr with actual  Kronos    : {sp(r['range_kronos'], r['range_actual']):.2f}",
+            f"Rank corr with actual  naive     : {sp(r['range_naive'], r['range_actual']):.2f}",
+            "(naive = avg range of the same clock window over the previous 10 sessions;",
+            " rank corr = does it tell big-move days from quiet days? higher is better)",
+        ]
     return "\n".join(lines)
 
 
@@ -448,13 +486,14 @@ def main():
             s = score(w, paths)
             rows.append(s)
             # save after every session so a timeout never loses finished work
-            pd.DataFrame(rows).to_csv(os.path.join(a.out, f"backtest_{tag}_{a.model}_partial.csv"), index=False)
+            pd.DataFrame(rows).to_csv(os.path.join(a.out, f"backtest_{tag}_{a.model}{'_h' + str(a.pred_len) if a.pred_len else ''}_partial.csv"), index=False)
             print(f"[{len(rows)}/{len(days)}] {s['date']}  kronos {s['err_mean']:7.2f}  naive {s['err_naive']:7.2f}  "
                   f"P(up) {s['prob_up']:.0%}  {'✓' if s['dir_hit'] else '✗'}", flush=True)
         if not rows:
             sys.exit("No session had enough history; lower --lookback.")
         res = pd.DataFrame(rows)
-        csv = os.path.join(a.out, f"backtest_{tag}_{a.model}.csv")
+        h = f"_h{a.pred_len}" if a.pred_len else ""
+        csv = os.path.join(a.out, f"backtest_{tag}_{a.model}{h}.csv")
         res.to_csv(csv, index=False)
         png = csv.replace(".csv", ".png")
         plot_backtest(res, a.ticker, a.model, png)
