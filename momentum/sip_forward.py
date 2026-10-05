@@ -52,6 +52,13 @@ def session_for(tk: str, day: pd.Timestamp) -> tuple[pd.DataFrame | None, float]
     return g, first[day] / prior.mean()
 
 
+def _variant_b(ip: pd.DataFrame, c: float) -> float:
+    if "first_dir" not in ip or "side" not in ip:
+        return float("nan")
+    m = ip["breakout_candle"].notna() & (ip["side"] == ip["first_dir"]) & (ip["t_entry"].astype(str) <= "09:45")
+    return (ip.loc[m, "breakout_candle"] - c).mean() * 1e4 if m.any() else 0.0
+
+
 def telegram(text: str):
     tok, chat = os.getenv("TG_TOKEN", ""), os.getenv("TG_CHAT", "")
     if not tok or not chat:
@@ -77,7 +84,11 @@ def main():
     else:
         now = pd.Timestamp.now(tz=S.NY).tz_localize(None)
         last = now.normalize() if now.hour * 60 + now.minute >= 16 * 60 + 20 else now.normalize() - pd.Timedelta(days=1)
-        done = set(pd.read_csv(LOG)["date"]) if os.path.exists(LOG) else set()
+        done = set()
+        if os.path.exists(LOG):
+            lg = pd.read_csv(LOG)
+            ok = lg.groupby("date")["first_dir"].apply(lambda x: x.notna().any()) if "first_dir" in lg else None
+            done = set(ok[ok].index) if ok is not None else set()   # re-run days logged before first_dir existed
         days = [d for d in pd.bdate_range(max(START, last - pd.Timedelta(days=10)), last)
                 if d.date().isoformat() not in done]
     if not days:
@@ -119,7 +130,8 @@ def run_day(day: pd.Timestamp, telegram_on: bool = True):
     for tk, (sess, rvol) in res.items():
         if sess is None or not np.isfinite(rvol):
             continue
-        r = {"date": day.date().isoformat(), "tk": tk, "rvol": rvol}
+        r = {"date": day.date().isoformat(), "tk": tk, "rvol": rvol,
+             "first_dir": int(np.sign(sess["close"].iloc[0] - sess["open"].iloc[0]))}
         for m in ("breakout_candle", "direction_open", "long_drift"):
             d = S.trade_detail(sess, m)
             r[m] = np.nan if d is None else d["ret"]
@@ -153,6 +165,9 @@ def run_day(day: pd.Timestamp, telegram_on: bool = True):
             "inplay_trades": int(ip["breakout_candle"].notna().sum()),
             "drift_bps": (ip["long_drift"].dropna() - c).mean() * 1e4,
             "all_bps": (df["breakout_candle"].dropna() - c).mean() * 1e4,
+            # variant B (hypothesis from the 2026-10-06 research, tracked in parallel, A unchanged):
+            # only breakouts in the first candle's direction, entered by 09:45
+            "b_bps": _variant_b(ip, c),
         }
     board = pd.DataFrame([day_stats(g) for _, g in log.groupby("date")])
     board.to_csv(DAILY, index=False)
@@ -178,7 +193,10 @@ def run_day(day: pd.Timestamp, telegram_on: bool = True):
               "",
               f"📈 التراكمي ({n} يوم): متوسط {s.mean():+.1f} نقطة أساس/يوم | مجموع {s.sum() / 100:+.2f}%",
               f"   أيام رابحة {(s > 0).mean():.0%} | t = {tstat:.2f} | المتوقع من الاختبار الرجعي +{BACKTEST_BPS}",
-              f"   شراء بسيط تراكمي {board['drift_bps'].mean():+.1f}/يوم"]
+              f"   شراء بسيط تراكمي {board['drift_bps'].mean():+.1f}/يوم",
+              "",
+              f"🧪 النسخة B (اتجاه الشمعة الأولى + دخول حتى 9:45): اليوم {today_row['b_bps']:+.1f} | "
+              f"تراكمي {board['b_bps'].mean():+.1f}/يوم (المتوقع +13)"]
     if n < 40:
         lines.append(f"   (الحكم بعد ~40 يوماً — باقي {40 - n})")
     msg = "\n".join(lines)
