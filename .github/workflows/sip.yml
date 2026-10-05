@@ -4,7 +4,7 @@ on:
   workflow_dispatch: {}
   push:
     branches: [main]
-    paths: [momentum/sip_run.env, momentum/sip_backtest.py]
+    paths: [momentum/sip_run.env, momentum/sip_backtest.py, momentum/sip_research.py]
 
 permissions:
   contents: write
@@ -34,6 +34,7 @@ jobs:
           set -a; . ./sip_run.env; set +a
           set -o pipefail
           python sip_backtest.py --years "$YEARS" --universe "$UNIVERSE" --top "$TOP" --cost-bps "$COST_BPS" --recent-from "$RECENT_FROM" --out results 2>&1 | tee run_log.txt
+          python sip_research.py --cost-bps "$COST_BPS" 2>&1 | tee -a run_log.txt
       - name: Commit results
         if: always()
         run: |
@@ -56,3 +57,7 @@ jobs:
           if [ -n "$TXT" ]; then MSG=$(head -c 3900 "$TXT"); else MSG=$(printf "⚠️ SIP فشل:\n%s" "$(tail -n 15 run_log.txt)"); fi
           curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="$MSG" \
             "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
+          if [ -f results/sip_research.txt ]; then
+            curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="$(head -c 3900 results/sip_research.txt)" \
+              "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
+          fi

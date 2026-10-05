@@ -184,6 +184,7 @@ def ticker_records(tk: str, days: list[pd.Timestamp], atr: pd.Series, start: pd.
                            else np.nan for d in order})
     avg14 = first_vol.shift(1).rolling(14, min_periods=10).mean()
     want = set(days)
+    prev_close = pd.Series({d: sessions[d]["close"].iloc[-1] for d in order}).shift(1)
     for d in order:
         if d not in want:
             continue
@@ -193,6 +194,17 @@ def ticker_records(tk: str, days: list[pd.Timestamp], atr: pd.Series, start: pd.
         rec = {"date": d, "tk": tk, "rvol": first_vol[d] / avg14[d] if avg14[d] > 0 else np.nan}
         for m in MODES:
             rec[m] = trade(g, m, atr.get(d, np.nan))
+        # descriptive fields for research (known at/after entry; not used for selection)
+        f = g.iloc[0]
+        pc = prev_close.get(d, np.nan)
+        rec["gap_pct"] = f["open"] / pc - 1 if np.isfinite(pc) and pc > 0 else np.nan
+        rec["or_pct"] = (f["high"] - f["low"]) / f["open"]
+        rec["first_dir"] = int(np.sign(f["close"] - f["open"]))
+        rec["atr_pct"] = atr.get(d, np.nan) / pc if np.isfinite(pc) and pc > 0 else np.nan
+        det = trade_detail(g, "breakout_candle")
+        if det is not None:
+            rec.update(side=det["side"], how=det["how"], t_entry=det["t_entry"].strftime("%H:%M"),
+                       risk_pct=abs(det["entry"] - det["stop"]) / det["entry"])
         out.append(rec)
     return out
 
