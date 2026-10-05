@@ -1,0 +1,58 @@
+name: ORB Backtest
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [momentum/orb_run.env, momentum/orb_backtest.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: orb
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: momentum
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install pandas numpy matplotlib
+      - name: Backtest
+        env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+        run: |
+          set -a; . ./orb_run.env; set +a
+          set -o pipefail
+          python orb_backtest.py --tickers $TICKERS --years "$YEARS" --recent-from "$RECENT_FROM" --cost-bps "$COST_BPS" --out results 2>&1 | tee run_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name  "momentum-bot"
+          git config user.email "momentum-bot@users.noreply.github.com"
+          git add results || true
+          git diff --cached --quiet || git commit -m "orb results $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
+      - name: Telegram
+        if: always() && env.TG_TOKEN != ''
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: |
+          IMG=$(ls results/orb.png 2>/dev/null | head -1)
+          [ -n "$IMG" ] && curl -s -F chat_id="$TG_CHAT" -F photo=@"$IMG" -F caption="📈 ORB backtest" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendPhoto" > /dev/null
+          TXT=$(ls results/orb_summary.txt 2>/dev/null | head -1)
+          if [ -n "$TXT" ]; then MSG=$(head -c 3900 "$TXT"); else MSG=$(printf "⚠️ ORB فشل:\n%s" "$(tail -n 15 run_log.txt)"); fi
+          curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="$MSG" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
