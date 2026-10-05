@@ -1,0 +1,58 @@
+name: Stocks In Play Backtest
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: [momentum/sip_run.env, momentum/sip_backtest.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sip
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: momentum
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install pandas numpy matplotlib
+      - name: Backtest
+        env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+        run: |
+          set -a; . ./sip_run.env; set +a
+          set -o pipefail
+          python sip_backtest.py --years "$YEARS" --universe "$UNIVERSE" --top "$TOP" --cost-bps "$COST_BPS" --recent-from "$RECENT_FROM" --out results 2>&1 | tee run_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name  "momentum-bot"
+          git config user.email "momentum-bot@users.noreply.github.com"
+          git add results || true
+          git diff --cached --quiet || git commit -m "sip results $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
+      - name: Telegram
+        if: always() && env.TG_TOKEN != ''
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: |
+          IMG=$(ls results/sip.png 2>/dev/null | head -1)
+          [ -n "$IMG" ] && curl -s -F chat_id="$TG_CHAT" -F photo=@"$IMG" -F caption="📈 Stocks in Play backtest" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendPhoto" > /dev/null
+          TXT=$(ls results/sip_summary.txt 2>/dev/null | head -1)
+          if [ -n "$TXT" ]; then MSG=$(head -c 3900 "$TXT"); else MSG=$(printf "⚠️ SIP فشل:\n%s" "$(tail -n 15 run_log.txt)"); fi
+          curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="$MSG" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
