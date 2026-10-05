@@ -10,7 +10,7 @@ sip_backtest.py, applied to a day that did not exist when the rules were fixed:
 Appends every trade to forward_log.csv, keeps a running scoreboard and sends a
 Telegram report. Cost assumed: 2 bps per trade (same as the backtest).
 
-  python sip_forward.py                 # today (New York date)
+  python sip_forward.py                 # catch up every session not yet logged
   python sip_forward.py --date 2026-10-02
 """
 from __future__ import annotations
