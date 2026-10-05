@@ -1,0 +1,46 @@
+INTRADAY MOMENTUM — SPY  |  trade 15:30→16:00 NY  |  costs not included
+
+── Full period  (2021-10-06 → 2026-10-02, 1243 days) ──
+signal                   trades    hit  avg bps      t  Sharpe  total%
+always long (baseline)     1243  49.6%    -0.19  -0.26   -0.12   -2.40
+sign(r1)                   1243  49.6%    -0.12  -0.17   -0.08   -1.55
+sign(r12)                  1243  49.7%     0.58   0.79    0.36    7.19
+r1 & r12 agree              660  50.0%     0.44   0.47    0.29    2.92
+
+── Recent (since 2024-01-01)  (2024-01-02 → 2026-10-02, 685 days) ──
+signal                   trades    hit  avg bps      t  Sharpe  total%
+always long (baseline)      685  50.8%     0.15   0.18    0.11    1.06
+sign(r1)                    685  49.2%    -0.05  -0.06   -0.04   -0.37
+sign(r12)                   685  48.6%    -0.43  -0.51   -0.31   -2.97
+r1 & r12 agree              371  48.8%    -0.43  -0.38   -0.31   -1.58
+
+── High-volatility days (top third, known before the trade)  (2021-11-04 → 2026-10-02, 408 days) ──
+signal                   trades    hit  avg bps      t  Sharpe  total%
+always long (baseline)      408  45.1%    -1.09  -0.74   -0.58   -4.43
+sign(r1)                    408  50.0%     0.65   0.44    0.34    2.64
+sign(r12)                   408  47.3%    -0.05  -0.03   -0.02   -0.19
+r1 & r12 agree              209  48.3%     0.62   0.34    0.38    1.30
+
+── Big first-half-hour move (top third |r1|)  (2021-10-06 → 2026-10-02, 415 days) ──
+signal                   trades    hit  avg bps      t  Sharpe  total%
+always long (baseline)      415  50.1%     1.49   1.00    0.78    6.19
+sign(r1)                    415  50.6%    -1.59  -1.06   -0.83   -6.58
+sign(r12)                   415  50.4%     1.09   0.73    0.57    4.53
+r1 & r12 agree              227  51.1%    -0.45  -0.25   -0.27   -1.02
+
+── sign(r1) by year ──
+year    days    hit  avg bps      t
+2021      60  46.7%    -2.18  -0.74
+2022     250  49.6%    -1.91  -0.81
+2023     248  51.6%     1.97   1.45
+2024     249  48.6%    -0.44  -0.30
+2025     247  50.6%    -0.07  -0.04
+2026     189  48.1%     0.47   0.40
+
+── Regression (bps):  r13 = a + b1·r1 + b2·r12 ──
+r1 only      : b1=-0.0145 (t=-1.01)  R²=0.16%
+r1 + r12     : b1=-0.0157 (t=-1.08)  b2=0.1535 (t=2.61)  R²=1.78%
+(paper: positive, significant b1; R² around 1–2% for SPY.  |t| > 2 ≈ significant)
+
+Note: SPY round-trip cost ≈ 0.5–1 bps on the ETF; options cost far more —
+an edge of 1–2 bps per trade is not tradable with 0DTE options.
