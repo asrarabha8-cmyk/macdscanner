@@ -110,13 +110,15 @@ def bars_5m(tk: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
 
 
 # ─────────────────────────────── trade logic ────────────────────────
-def trade(g: pd.DataFrame, mode: str, atr: float = np.nan) -> float | None:
-    """Return of one trade (fraction, 1x notional) or None if no trade.
-    g = one session of 5m bars starting 09:30. Stop-before-target on ambiguous bars."""
+def trade_detail(g: pd.DataFrame, mode: str, atr: float = np.nan) -> dict | None:
+    """One trade on one session (5m bars from 09:30). Returns side/entry/stop/exit/ret
+    (ret = fraction at 1x notional) or None if no trade. Stop-before-target on ambiguous bars."""
     first, rest = g.iloc[0], g.iloc[1:]
     o1, h1, l1, c1 = first["open"], first["high"], first["low"], first["close"]
     if mode == "long_drift":
-        return rest["close"].iloc[-1] / rest["open"].iloc[0] - 1
+        e, x = rest["open"].iloc[0], rest["close"].iloc[-1]
+        return {"side": 1, "entry": e, "stop": np.nan, "exit": x, "how": "close",
+                "t_entry": rest.index[0], "ret": x / e - 1}
     if mode == "direction_open":
         if c1 == o1:
             return None
@@ -145,20 +147,26 @@ def trade(g: pd.DataFrame, mode: str, atr: float = np.nan) -> float | None:
         if risk <= 0:
             return None
         target = entry + side * 10 * risk
-    exit_px = rest["close"].iloc[-1]
+    exit_px, how = rest["close"].iloc[-1], "close"
     seg = rest.iloc[i0:]
     for j, (oo, hh, ll) in enumerate(zip(seg["open"].values, seg["high"].values, seg["low"].values)):
         if j == 0 and mode != "direction_open":
             oo = entry
         if side == 1:
-            if oo <= stop:  exit_px = oo;    break
-            if ll <= stop:  exit_px = stop;  break
-            if target is not None and hh >= target: exit_px = target; break
+            if oo <= stop:  exit_px, how = oo, "stop";     break
+            if ll <= stop:  exit_px, how = stop, "stop";   break
+            if target is not None and hh >= target: exit_px, how = target, "target"; break
         else:
-            if oo >= stop:  exit_px = oo;    break
-            if hh >= stop:  exit_px = stop;  break
-            if target is not None and ll <= target: exit_px = target; break
-    return side * (exit_px / entry - 1)
+            if oo >= stop:  exit_px, how = oo, "stop";     break
+            if hh >= stop:  exit_px, how = stop, "stop";   break
+            if target is not None and ll <= target: exit_px, how = target, "target"; break
+    return {"side": side, "entry": entry, "stop": stop, "exit": exit_px, "how": how,
+            "t_entry": rest.index[i0], "ret": side * (exit_px / entry - 1)}
+
+
+def trade(g: pd.DataFrame, mode: str, atr: float = np.nan) -> float | None:
+    d = trade_detail(g, mode, atr)
+    return None if d is None else d["ret"]
 
 
 MODES = ["breakout_candle", "breakout_atr", "direction_open", "long_drift"]
