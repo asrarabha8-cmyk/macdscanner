@@ -1,9 +1,13 @@
 name: MACD Slow Scan
 
 on:
-  schedule:
-    # مرة كل ساعة أثناء الجلسة الأمريكية — الزناد على فاصل الساعة
-    - cron: "5 13-20 * * 1-5"
+  repository_dispatch:
+    types: [slow]
+  # GitHub's own schedule kept dropping runs; a Claude scheduled task now
+  # sends a repository_dispatch (type: slow) at the right time instead.
+  # schedule:
+  #  # مرة كل ساعة أثناء الجلسة الأمريكية — الزناد على فاصل الساعة
+  #  - cron: "5 13-20 * * 1-5"
   workflow_dispatch:
 
 jobs:

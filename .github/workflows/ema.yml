@@ -1,9 +1,13 @@
 name: EMA Cross Scan
 
 on:
-  schedule:
-    # السبت 02:00 UTC — بعد إغلاق الجمعة بست ساعات، فالشمعة الأسبوعية مكتملة
-    - cron: "0 2 * * 6"
+  repository_dispatch:
+    types: [ema]
+  # GitHub's own schedule kept dropping runs; a Claude scheduled task now
+  # sends a repository_dispatch (type: ema) at the right time instead.
+  # schedule:
+  #  # السبت 02:00 UTC — بعد إغلاق الجمعة بست ساعات، فالشمعة الأسبوعية مكتملة
+  #  - cron: "0 2 * * 6"
   workflow_dispatch:        # زر تشغيل يدوي للتجربة
 
 jobs:

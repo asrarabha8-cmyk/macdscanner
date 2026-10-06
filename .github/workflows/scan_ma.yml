@@ -1,9 +1,13 @@
 name: MA 100/200 Breakout Scan
 
 on:
-  schedule:
-    # مرة واحدة يومياً بعد إغلاق السوق الأمريكي (22:15 بالتوقيت العالمي UTC)
-    - cron: "15 22 * * 1-5"
+  repository_dispatch:
+    types: [ma]
+  # GitHub's own schedule kept dropping runs; a Claude scheduled task now
+  # sends a repository_dispatch (type: ma) at the right time instead.
+  # schedule:
+  #  # مرة واحدة يومياً بعد إغلاق السوق الأمريكي (22:15 بالتوقيت العالمي UTC)
+  #  - cron: "15 22 * * 1-5"
   workflow_dispatch:        # زر تشغيل يدوي للتجربة
 
 jobs:

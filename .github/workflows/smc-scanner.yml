@@ -1,10 +1,14 @@
 name: SMC Breakout Scanner
 
 on:
-  schedule:
-    # إغلاقات شموع 4 ساعات للسوق الأمريكي (UTC)
-    - cron: "35 17 * * 1-5"
-    - cron: "05 21 * * 1-5"
+  repository_dispatch:
+    types: [smc]
+  # GitHub's own schedule kept dropping runs; a Claude scheduled task now
+  # sends a repository_dispatch (type: smc) at the right time instead.
+  # schedule:
+  #  # إغلاقات شموع 4 ساعات للسوق الأمريكي (UTC)
+  #  - cron: "35 17 * * 1-5"
+  #  - cron: "05 21 * * 1-5"
   workflow_dispatch:        # تشغيل يدوي من زر في GitHub
 
 jobs:

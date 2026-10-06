@@ -1,10 +1,14 @@
 name: Stocks In Play Forward Test
 
 on:
+  repository_dispatch:
+    types: [sip]
   # كل يوم تداول بعد الإغلاق (22:20 UTC = 1:20 ص الرياض) + محاولة احتياطية
-  schedule:
-    - cron: "20 22 * * 1-5"
-    - cron: "20 1 * * 2-6"
+  # GitHub's own schedule kept dropping runs; a Claude scheduled task now
+  # sends a repository_dispatch (type: sip) at the right time instead.
+  # schedule:
+  #  - cron: "20 22 * * 1-5"
+  #  - cron: "20 1 * * 2-6"
   workflow_dispatch: {}
   push:
     branches: [main]
