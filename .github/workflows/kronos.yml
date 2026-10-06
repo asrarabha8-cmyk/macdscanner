@@ -33,8 +33,9 @@ on:
     branches: [main]
     paths: [kronos/run.env]
   # تلقائياً كل يوم تداول بعد الإغلاق (21:15 UTC = 12:15 ص الرياض)
-  schedule:
-    - cron: "15 21 * * 1-5"
+  # nightly schedule disabled 2026-10-06: Kronos showed no edge on SPX/SPY
+  # schedule:
+  #   - cron: "15 21 * * 1-5"
 
 permissions:
   contents: write
