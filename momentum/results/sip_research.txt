@@ -1,100 +1,111 @@
 STOCKS IN PLAY — WHERE DOES THE EDGE COME FROM?   cost 2 bps/trade
-2023-10-05 → 2026-10-02  |  7099 breakout trades on 743 days
+2023-10-06 → 2026-10-05  |  7100 breakout trades on 743 days
 Descriptive only — hypotheses for forward testing, not rule changes.
 
 ── RVOL rank (1 = most in play) ──
                            trades  net bps      t   win%
-rank 1-3                     2169     8.87   1.42  46.2%
-rank 4-6                     2138    -5.83  -1.06  43.5%
-rank 7-10                    2792    16.71   3.44  46.0%
-rank 11-30 (not selected)   14581     4.21   2.60  43.1%
-rank 31-100 (not selected)  50351     4.43   5.71  40.1%
+rank 1-3                     2170     8.29   1.33  46.1%
+rank 4-6                     2138    -5.93  -1.08  43.5%
+rank 7-10                    2792    16.76   3.45  46.0%
+rank 11-30 (not selected)   14580     4.25   2.62  43.1%
+rank 31-100 (not selected)  50354     4.41   5.70  40.1%
 
 ── RVOL level ──
                            trades  net bps      t   win%
-RVOL 1-2                     3419    11.64   2.76  45.7%
-RVOL 2-4                     2661     0.46   0.08  43.9%
-RVOL > 4                     1019    12.19   1.44  47.5%
+RVOL 1-2                     3417    11.65   2.76  45.7%
+RVOL 2-4                     2664     0.46   0.08  43.9%
+RVOL > 4                     1019    10.86   1.30  47.4%
 
 ── Portfolio size (daily equal-weight, top-K by RVOL) ──
-top 3     743 days     8.46 bps/day  t= 1.30  Sharpe= 0.76
-top 5     743 days     3.32 bps/day  t= 0.68  Sharpe= 0.40
-top 10    743 days     7.37 bps/day  t= 2.04  Sharpe= 1.19
-top 20    743 days     6.02 bps/day  t= 2.13  Sharpe= 1.24
+top 3     743 days     7.63 bps/day  t= 1.18  Sharpe= 0.69
+top 5     743 days     2.80 bps/day  t= 0.57  Sharpe= 0.33
+top 10    743 days     7.18 bps/day  t= 1.98  Sharpe= 1.15
+top 20    743 days     5.94 bps/day  t= 2.10  Sharpe= 1.22
 
 ── Direction ──
                            trades  net bps      t   win%
-long (break of high)         3600     8.87   1.96  45.6%
-short (break of low)         3499     6.14   1.38  44.9%
+long (break of high)         3605     8.88   1.97  45.6%
+short (break of low)         3495     5.75   1.30  44.9%
 
 ── Breakout vs first-candle colour ──
                            trades  net bps      t   win%
-same direction               5219    13.18   3.38  46.2%
-against                      1880    -8.17  -1.60  42.7%
+same direction               5222    12.86   3.31  46.2%
+against                      1878    -8.02  -1.57  42.7%
 
 ── Entry time (NY) ──
                            trades  net bps      t   win%
-09:35-09:45                  5891    11.03   3.03  45.0%
-09:50-10:30                   842   -17.50  -2.53  44.9%
-10:35-12:00                   240     9.63   0.70  49.6%
+09:35-09:45                  5892    10.79   2.97  45.0%
+09:50-10:30                   841   -17.21  -2.49  44.9%
+10:35-12:00                   241     8.87   0.65  49.4%
 after 12:00                   126     7.01   0.78  51.6%
 
 ── Exit type ──
                            trades  net bps      t   win%
-stop                         2566  -193.20 -69.90   0.0%
+stop                         2563  -193.22 -69.84   0.0%
 target                          0   (few)
-close                        4533   121.15  31.98  70.9%
+close                        4537   120.63  31.92  70.8%
 share of trades: close 64%, stop 36%
 
 ── First-candle range (% of price) terciles ──
                            trades  net bps      t   win%
-narrow  (<1.30%)             2366     2.04   0.86  42.6%
-middle                       2367     3.64   0.93  45.2%
-wide    (>2.28%)             2366    16.91   2.03  48.0%
+narrow  (<1.30%)             2367     1.85   0.78  42.6%
+middle                       2366     3.64   0.93  45.2%
+wide    (>2.29%)             2367    16.53   1.99  48.0%
 
 ── Stop distance (% of price) terciles ──
                            trades  net bps      t   win%
-narrow  (<1.30%)             2366     2.18   0.92  42.7%
-middle                       2367     3.73   0.95  45.1%
-wide    (>2.29%)             2366    16.67   2.00  48.1%
+narrow  (<1.30%)             2367     1.95   0.82  42.7%
+middle                       2366     3.82   0.98  45.1%
+wide    (>2.29%)             2367    16.25   1.95  48.0%
 
 ── Overnight gap size (|gap|) ──
                            trades  net bps      t   win%
-small (<0.92%)               2366     3.62   0.94  44.8%
-middle                       2367    15.80   3.57  46.9%
-big   (>2.74%)               2366     3.15   0.42  44.1%
+small (<0.92%)               2367     3.66   0.95  44.8%
+middle                       2366    15.82   3.57  46.9%
+big   (>2.74%)               2367     2.53   0.34  44.0%
 
 ── Breakout vs gap direction ──
                            trades  net bps      t   win%
-with the gap                 3770    12.05   2.61  45.1%
-against the gap (fade)       3329     2.41   0.56  45.5%
+with the gap                 3770    11.69   2.54  45.1%
+against the gap (fade)       3330     2.41   0.56  45.5%
 
 ── Concentration ──
-stocks traded: 241 | total net (sum of trade %): 534.3
-top 5 contributors: ORCL +57.9, MARA +57.0, AVGO +50.1, CRWD +48.8, CRWV +46.5
+stocks traded: 241 | total net (sum of trade %): 521.0
+top 5 contributors: ORCL +57.9, MARA +57.0, AVGO +50.1, CRWD +48.8, TSLA +47.7
 worst 5: AMAT -25.4, SOUN -26.6, HIMS -29.4, MRVL -56.6, BE -59.4
-without top-5 stocks:   743 days     4.34 bps/day  t= 1.18  Sharpe= 0.69
+without top-5 stocks:   743 days     3.80 bps/day  t= 1.03  Sharpe= 0.60
 share of stocks with positive total: 51%
 
 ── Cost sensitivity (top-10 daily portfolio) ──
-  0 bps/trade:   743 days     9.37 bps/day  t= 2.59  Sharpe= 1.51
-  2 bps/trade:   743 days     7.37 bps/day  t= 2.04  Sharpe= 1.19
-  5 bps/trade:   743 days     4.37 bps/day  t= 1.21  Sharpe= 0.70
- 10 bps/trade:   743 days    -0.63 bps/day  t=-0.17  Sharpe=-0.10
+  0 bps/trade:   743 days     9.18 bps/day  t= 2.54  Sharpe= 1.48
+  2 bps/trade:   743 days     7.18 bps/day  t= 1.98  Sharpe= 1.15
+  5 bps/trade:   743 days     4.18 bps/day  t= 1.15  Sharpe= 0.67
+ 10 bps/trade:   743 days    -0.82 bps/day  t=-0.23  Sharpe=-0.13
 
 ── Market day (universe 09:35→close drift; hindsight, descriptive) ──
                            trades  net bps      t   win%
-down day                     2368     6.58   1.12  44.3%
-flat day                     2353    -0.27  -0.06  45.5%
-up day                       2378    16.19   2.72  46.1%
+down day                     2362     6.06   1.03  44.3%
+flat day                     2360    -0.17  -0.04  45.5%
+up day                       2378    16.06   2.70  46.0%
 
 ── Weekday ──
                            trades  net bps      t   win%
-Mon                          1381    14.88   2.11  46.3%
+Mon                          1391    14.50   2.07  46.2%
 Tue                          1468    -8.19  -1.25  42.9%
 Wed                          1428     3.75   0.54  45.8%
-Thu                          1424    22.32   2.66  46.3%
+Thu                          1415    21.79   2.59  46.4%
 Fri                          1398     5.56   0.89  45.1%
+
+══ IDEA TESTS (daily portfolio; years+ = years with positive average) ══
+                             @2bps      t yrs+ |   @5bps      t yrs+
+A  baseline                   7.18   1.98 3/4 |    4.18   1.15 3/4
+B  aligned+early             12.80   2.69 4/4 |    9.80   2.06 4/4
+A + 1 market direction        6.08   1.18 2/4 |    3.11   0.61 2/4
+B + 1 market direction       12.90   2.04 3/4 |   10.01   1.58 2/4
+A + 2 trailing stop           4.78   1.56 3/4 |    1.78   0.58 2/4
+B + 2 trailing stop           9.15   2.29 4/4 |    6.15   1.54 4/4
+A + 3 equal-risk sizing       5.12   1.97 3/4 |    2.12   0.82 2/4
+B + 3 equal-risk sizing       9.56   2.68 4/4 |    6.56   1.84 2/4
 
 t > 2 ≈ significant. With ~12 tables, expect ~1 false 'significant' cell by chance —
 treat isolated wins with suspicion; consistent patterns across tables matter more.

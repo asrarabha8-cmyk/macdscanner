@@ -1,28 +1,28 @@
 STOCKS IN PLAY — ORB  |  universe top 100 by $volume (point-in-time, ex-ETF)  |  top 10 by first-bar RVOL  |  cost 2 bps/trade
-2023-10-05 → 2026-10-02  |  280 stocks traded
+2023-10-06 → 2026-10-05  |  280 stocks traded
 
 ── All days ──
 strategy (daily equal-weight)  days  net bps      t  Sharpe    up%   total%
-breakout_candle                743     7.37   2.04    1.19  49.3%     54.8
-breakout_atr                   743   -20.43 -14.09   -8.20  17.9%   -151.8
-direction_open                 743     7.31   2.12    1.24  47.6%     54.3
-long_drift                     743    -4.31  -0.72   -0.42  50.2%    -32.0
-breakout_all (whole univ.)     743     4.60   2.84    1.66  47.5%     34.2
+breakout_candle                743     7.18   1.98    1.15  49.1%     53.3
+breakout_atr                   743   -20.63 -14.31   -8.33  17.8%   -153.3
+direction_open                 743     7.14   2.07    1.21  47.5%     53.1
+long_drift                     743    -4.02  -0.68   -0.39  50.3%    -29.9
+breakout_all (whole univ.)     743     4.58   2.83    1.65  47.5%     34.1
 
 ── Since 2025-01-01 ──
 strategy (daily equal-weight)  days  net bps      t  Sharpe    up%   total%
-breakout_candle                436    11.81   2.38    1.81  51.6%     51.5
-breakout_atr                   436   -19.58  -8.90   -6.77  21.6%    -85.4
-direction_open                 436    13.06   2.64    2.01  50.7%     57.0
-long_drift                     436    -3.42  -0.43   -0.32  48.6%    -14.9
-breakout_all (whole univ.)     436     6.19   2.51    1.91  47.2%     27.0
+breakout_candle                437    11.69   2.36    1.79  51.5%     51.1
+breakout_atr                   437   -19.63  -8.95   -6.79  21.5%    -85.8
+direction_open                 437    12.99   2.63    2.00  50.6%     56.8
+long_drift                     437    -3.40  -0.42   -0.32  48.7%    -14.9
+breakout_all (whole univ.)     437     6.14   2.50    1.90  47.1%     26.8
 
 ── breakout_candle by year (stocks in play) ──
 year    days  net bps      t | drift bps
-2023      59     7.04   0.81        3.20
+2023      58     5.34   0.62        6.82
 2024     248    -0.34  -0.06       -7.65
 2025     247     6.40   1.00       -6.24
-2026     189    18.88   2.41        0.26
+2026     190    18.58   2.38        0.28
 
-Breakout minus long-drift (same days): 11.68 bps/day, t=1.67  (>0 and t>2 → edge is not just bull drift)
+Breakout minus long-drift (same days): 11.20 bps/day, t=1.60  (>0 and t>2 → edge is not just bull drift)
 net bps = average daily portfolio return after costs; t > 2 ≈ significant; 1x notional, no leverage.
