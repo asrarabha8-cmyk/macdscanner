@@ -150,6 +150,42 @@ def main():
     table("Weekday", [(n, tr.loc[tr["date"].dt.weekday == i, "net"])
                       for i, n in enumerate(["Mon", "Tue", "Wed", "Thu", "Fri"])])
 
+    # ═════════ idea tests (2026-10-06): each vs A and B, same days, no-trade day = 0 ═════════
+    days = pd.Index(sorted(ip["date"].unique()))
+    tr["B"] = (tr["side"] == tr["first_dir"]) & (tr["t_entry"].astype(str) <= "09:45")
+
+    def port(df, col="breakout_candle", cost=c, weight=None):
+        x = df.dropna(subset=[col])
+        net = x[col] - cost
+        if weight is None:
+            s = net.groupby(x["date"]).mean()
+        else:
+            w = weight.loc[x.index]
+            s = (net * w).groupby(x["date"]).sum() / w.groupby(x["date"]).sum()
+        return s.reindex(days).fillna(0.0)
+
+    def fmt(s):
+        t = s.mean() / (s.std() / np.sqrt(len(s)))
+        yrs = s.groupby(s.index.year).mean()
+        return f"{s.mean() * 1e4:7.2f} {t:6.2f} {int((yrs > 0).sum())}/{len(yrs)}"
+
+    inv = 1.0 / tr["risk_pct"].clip(lower=0.002)
+    has_spy = "spy_dir" in tr and tr["spy_dir"].notna().any()
+    rows = [("A  baseline", tr, "breakout_candle", None),
+            ("B  aligned+early", tr[tr["B"]], "breakout_candle", None)]
+    if has_spy:
+        rows += [("A + 1 market direction", tr[tr["side"] == tr["spy_dir"]], "breakout_candle", None),
+                 ("B + 1 market direction", tr[tr["B"] & (tr["side"] == tr["spy_dir"])], "breakout_candle", None)]
+    if "breakout_trail" in tr:
+        rows += [("A + 2 trailing stop", tr, "breakout_trail", None),
+                 ("B + 2 trailing stop", tr[tr["B"]], "breakout_trail", None)]
+    rows += [("A + 3 equal-risk sizing", tr, "breakout_candle", inv),
+             ("B + 3 equal-risk sizing", tr[tr["B"]], "breakout_candle", inv)]
+    L.append("\n══ IDEA TESTS (daily portfolio; years+ = years with positive average) ══")
+    L.append(f"{'':26s} {'@2bps':>7s} {'t':>6s} {'yrs+':>4s} | {'@5bps':>7s} {'t':>6s} {'yrs+':>4s}")
+    for name, df, col, w in rows:
+        L.append(f"{name:26s} {fmt(port(df, col, c, w))} | {fmt(port(df, col, 5e-4, w))}")
+
     L += ["", "t > 2 ≈ significant. With ~12 tables, expect ~1 false 'significant' cell by chance —",
           "treat isolated wins with suspicion; consistent patterns across tables matter more."]
     txt = "\n".join(L)

@@ -169,6 +169,51 @@ def trade(g: pd.DataFrame, mode: str, atr: float = np.nan) -> float | None:
     return None if d is None else d["ret"]
 
 
+def trade_trail(g: pd.DataFrame) -> float | None:
+    """Idea 2 — same entry/initial stop as breakout_candle, but a moving stop:
+    once price has gone +1R in our favour the stop moves to break-even, and from
+    then on it trails 1R behind the best price reached. Otherwise exit at close.
+    Stop updates take effect from the NEXT bar (no look-ahead inside a bar)."""
+    first, rest = g.iloc[0], g.iloc[1:]
+    h1, l1 = first["high"], first["low"]
+    side = 0
+    for i, (hh, ll, oo) in enumerate(zip(rest["high"].values, rest["low"].values, rest["open"].values)):
+        up, dn = hh > h1, ll < l1
+        if up and dn:
+            return None
+        if up:
+            side, i0, entry = 1, i, max(oo, h1)
+            break
+        if dn:
+            side, i0, entry = -1, i, min(oo, l1)
+            break
+    if not side:
+        return None
+    stop = l1 if side == 1 else h1
+    R = (entry - stop) * side
+    if R <= 0:
+        return None
+    best = entry
+    seg = rest.iloc[i0:]
+    exit_px = rest["close"].iloc[-1]
+    for j, (oo, hh, ll) in enumerate(zip(seg["open"].values, seg["high"].values, seg["low"].values)):
+        if j == 0:
+            oo = entry
+        if side == 1:
+            if oo <= stop: exit_px = oo; break
+            if ll <= stop: exit_px = stop; break
+            best = max(best, hh)
+            if best - entry >= R:
+                stop = max(stop, entry, best - R)
+        else:
+            if oo >= stop: exit_px = oo; break
+            if hh >= stop: exit_px = stop; break
+            best = min(best, ll)
+            if entry - best >= R:
+                stop = min(stop, entry, best + R)
+    return side * (exit_px / entry - 1)
+
+
 MODES = ["breakout_candle", "breakout_atr", "direction_open", "long_drift"]
 
 
@@ -201,6 +246,7 @@ def ticker_records(tk: str, days: list[pd.Timestamp], atr: pd.Series, start: pd.
         rec["or_pct"] = (f["high"] - f["low"]) / f["open"]
         rec["first_dir"] = int(np.sign(f["close"] - f["open"]))
         rec["atr_pct"] = atr.get(d, np.nan) / pc if np.isfinite(pc) and pc > 0 else np.nan
+        rec["breakout_trail"] = trade_trail(g)
         det = trade_detail(g, "breakout_candle")
         if det is not None:
             rec.update(side=det["side"], how=det["how"], t_entry=det["t_entry"].strftime("%H:%M"),
@@ -294,6 +340,15 @@ def main():
             if done % 25 == 0:
                 print(f"   {done}/{len(members)}", flush=True)
     allt = pd.DataFrame(recs)
+    # Idea 1 — direction of the whole market's first 5-min candle (SPY), known at 09:35
+    try:
+        spy = bars_5m("SPY", start - pd.Timedelta(days=5), end)
+        f = spy[spy.index.strftime("%H:%M") == "09:30"]
+        spy_dir = pd.Series(np.sign(f["close"].values - f["open"].values), index=f.index.normalize())
+        allt["spy_dir"] = pd.to_datetime(allt["date"]).map(spy_dir)
+    except Exception as e:
+        print(f"   SPY first candle unavailable: {e}", flush=True)
+        allt["spy_dir"] = np.nan
     allt.to_csv(os.path.join(a.out, "sip_all_records.csv"), index=False)
 
     print("4/4 selecting stocks in play & scoring…", flush=True)
