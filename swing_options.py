@@ -28,7 +28,7 @@ def _env(name, default, cast=float):
     v = os.getenv(name)
     return cast(v) if v not in (None, "") else default
 
-BUDGET        = _env("SWING_BUDGET", 500.0)   # أقصى تكلفة للعقد/السبريد بالدولار
+BUDGET        = _env("SWING_BUDGET", 200.0)   # أقصى تكلفة للعقد/السبريد بالدولار
 MIN_DTE       = _env("SWING_MIN_DTE", 21, int)
 MAX_DTE       = _env("SWING_MAX_DTE", 60, int)
 DELTA_MIN     = _env("SWING_DELTA_MIN", 0.55)
@@ -170,21 +170,24 @@ def suggest(t, kind, S, stop=None, target=None, today=None):
                    f" وحتى السبريد ما نزل تحت ${BUDGET:.0f}")
         # ٢) سبريد شرائي: شراء دلتا ~0.6 وبيع عند الهدف (أو ~10% أبعد)
         aim = target if target else (S * 1.10 if kind == "CALL" else S * 0.90)
-        longs = [r for r in liquid if 0.45 <= abs(r["delta"]) <= DELTA_MAX]
+        longs = [r for r in liquid if 0.40 <= abs(r["delta"]) <= DELTA_MAX]
         for L in sorted(longs, key=lambda r: abs(abs(r["delta"]) - 0.60)):
             further = [r for r in liquid if (r["strike"] > L["strike"] if kind == "CALL" else r["strike"] < L["strike"])
                        and L["bid"] >= r["ask"]]
-            if not further:
-                continue
-            Sh = min(further, key=lambda r: abs(r["strike"] - aim))
-            debit = L["ask"] - Sh["bid"]
-            width = abs(Sh["strike"] - L["strike"])
-            if debit <= 0 or debit >= width or debit * 100 > BUDGET:
-                continue
-            if (width - debit) / debit < 1.0:     # أقصى ربح لازم ≥ التكلفة
-                continue
-            best_spread = dict(type="spread", exp=e, leg=L, short=Sh, debit=debit, width=width)
-            break
+            # من الأبعد (عند الهدف) للأقرب: أعرض سبريد تكلفته داخل الميزانية
+            further = [r for r in further if (r["strike"] <= aim if kind == "CALL" else r["strike"] >= aim)] or further[:1]
+            further.sort(key=lambda r: -abs(r["strike"] - L["strike"]))
+            for Sh in further:
+                debit = L["ask"] - Sh["bid"]
+                width = abs(Sh["strike"] - L["strike"])
+                if debit <= 0 or debit >= width or debit * 100 > BUDGET:
+                    continue
+                if (width - debit) / debit < 1.0:     # أقصى ربح لازم ≥ التكلفة
+                    continue
+                best_spread = dict(type="spread", exp=e, leg=L, short=Sh, debit=debit, width=width)
+                break
+            if best_spread:
+                break
         if best_spread:
             break
 
