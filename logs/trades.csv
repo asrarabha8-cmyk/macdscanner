@@ -1,2 +1,3 @@
 date,symbol,kind,strike,short_strike,expiry,entry_riyadh,exit_riyadh,entry,exit,pnl,pnl_pct,best_unrealised,reason,lock_hash
 2026-10-02,AMD,CALL,647.5,660.0,2026-10-05,17:35,18:37,3.39,1.82,-157.0,-46.31,51.0,🛑 وقف العقد −45%,4f564cd76dca338766ebffa1cce4fc86425c885a430a75c047a70f2e6361234d
+2026-10-07,COIN,PUT,175.0,170.0,2026-10-09,17:05,20:45,1.53,1.17,-36.0,-23.53,-18.0,⏰ وقت الخروج المحدد,da160f5700588f6e52ff93b8aa37c0a135b71f9d4d7ac7ea67bef0b5a118c391
