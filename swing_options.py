@@ -39,6 +39,8 @@ MIN_SPREAD_ABS = 0.15                                  # أو 0.15 للعقود 
 MIN_OI        = _env("SWING_MIN_OI", 100, int)
 HOLD_DAYS     = _env("SWING_HOLD_DAYS", 10, int)      # مدة الصفقة المتوقعة للتقدير
 MAX_LOOKUPS   = _env("SWING_MAX_LOOKUPS", 8, int)     # حد البحث لكل تشغيل (سرعة)
+ALLOW_SPREADS = _env("SWING_ALLOW_SPREADS", "0", str) == "1"   # منصة يحيى لا تدعم العقود المركبة
+FALLBACK_DELTA_MIN = 0.40     # إذا العقد الأعمق غالٍ: عقد عند السعر (أرخص، يحتاج حركة أكبر)
 RISK_FREE     = 0.045
 
 _lookups = 0
@@ -165,9 +167,17 @@ def suggest(t, kind, S, stop=None, target=None, today=None):
             r = min(cheap, key=lambda r: (abs(abs(r["delta"]) - DELTA_AIM), r["spread"] / r["mid"]))
             best_single = best_single or dict(type="single", exp=e, leg=r)
             break
-        if singles:
-            why = (f"العقد المناسب أغلى من الميزانية (${min(r['ask'] for r in singles) * 100:.0f})"
-                   f" وحتى السبريد ما نزل تحت ${BUDGET:.0f}")
+        # ١ب) بديل أرخص: عقد عند السعر (دلتا 0.40–0.55)
+        atm = [r for r in liquid if FALLBACK_DELTA_MIN <= abs(r["delta"]) < DELTA_MIN and r["ask"] * 100 <= BUDGET]
+        if atm:
+            r = max(atm, key=lambda r: abs(r["delta"]))
+            best_single = dict(type="single", exp=e, leg=r, atm=True)
+            break
+        pool = singles or [r for r in liquid if FALLBACK_DELTA_MIN <= abs(r["delta"]) <= DELTA_MAX]
+        if pool:
+            why = (f"أرخص عقد مناسب ${min(r['ask'] for r in pool) * 100:.0f} — فوق الميزانية ${BUDGET:.0f}")
+        if not ALLOW_SPREADS:
+            continue
         # ٢) سبريد شرائي: شراء دلتا ~0.6 وبيع عند الهدف (أو ~10% أبعد)
         aim = target if target else (S * 1.10 if kind == "CALL" else S * 0.90)
         longs = [r for r in liquid if 0.40 <= abs(r["delta"]) <= DELTA_MAX]
@@ -240,7 +250,7 @@ def _name(o):
 def render(o) -> list[str]:
     if not o or "reason" in o:
         return [f"   ⚪ أوبشن: {o.get('reason', 'غير متاح') if o else 'غير متاح'}"]
-    head = "🎯 سبريد سوينق" if o["type"] == "spread" else "🎯 عقد سوينق"
+    head = "🎯 سبريد سوينق" if o["type"] == "spread" else ("🎯 عقد سوينق (عند السعر — يحتاج حركة أقوى)" if o.get("atm") else "🎯 عقد سوينق")
     lines = [f"   {head}: <b>{_name(o)}</b> ({o['dte']} يوم)"]
     if o["type"] == "spread":
         lines.append(f"   شراء {o['leg']['strike']:g} + بيع {o['short']['strike']:g} • التكلفة ${o['cost']:.0f} • أقصى ربح ${o['max_profit']:.0f}")
