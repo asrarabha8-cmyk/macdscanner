@@ -20,6 +20,8 @@ import pandas as pd
 import requests
 import yfinance as yf
 
+from swing_options import option_lines
+
 # ------------------------------------------------------------------
 # الإعدادات
 # ------------------------------------------------------------------
@@ -266,8 +268,10 @@ def main():
             f"ستوب {r['stop']:.2f}  ({r['risk_pct']:.2f}%)",
             f"أهداف {r['tp1']:.2f} / {r['tp2']:.2f} / {r['tp3']:.2f}",
             f"عمر الإذن {r['age']}/{PERMIT_BARS} يوم · تذبذب {r['chop']}/{CHOP_MAX}",
-            "",
         ]
+        if t not in CRYPTO:
+            lines += option_lines(t, "CALL", r["price"], stop=r["stop"], target=r["tp2"])
+        lines.append("")
     if permits:
         lines.append("إذن مفتوح بلا تقاطع: " + ", ".join(permits[:15]))
     notify("\n".join(lines))

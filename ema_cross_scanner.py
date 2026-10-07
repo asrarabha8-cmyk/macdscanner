@@ -15,6 +15,8 @@ import pandas as pd
 import requests
 import yfinance as yf
 
+from swing_options import option_lines
+
 # ------------------------------------------------------------------
 # الإعدادات
 # ------------------------------------------------------------------
@@ -150,12 +152,14 @@ def main():
         lines.append("🟢 <b>تقاطع صاعد</b>")
         for t, r in sorted(ups, key=lambda x: -x[1]["gap_pct"]):
             lines.append(f"<b>{t}</b>  {fmt(r['price'])}  ·  فجوة {r['gap_pct']:.2f}%")
+            lines += option_lines(t, "CALL", r["price"], stop=r["ema_slow"])
         lines.append("")
 
     if downs:
         lines.append("🔴 <b>تقاطع هابط</b>")
         for t, r in sorted(downs, key=lambda x: -x[1]["gap_pct"]):
             lines.append(f"<b>{t}</b>  {fmt(r['price'])}  ·  فجوة {r['gap_pct']:.2f}%")
+            lines += option_lines(t, "PUT", r["price"], stop=r["ema_slow"])
 
     notify("\n".join(lines))
 

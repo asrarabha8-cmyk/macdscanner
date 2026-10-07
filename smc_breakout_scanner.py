@@ -35,6 +35,8 @@ import pandas as pd
 import requests
 import yfinance as yf
 
+from swing_options import option_lines
+
 # ------------------------------------------------------------------
 # الإعدادات
 # ------------------------------------------------------------------
@@ -321,8 +323,9 @@ def main():
             f"وقف (BOS): <code>{fmt(s['stop'])}</code>  ({s['risk_pct']:.0f}%-)",
             f"أهداف ABC: <code>{fmt(t1)}</code> · {fmt(t2)} · {fmt(t3)}",
             f"العائد/المخاطرة: <b>{s['rr']:.1f}</b>",
-            "",
         ]
+        lines += option_lines(s["ticker"], "CALL", s["entry"], stop=s["stop"], target=t1)
+        lines.append("")
     lines.append("<i>جني جزئي عند أول منطقة عرض ونقل الوقف للتعادل.</i>")
 
     notify("\n".join(lines))

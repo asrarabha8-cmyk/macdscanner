@@ -20,6 +20,8 @@ import pandas as pd
 import requests
 import yfinance as yf
 
+from swing_options import option_lines
+
 # ------------------------------------------------------------------
 # الإعدادات — كل الافتراضات هنا، تغييرها سطر واحد
 # ------------------------------------------------------------------
@@ -198,8 +200,9 @@ def main():
             f"الهدف (متوسط 200) {d['target']:.2f}  (+{d['upside_pct']:.1f}%)",
             f"الوقف {d['stop']:.2f}  (-{d['risk_pct']:.1f}%)  ·  R = {d['r']:.1f}",
             f"فوليوم {d['vol_x']:.1f}× المتوسط",
-            "",
         ]
+        lines += option_lines(t, "CALL", d["price"], stop=d["stop"], target=d["target"])
+        lines.append("")
     if len(hits) > MAX_ROWS:
         lines.append(f"و{len(hits) - MAX_ROWS} إشارة أخرى لم تُعرض — رتّبها R.")
     notify("\n".join(lines))
