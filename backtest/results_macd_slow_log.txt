@@ -1,0 +1,25 @@
+
+1 Failed download:
+['AAPL']: OperationalError('database is locked')
+  تحميل 30/195
+  تحميل 60/195
+  تحميل 90/195
+$MSTU: 1h data not available for startTime=1726666200 and endTime=1791442341. The requested range must be within the last 730 days.
+$MSTY: 1h data not available for startTime=1708612200 and endTime=1791442344. The requested range must be within the last 730 days.
+
+2 Failed downloads:
+['MSTU']: 1h data not available for startTime=1726666200 and endTime=1791442341. The requested range must be within the last 730 days.
+['MSTY']: 1h data not available for startTime=1708612200 and endTime=1791442344. The requested range must be within the last 730 days.
+  تحميل 120/195
+  تحميل 150/195
+  تحميل 180/195
+  تحميل 195/195
+أسهم: 186
+# MACD Slow — اختبار تاريخي (186 سهم، شموع ساعة لآخر سنتين)
+
+| الاستراتيجية | الصفقات | نسبة الربح % | التوقع R/صفقة | ±95% | معامل الربح | أطول سلسلة خسائر | متوسط الساعات |
+|---|---|---|---|---|---|---|---|
+| MACD Slow هدف 1R | 728 | 50 | -0.065 | 0.09 | 0.88 | 11 | 26 |
+| MACD Slow هدف 2R | 695 | 41 | -0.017 | 0.11 | 0.97 | 11 | 37 |
+| MACD Slow هدف 3R | 686 | 39 | +0.007 | 0.12 | 1.01 | 11 | 43 |
+| عشوائي 2R (ضابط) | 5668 | 40 | -0.031 | 0.04 | 0.96 | 13 | 28 |
