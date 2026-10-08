@@ -248,12 +248,32 @@ def strat_random(df, ticker, spy=None):
     return trades
 
 
+# Z2) ضابط عشوائي بنفس شكل SMC: وقف واسع (أدنى قاع 20 يوماً)، هدف 1.6R، حتى 40 يوماً.
+def strat_random_wide(df, ticker, spy=None):
+    rng = np.random.default_rng((abs(hash(ticker)) + 7) % (2**32))
+    lo = df["Low"]
+    trades, i, n = [], 201, len(df)
+    while i < n - 1:
+        if rng.random() < 0.01:
+            stop = lo.iloc[i - 19:i + 1].min()
+            entry = df["Open"].iat[i + 1]
+            if entry > stop:
+                t, j = simulate(df, i, stop, entry + 1.6 * (entry - stop), 40, "Z2_Random_wide", ticker)
+                if t:
+                    trades.append(t)
+                    i = j + 1
+                    continue
+        i += 1
+    return trades
+
+
 STRATS = {
     "A_MA100_200": strat_ma,
     "B1_SMC_strict": lambda d, t, s=None: strat_smc(d, t, s, strict=True),
     "B2_SMC_simple": lambda d, t, s=None: strat_smc(d, t, s, strict=False),
     "C_Trend_Pullback": strat_pullback,
     "Z_Random": strat_random,
+    "Z2_Random_wide": strat_random_wide,
 }
 
 LABELS = {
@@ -262,6 +282,7 @@ LABELS = {
     "B2_SMC_simple": "SMC بدون فلاتر",
     "C_Trend_Pullback": "تصحيح داخل الترند",
     "Z_Random": "دخول عشوائي (ضابط)",
+    "Z2_Random_wide": "عشوائي بشكل SMC (ضابط)",
 }
 
 
