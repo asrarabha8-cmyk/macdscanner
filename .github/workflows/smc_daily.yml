@@ -1,0 +1,44 @@
+name: SMC Daily Scanner
+
+on:
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [smcdaily]       # started daily after the US close by a Claude scheduled task
+
+permissions:
+  contents: write           # paper-trade log in logs/smc_daily/
+
+concurrency:
+  group: smc-daily
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install --quiet yfinance pandas numpy requests lxml
+      - name: Track open paper trades
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: python smc_daily_track.py
+      - name: Scan for new signals
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: python smc_daily_scanner.py
+      - name: Save log
+        if: always()
+        run: |
+          git config user.name "smc-daily-bot"
+          git config user.email "smc-daily-bot@users.noreply.github.com"
+          git add logs/smc_daily || true
+          git diff --cached --quiet || git commit -m "smc daily $(date -u +%F)"
+          git pull --rebase -q || true
+          git push || true
