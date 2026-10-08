@@ -3,7 +3,7 @@ name: SMC Daily Scanner
 on:
   workflow_dispatch: {}
   repository_dispatch:
-    types: [smcdaily]       # started daily after the US close by a Claude scheduled task
+    types: [smcdaily, smcdaily_lookback]   # daily after the US close (Claude scheduled task) / one-off lookback
 
 permissions:
   contents: write           # paper-trade log in logs/smc_daily/
@@ -24,6 +24,7 @@ jobs:
       - name: Install
         run: pip install --quiet yfinance pandas numpy requests lxml
       - name: Track open paper trades
+        if: github.event.action != 'smcdaily_lookback'
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
@@ -32,6 +33,7 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
+          LOOKBACK: ${{ github.event.action == 'smcdaily_lookback' && '60' || '0' }}
         run: python smc_daily_scanner.py
       - name: Save log
         if: always()

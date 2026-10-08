@@ -141,9 +141,10 @@ def open_tickers():
 
 
 def main():
+    lookback = int(os.getenv("LOOKBACK", "0") or 0)    # >0: كشف إشارات آخر N يوم بدون تسجيل
     tickers = universe()
     print(f"SMC يومي — {len(tickers)} سهم", flush=True)
-    hits = []
+    hits, loaded, past = [], 0, []
     for k in range(0, len(tickers), 100):
         batch = tickers[k:k + 100]
         raw = yf.download(batch, period="1y", interval="1d", group_by="ticker",
@@ -157,6 +158,17 @@ def main():
             now_ny = pd.Timestamp.now(tz="America/New_York")
             if len(df) and df.index[-1].date() == now_ny.date() and now_ny.hour < 16:
                 df = df.iloc[:-1]
+            if len(df) >= 80:
+                loaded += 1
+            if lookback:
+                for i in range(max(80, len(df) - lookback), len(df)):
+                    try:
+                        x = detect(df.iloc[:i + 1])
+                    except Exception:  # noqa: BLE001
+                        x = None
+                    if x:
+                        past.append(dict(ticker=t, **x))
+                continue
             try:
                 s = detect(df)
             except Exception as e:  # noqa: BLE001
@@ -167,6 +179,13 @@ def main():
         print(f"  {min(k + 100, len(tickers))}/{len(tickers)} — إشارات: {len(hits)}", flush=True)
 
     os.makedirs(LOG_DIR, exist_ok=True)
+    with open(os.path.join(LOG_DIR, "last_run.txt"), "w", encoding="utf-8") as f:
+        f.write(f"{pd.Timestamp.now(tz='UTC'):%Y-%m-%d %H:%M} UTC • universe {len(tickers)} • loaded {loaded} • "
+                f"signals {len(hits)}" + (f" • lookback {lookback}d: {len(past)}" if lookback else "") + "\n")
+    if lookback:
+        pd.DataFrame(past).to_csv(os.path.join(LOG_DIR, "lookback.csv"), index=False)
+        print(f"lookback {lookback}d: {len(past)} signals")
+        return
     busy = open_tickers()
     rows, lines = [], []
     for t, s in sorted(hits, key=lambda x: -x[1]["rr"]):
