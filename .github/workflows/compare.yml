@@ -1,0 +1,41 @@
+name: Strategy Compare Backtest
+
+on:
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [compare]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compare
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install yfinance pandas numpy requests
+      - name: Backtest
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: |
+          set -o pipefail
+          python backtest/strategy_compare.py --years 10 --out backtest/results 2>&1 | tee backtest/results_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "compare-bot"
+          git config user.email "compare-bot@users.noreply.github.com"
+          git add backtest || true
+          git diff --cached --quiet || git commit -m "compare results $(date -u +%F)"
+          git pull --rebase -q || true
+          git push || true
