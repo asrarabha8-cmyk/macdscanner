@@ -1,16 +1,36 @@
-Traceback (most recent call last):
-  File "/home/runner/work/macdscanner/macdscanner/trendscore/trendscore_validate.py", line 58, in <module>
-    ic = d["Score"].corr(d["fwd"], method="spearman")
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/pandas/core/series.py", line 2774, in corr
-    result = nanops.nancorr(
-             ^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/pandas/core/nanops.py", line 87, in _f
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/pandas/core/nanops.py", line 1655, in nancorr
-    f = get_corr_func(method)
-        ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/pandas/core/nanops.py", line 1670, in get_corr_func
-    from scipy.stats import spearmanr
-ModuleNotFoundError: No module named 'scipy'
+
+=== اختبار 3M: من 2026-07-09 إلى 2026-10-09 ===
+عائد SPY: +3.8% | ارتباط الترتيب (IC): -0.082
+           n  avg_ret  med_excess  beat_spy
+bucket                                     
+Q1 أضعف  100   +0.037      -0.036    +0.400
+Q2        99   -0.007      -0.050    +0.313
+Q3       100   -0.004      -0.068    +0.320
+Q4        99   +0.011      -0.078    +0.283
+Q5 أقوى  100   -0.008      -0.071    +0.280
+متوسط التفوق حسب Quality:
+Quality
+moderate    -10.01%
+good         -7.50%
+excellent    -7.07%
+weak         -5.61%
+poor         -4.08%
+
+=== اختبار 1M: من 2026-09-09 إلى 2026-10-09 ===
+عائد SPY: +2.4% | ارتباط الترتيب (IC): +0.107
+           n  avg_ret  med_excess  beat_spy
+bucket                                     
+Q1 أضعف  100   -0.012      -0.044    +0.280
+Q2        99   -0.020      -0.051    +0.182
+Q3       100   -0.007      -0.041    +0.240
+Q4        99   +0.011      -0.027    +0.374
+Q5 أقوى  100   +0.007      -0.032    +0.350
+متوسط التفوق حسب Quality:
+Quality
+weak        -4.75%
+poor        -4.49%
+excellent   -3.99%
+good        -3.16%
+moderate    -2.96%
+
+القراءة: لو Q5 تتفوق بوضوح على Q1 والـ IC موجب (>0.05)، المؤشر له قيمة.
