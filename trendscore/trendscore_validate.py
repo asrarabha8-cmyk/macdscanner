@@ -55,7 +55,7 @@ for k, (_, start_date) in TESTS.items():
         med_excess=("excess", "median"),
         beat_spy=("excess", lambda s: (s > 0).mean()),
     )
-    ic = d["Score"].corr(d["fwd"], method="spearman")
+    ic = d["Score"].rank().corr(d["fwd"].rank())
 
     print(f"\n=== اختبار {k}: من {start_date.date()} إلى {AS_OF.date()} ===")
     print(f"عائد SPY: {ret['SPY']:+.1%} | ارتباط الترتيب (IC): {ic:+.3f}")
