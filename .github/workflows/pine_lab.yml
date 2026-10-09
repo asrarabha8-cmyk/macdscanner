@@ -1,0 +1,39 @@
+name: Pine Lab Backtest
+
+on:
+  push:
+    branches: [pine-lab]
+    paths: ["backtest/pine_lab/*.py", "backtest/pine_lab/*.txt", ".github/workflows/pine_lab.yml"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pine-lab
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas numpy tabulate
+      - name: Backtest
+        working-directory: backtest/pine_lab
+        run: |
+          set -o pipefail
+          python run_lab.py --years 10 --out results 2>&1 | tee results_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "pine-lab-bot"
+          git config user.email "pine-lab-bot@users.noreply.github.com"
+          git add backtest/pine_lab/results backtest/pine_lab/results_log.txt || true
+          git diff --cached --quiet || git commit -m "pine lab results [skip ci]"
+          git pull --rebase -q origin pine-lab || true
+          git push origin HEAD:pine-lab || true
