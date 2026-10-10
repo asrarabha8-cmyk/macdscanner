@@ -1,0 +1,56 @@
+name: SPY 0DTE ORB Alert
+
+on:
+  schedule:
+    # Starts before the open and waits until 9:45 New York. Two times to cover daylight saving + GitHub delays
+    - cron: "10 13 * * 1-5"
+    - cron: "10 14 * * 1-5"
+  repository_dispatch:
+    types: [spy_orb]
+  workflow_dispatch:
+    inputs:
+      replay_date:
+        description: "Replay test of an old day (YYYY-MM-DD) — leave empty for live run"
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths: [spy0dte/replay.txt]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spy-orb-0dte
+  cancel-in-progress: false
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas
+      - name: Run
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          BUDGET: "200"
+        run: |
+          RD="${{ github.event.inputs.replay_date }}"
+          if [ "${{ github.event_name }}" = "push" ]; then RD=$(head -1 spy0dte/replay.txt | tr -d '[:space:]'); fi
+          if [ -n "$RD" ]; then export REPLAY_DATE="$RD" LOG_DIR="logs/spy0dte_test"; fi
+          python spy0dte/spy_orb_0dte.py
+      - name: Save logs
+        if: always()
+        run: |
+          git config user.name "spy-orb-bot"
+          git config user.email "spy-orb-bot@users.noreply.github.com"
+          git add logs || true
+          git diff --cached --quiet || git commit -m "spy orb logs $(date -u +%F)"
+          git pull --rebase -q || true
+          git push || true
