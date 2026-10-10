@@ -1,0 +1,114 @@
+//@version=6
+// MACD Cascade — نسخة Pine من macd_cascade_scanner.py و macd_slow_scanner.py
+//
+//   الحالة ١ راقب : ماكد الفاصل الكبير تحت الصفر، منحنٍ للأعلى، قريب من الصفر
+//   الحالة ٢ إذن  : ماكد الفاصل الكبير قطع الصفر صاعداً وما زال طازجاً وغير متذبذب
+//   الحالة ٣ دخول : إذن مفتوح + تأكيد الفاصل الوسيط + تقاطع صاعد على فاصل الشارت
+//
+// السريعة: ضع المؤشر على شارت 15 دقيقة  (4H إذن · 1H تأكيد · 15m زناد)
+// البطيئة: ضعه على شارت الساعة           (يومي إذن · 4H تأكيد · 1H زناد)
+// كل الفحوص على شموع مغلقة فقط — لا إعادة رسم.
+indicator("MACD Cascade", overlay = true, max_labels_count = 200, max_lines_count = 300)
+
+// ------------------------------------------------------------------
+// الإعدادات — نفس أرقام السكانر
+// ------------------------------------------------------------------
+mode       = input.string("سريعة (4H / 1H / 15m)", "النسخة",
+                 options = ["سريعة (4H / 1H / 15m)", "بطيئة (يومي / 4H / 1H)"])
+fastLen    = input.int(12, "Fast")
+slowLen    = input.int(26, "Slow")
+sigLen     = input.int(9,  "Signal")
+permitBars = input.int(10, "عمر الإذن (شمعات الفاصل الكبير)")
+chopLook   = input.int(50, "نافذة التذبذب")
+chopMax    = input.int(5,  "أقصى تقاطعات للصفر")
+distCapPct = input.float(60, "أقصى بُعد عن الصفر % من المدى")
+entryTol   = input.float(50, "قرب تقاطع الدخول من الصفر %")
+watchTol   = input.float(25, "حد قرب الصفر لحالة راقب %")
+swingLook  = input.int(20, "نافذة القاع للستوب")
+atrBuf     = input.float(0.5, "هامش الستوب × ATR")
+maxRiskIn  = input.float(0, "أقصى مخاطرة % (0 = تلقائي: 3 سريعة / 7 بطيئة)")
+showLevels = input.bool(true, "ارسم الستوب والأهداف")
+showTable  = input.bool(true, "جدول الحالة")
+
+isFast  = str.startswith(mode, "سريعة")
+bigTf   = isFast ? "240" : "D"
+midTf   = isFast ? "60"  : "240"
+entryTf = isFast ? "15"  : "60"
+maxRisk = maxRiskIn > 0 ? maxRiskIn : isFast ? 3.0 : 7.0
+
+// ------------------------------------------------------------------
+// الفاصل الكبير — قيم آخر شمعة مغلقة ([1] مع lookahead_on = بلا إعادة رسم)
+// ------------------------------------------------------------------
+bigState() =>
+    [m, s, _] = ta.macd(close, fastLen, slowLen, sigLen)
+    rng  = ta.highest(math.abs(m), 100)
+    age  = nz(ta.barssince(ta.crossover(m, 0)), 9999)
+    flip = (m > 0) != (m[1] > 0) ? 1 : 0
+    chop = math.sum(flip, chopLook)
+    [m[1], s[1], m[2], rng[1], age[1], chop[1]]
+
+[mB, sB, mBprev, rngB, ageB, chopB] = request.security(syminfo.tickerid, bigTf, bigState(), lookahead = barmerge.lookahead_on)
+
+midState() =>
+    [m, s, _] = ta.macd(close, fastLen, slowLen, sigLen)
+    [m[1], s[1]]
+
+[mM, sM] = request.security(syminfo.tickerid, midTf, midState(), lookahead = barmerge.lookahead_on)
+
+permit = rngB > 0 and mB > 0 and mB > sB and ageB <= permitBars and chopB <= chopMax and mB <= rngB * distCapPct / 100
+watch  = rngB > 0 and not permit and mB <= 0 and mB > mBprev and math.abs(mB) <= rngB * watchTol / 100
+midOk  = mM > sM
+
+// ------------------------------------------------------------------
+// فاصل الدخول — فاصل الشارت نفسه
+// ------------------------------------------------------------------
+[m0, s0, _] = ta.macd(close, fastLen, slowLen, sigLen)
+rng0    = ta.highest(math.abs(m0), 100)
+crossed = ta.crossover(m0, s0)
+near0   = rng0 > 0 and math.abs(m0) <= rng0 * entryTol / 100
+
+stop    = ta.lowest(low, swingLook) - atrBuf * ta.atr(14)
+risk    = close - stop
+riskPct = risk / close * 100
+
+entry = barstate.isconfirmed and permit and midOk and crossed and near0 and risk > 0 and riskPct <= maxRisk
+
+// ------------------------------------------------------------------
+// الرسم
+// ------------------------------------------------------------------
+bgcolor(permit ? color.new(color.green, 92) : watch ? color.new(color.orange, 92) : na, title = "إذن / راقب")
+
+fmt(x) => str.tostring(x, format.mintick)
+
+if entry
+    label.new(bar_index, low, "دخول\n" + fmt(close) + "\nستوب " + fmt(stop) + " (" + str.tostring(riskPct, "#.##") + "%)",
+         style = label.style_label_up, color = color.green, textcolor = color.white, size = size.small)
+    if showLevels
+        line.new(bar_index, stop,           bar_index + 20, stop,           color = color.red,   width = 2)
+        line.new(bar_index, close + risk,   bar_index + 20, close + risk,   color = color.teal)
+        line.new(bar_index, close + 2*risk, bar_index + 20, close + 2*risk, color = color.teal)
+        line.new(bar_index, close + 3*risk, bar_index + 20, close + 3*risk, color = color.teal)
+    alert(syminfo.ticker + " دخول MACD Cascade " + fmt(close) + " · ستوب " + fmt(stop) +
+         " · أهداف " + fmt(close + risk) + " / " + fmt(close + 2*risk) + " / " + fmt(close + 3*risk),
+         alert.freq_once_per_bar_close)
+
+plotshape(entry, "دخول", shape.triangleup, location.belowbar, color.green, size = size.tiny)
+alertcondition(entry, "MACD Cascade دخول", "{{ticker}} دخول MACD Cascade عند {{close}}")
+alertcondition(permit and not permit[1], "MACD Cascade إذن جديد", "{{ticker}} فُتح إذن MACD Cascade")
+
+var table tb = table.new(position.top_right, 2, 6, bgcolor = color.new(color.black, 20), border_width = 1)
+if showTable and barstate.islast
+    st = permit ? (midOk ? "إذن + تأكيد ✅" : "إذن — بانتظار التأكيد") : watch ? "راقب 👀" : "لا شيء"
+    table.cell(tb, 0, 0, "الحالة", text_color = color.white)
+    table.cell(tb, 1, 0, st, text_color = permit ? color.lime : watch ? color.orange : color.gray)
+    table.cell(tb, 0, 1, "عمر الإذن", text_color = color.white)
+    table.cell(tb, 1, 1, ageB >= 9999 ? "—" : str.tostring(ageB) + "/" + str.tostring(permitBars), text_color = color.white)
+    table.cell(tb, 0, 2, "تذبذب", text_color = color.white)
+    table.cell(tb, 1, 2, str.tostring(chopB) + "/" + str.tostring(chopMax), text_color = color.white)
+    table.cell(tb, 0, 3, "ماكد " + bigTf, text_color = color.white)
+    table.cell(tb, 1, 3, str.tostring(mB, "#.####"), text_color = mB > 0 ? color.lime : color.red)
+    table.cell(tb, 0, 4, "تأكيد " + midTf, text_color = color.white)
+    table.cell(tb, 1, 4, midOk ? "نعم" : "لا", text_color = midOk ? color.lime : color.red)
+    if timeframe.period != entryTf
+        table.cell(tb, 0, 5, "تنبيه", text_color = color.yellow)
+        table.cell(tb, 1, 5, "افتح شارت " + entryTf + " لهذه النسخة", text_color = color.yellow)

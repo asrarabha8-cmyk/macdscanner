@@ -1,0 +1,46 @@
+//@version=6
+// MA 100/200 Breakout — نسخة Pine من ma100_200_scanner.py (شارت يومي)
+//   ١) إغلاق اليوم فوق متوسط 100 وكان أمس تحته
+//   ٢) فوليوم اليوم ≥ ضعف متوسط 20 يوماً
+//   ٣) متوسط 200 فوق متوسط 100 — الهدف فوق الدخول
+// الدخول = الإغلاق · الهدف = متوسط 200 · الوقف = قاع شمعة الاختراق
+indicator("MA 100/200 Breakout", overlay = true, max_lines_count = 300)
+
+maFast       = input.int(100, "المتوسط السريع")
+maSlow       = input.int(200, "المتوسط البطيء")
+volMult      = input.float(2.0, "مضاعف الفوليوم")
+requireOrder = input.bool(true, "اشترط متوسط 200 فوق 100")
+minPrice     = input.float(1.0, "أقل سعر")
+minDollarVol = input.float(3e6, "أقل سيولة يومية $")
+minR         = input.float(1.0, "أقل R")
+
+f = ta.sma(close, maFast)
+s = ta.sma(close, maSlow)
+volAvg = ta.sma(volume, 20)[1]
+
+fresh   = close > f and close[1] <= f[1]
+volOk   = volAvg > 0 and volume >= volAvg * volMult and close * volAvg >= minDollarVol
+orderOk = (not requireOrder or s > f) and s > close
+risk    = close - low
+r       = risk > 0 ? (s - close) / risk : 0.0
+
+signal = barstate.isconfirmed and close >= minPrice and fresh and volOk and orderOk and risk > 0 and r >= minR
+
+plot(f, "MA 100", color.blue, 2)
+plot(s, "MA 200", color.purple, 2)
+
+if signal
+    label.new(bar_index, low,
+         "اختراق 100\nهدف " + str.tostring(s, format.mintick) + " (+" + str.tostring((s - close) / close * 100, "#.#") + "%)" +
+         "\nوقف " + str.tostring(low, format.mintick) + " · R " + str.tostring(r, "#.#") +
+         "\nفوليوم " + str.tostring(volume / volAvg, "#.#") + "×",
+         style = label.style_label_up, color = color.green, textcolor = color.white, size = size.small)
+    line.new(bar_index, low, bar_index + 15, low, color = color.red, width = 2)
+    line.new(bar_index, s,   bar_index + 15, s,   color = color.teal, width = 2)
+    alert(syminfo.ticker + " اختراق متوسط 100 · هدف " + str.tostring(s, format.mintick) + " · وقف " + str.tostring(low, format.mintick),
+         alert.freq_once_per_bar_close)
+
+alertcondition(signal, "اختراق متوسط 100", "{{ticker}} اختراق متوسط 100 عند {{close}}")
+
+if barstate.islastconfirmedhistory and timeframe.period != "1D" and timeframe.period != "D"
+    label.new(bar_index, high, "هذا المؤشر مصمم للشارت اليومي", color = color.yellow, textcolor = color.black, size = size.small)

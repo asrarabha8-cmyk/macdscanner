@@ -1,0 +1,35 @@
+//@version=6
+// EMA Cross Weekly — نسخة Pine من ema_cross_scanner.py
+// تقاطع EMA8 مع EMA48 على الفاصل الأسبوعي، على الشمعة الأسبوعية المغلقة فقط.
+// يعمل على أي فاصل: المتوسطات تُحسب أسبوعياً، والإشارة تظهر أول شمعة بعد إغلاق الأسبوع.
+indicator("EMA 8/48 Weekly Cross", overlay = true)
+
+fastLen = input.int(8,  "EMA السريع")
+slowLen = input.int(48, "EMA البطيء")
+
+wk() =>
+    f = ta.ema(close, fastLen)
+    s = ta.ema(close, slowLen)
+    [f[1], s[1], f[2], s[2], close[1]]
+
+[f, s, fPrev, sPrev, wClose] = request.security(syminfo.tickerid, "W", wk(), lookahead = barmerge.lookahead_on)
+
+newWeek = timeframe.change("W")
+up = newWeek and f > s and fPrev <= sPrev
+dn = newWeek and f < s and fPrev >= sPrev
+gap = math.abs(f - s) / wClose * 100
+
+plot(f, "EMA سريع أسبوعي", color.aqua, 2)
+plot(s, "EMA بطيء أسبوعي", color.orange, 2)
+
+if up
+    label.new(bar_index, low, "تقاطع صاعد\nفجوة " + str.tostring(gap, "#.##") + "%\nوقف ≈ " + str.tostring(s, format.mintick),
+         style = label.style_label_up, color = color.green, textcolor = color.white, size = size.small)
+    alert(syminfo.ticker + " تقاطع EMA " + str.tostring(fastLen) + "/" + str.tostring(slowLen) + " أسبوعي صاعد", alert.freq_once_per_bar)
+if dn
+    label.new(bar_index, high, "تقاطع هابط\nفجوة " + str.tostring(gap, "#.##") + "%\nوقف ≈ " + str.tostring(s, format.mintick),
+         style = label.style_label_down, color = color.red, textcolor = color.white, size = size.small)
+    alert(syminfo.ticker + " تقاطع EMA " + str.tostring(fastLen) + "/" + str.tostring(slowLen) + " أسبوعي هابط", alert.freq_once_per_bar)
+
+alertcondition(up, "EMA أسبوعي صاعد", "{{ticker}} تقاطع EMA 8/48 أسبوعي صاعد")
+alertcondition(dn, "EMA أسبوعي هابط", "{{ticker}} تقاطع EMA 8/48 أسبوعي هابط")
