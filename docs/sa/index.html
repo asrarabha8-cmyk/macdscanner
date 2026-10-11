@@ -265,6 +265,12 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const fmt = (x, d=2) => (x === null || x === undefined || isNaN(x)) ? "—" : Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = (x, d=1) => (x === null || x === undefined) ? "—" : `<span class="num ${x>0?"pos":x<0?"neg":""}">${x>0?"+":""}${fmt(x,d)}%</span>`;
 const money = x => x >= 1e9 ? fmt(x/1e9,1)+" مليار" : x >= 1e6 ? fmt(x/1e6,1)+" مليون" : fmt(x,0);
+const smoney = x => {
+  if (x==null||isNaN(x)) return "—";
+  const a = Math.abs(x), [v,u] = a>=1e9 ? [fmt(a/1e9,1),"مليار"] : a>=1e6 ? [fmt(a/1e6,1),"مليون"] : a>=1e3 ? [fmt(a/1e3,0),"ألف"] : [fmt(a,0),""];
+  return `<span class="${x>0?"pos":x<0?"neg":""}"><span class="num">${x>0?"+":x<0?"-":""}${v}</span> ${u}</span>`;
+};
+const flowCell = r => r.flow_20==null ? "—" : `${smoney(r.flow_20)}<span class="nm"><span class="num">${r.flow_pct>0?"+":""}${fmt(r.flow_pct,1)}%</span> من التداول</span>`;
 const sector = s => SECTOR_AR[s] || s || "";
 const tv = c => `https://www.tradingview.com/chart/?symbol=TADAWUL:${encodeURIComponent(c)}`;
 
@@ -367,6 +373,8 @@ function renderSignals(list){
         <span>المخاطرة <strong>${pct(-s.risk_pct)}</strong></span>
         <span>الفوليوم <strong class="num">×${fmt(s.vol_ratio,1)}</strong></span>
         <span>م100 <strong class="num">${fmt(s.ma100)}</strong></span>
+        <span>صافي التدفق 20 يوماً <strong>${smoney(s.flow_20)} ر.س</strong></span>
+        <span>تدفق اليوم <strong>${smoney(s.flow_today)} ر.س</strong></span>
         <span>متوسط التداول اليومي <strong>${money(s.avg_value)} ر.س</strong></span>
         <a href="${tv(s.code)}" target="_blank" rel="noopener">فتح الشارت</a>
       </div>
@@ -400,6 +408,7 @@ function renderWatch(latest){
     {k:"ma200", t:"م200", f:r=>`<span class="num">${fmt(r.ma200)}</span>`},
     {k:"vol_ratio", t:"الفوليوم", f:r=>`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
     {k:"avg_value", t:"تداول يومي (ر.س)", f:r=>money(r.avg_value)},
+    {k:"flow_20", t:"صافي التدفق 20 يوماً", f:flowCell},
   ], latest.watch||[], {sort:{k:"dist100",dir:-1}, empty:"لا توجد أسهم قريبة من الاختراق حالياً."});
   table($("misses"), [codeCol,
     {k:"close", t:"الإغلاق", f:r=>`<span class="num">${fmt(r.close)}</span>`},
@@ -447,6 +456,7 @@ function renderAll(u){
     {k:"dist200", t:"عن م200", f:r=>pct(r.dist200)},
     {k:"vol_ratio", t:"الفوليوم", f:r=>r.vol_ratio==null?"—":`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
     {k:"avg_value", t:"تداول يومي (ر.س)", f:r=>r.avg_value==null?"—":money(r.avg_value)},
+    {k:"flow_20", t:"صافي التدفق 20 يوماً", f:flowCell},
     {k:"sector", t:"القطاع", v:r=>sector(r.sector), f:r=>esc(sector(r.sector))},
   ];
   const apply = () => {
@@ -471,6 +481,7 @@ function renderSettings(latest, runs){
     kv("أدنى سيولة يومية", `${money(s.min_avg_value_sar)} ر.س`),
     kv("م200 فوق م100", s.require_slow_above_fast ? "مطلوب" : "غير مطلوب"),
     kv("الوقف", "قاع شمعة الاختراق"),
+    kv("صافي التدفق", "تقدير يومي: موقع الإغلاق في مدى الشمعة × قيمة التداول"),
     kv("نطاق المراقبة", `<span class="num">${s.watch_band_pct}%</span> تحت م100`),
     kv("مدة المتابعة القصوى", `<span class="num">${s.max_hold_days}</span> يوم تداول`),
     kv("السوق الموازية (نمو)", s.exclude_nomu ? "مستبعدة" : "مشمولة"),

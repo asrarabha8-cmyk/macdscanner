@@ -210,6 +210,16 @@ def evaluate(df):
     vol_avg = v.shift(1).rolling(S["vol_lookback"]).mean()
     value_avg = (c * v).rolling(S["vol_lookback"]).mean()
 
+    # صافي التدفق النقدي (تقدير من الشمعة اليومية): موقع الإغلاق داخل مدى اليوم × قيمة التداول
+    # +1 إغلاق عند القمة (ضغط شراء) ، -1 إغلاق عند القاع (ضغط بيع)
+    h, l = df["High"], df["Low"]
+    rng = (h - l).replace(0, pd.NA)
+    clv = (((c - l) - (h - c)) / rng).fillna(0).astype(float)
+    flow = clv * c * v
+    n = S["vol_lookback"]
+    flow_n = float(flow.iloc[-n:].sum())
+    value_n = float((c * v).iloc[-n:].sum())
+
     close, prev = float(c.iloc[-1]), float(c.iloc[-2])
     f_now, f_prev, s_now = float(ma_f.iloc[-1]), float(ma_f.iloc[-2]), float(ma_s.iloc[-1])
     va = float(vol_avg.iloc[-1]) if not pd.isna(vol_avg.iloc[-1]) else 0.0
@@ -222,6 +232,9 @@ def evaluate(df):
         "dist100": rnd((close / f_now - 1) * 100), "dist200": rnd((close / s_now - 1) * 100),
         "vol_ratio": rnd(vol_ratio), "avg_value": rnd(avg_val, 0),
         "low": rnd(df["Low"].iloc[-1]),
+        "flow_today": rnd(flow.iloc[-1], 0),
+        "flow_20": rnd(flow_n, 0),
+        "flow_pct": rnd(flow_n / value_n * 100 if value_n > 0 else None, 1),
     }
 
     liquid = avg_val >= S["min_avg_value_sar"]
