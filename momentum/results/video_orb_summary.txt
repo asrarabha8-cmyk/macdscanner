@@ -1,0 +1,70 @@
+Video ORB backtest  2024-10-10 → 2026-10-10  target 2.0R  cost 0.05R
+
+### SPY  (501 days)
+  breakout            {'n': 495, 'win': np.float64(43.2), 'avgR': np.float64(0.037), 'totR': np.float64(18.2), 'pf': np.float64(1.07), 'maxDD_R': np.float64(-19.3)}
+  breakout +compress  {'n': 205, 'win': np.float64(43.9), 'avgR': np.float64(0.149), 'totR': np.float64(30.5), 'pf': np.float64(1.27), 'maxDD_R': np.float64(-11.2)}
+  retest              {'n': 418, 'win': np.float64(41.6), 'avgR': np.float64(0.021), 'totR': np.float64(8.8), 'pf': np.float64(1.04), 'maxDD_R': np.float64(-27.6)}
+  retest   +compress  {'n': 162, 'win': np.float64(38.9), 'avgR': np.float64(0.041), 'totR': np.float64(6.6), 'pf': np.float64(1.07), 'maxDD_R': np.float64(-17.8)}
+     retest 2024: {'n': 46, 'win': np.float64(50.0), 'avgR': np.float64(0.299), 'totR': np.float64(13.8), 'pf': np.float64(1.6), 'maxDD_R': np.float64(-11.1)}
+     retest 2025: {'n': 205, 'win': np.float64(39.0), 'avgR': np.float64(-0.001), 'totR': np.float64(-0.3), 'pf': np.float64(1.0), 'maxDD_R': np.float64(-24.0)}
+     retest 2026: {'n': 167, 'win': np.float64(42.5), 'avgR': np.float64(-0.028), 'totR': np.float64(-4.6), 'pf': np.float64(0.95), 'maxDD_R': np.float64(-26.6)}
+
+### QQQ  (501 days)
+  breakout            {'n': 491, 'win': np.float64(45.0), 'avgR': np.float64(-0.019), 'totR': np.float64(-9.3), 'pf': np.float64(0.96), 'maxDD_R': np.float64(-34.5)}
+  breakout +compress  {'n': 173, 'win': np.float64(43.4), 'avgR': np.float64(-0.054), 'totR': np.float64(-9.4), 'pf': np.float64(0.9), 'maxDD_R': np.float64(-17.4)}
+  retest              {'n': 428, 'win': np.float64(43.2), 'avgR': np.float64(0.001), 'totR': np.float64(0.3), 'pf': np.float64(1.0), 'maxDD_R': np.float64(-26.3)}
+  retest   +compress  {'n': 157, 'win': np.float64(40.8), 'avgR': np.float64(-0.019), 'totR': np.float64(-3.0), 'pf': np.float64(0.97), 'maxDD_R': np.float64(-11.3)}
+     retest 2024: {'n': 46, 'win': np.float64(41.3), 'avgR': np.float64(0.011), 'totR': np.float64(0.5), 'pf': np.float64(1.02), 'maxDD_R': np.float64(-6.1)}
+     retest 2025: {'n': 209, 'win': np.float64(44.5), 'avgR': np.float64(0.067), 'totR': np.float64(13.9), 'pf': np.float64(1.13), 'maxDD_R': np.float64(-14.3)}
+     retest 2026: {'n': 173, 'win': np.float64(42.2), 'avgR': np.float64(-0.081), 'totR': np.float64(-14.1), 'pf': np.float64(0.84), 'maxDD_R': np.float64(-26.3)}
+
+### NVDA  (501 days)
+  breakout            {'n': 452, 'win': np.float64(45.4), 'avgR': np.float64(-0.047), 'totR': np.float64(-21.4), 'pf': np.float64(0.88), 'maxDD_R': np.float64(-40.0)}
+  breakout +compress  {'n': 159, 'win': np.float64(43.4), 'avgR': np.float64(-0.024), 'totR': np.float64(-3.9), 'pf': np.float64(0.95), 'maxDD_R': np.float64(-16.4)}
+  retest              {'n': 392, 'win': np.float64(44.9), 'avgR': np.float64(-0.048), 'totR': np.float64(-18.9), 'pf': np.float64(0.89), 'maxDD_R': np.float64(-36.3)}
+  retest   +compress  {'n': 135, 'win': np.float64(42.2), 'avgR': np.float64(-0.022), 'totR': np.float64(-3.0), 'pf': np.float64(0.95), 'maxDD_R': np.float64(-16.2)}
+     retest 2024: {'n': 43, 'win': np.float64(37.2), 'avgR': np.float64(-0.151), 'totR': np.float64(-6.5), 'pf': np.float64(0.59), 'maxDD_R': np.float64(-8.0)}
+     retest 2025: {'n': 197, 'win': np.float64(40.6), 'avgR': np.float64(-0.096), 'totR': np.float64(-18.9), 'pf': np.float64(0.79), 'maxDD_R': np.float64(-33.6)}
+     retest 2026: {'n': 152, 'win': np.float64(52.6), 'avgR': np.float64(0.043), 'totR': np.float64(6.6), 'pf': np.float64(1.12), 'maxDD_R': np.float64(-6.8)}
+
+### TSLA  (501 days)
+  breakout            {'n': 446, 'win': np.float64(46.0), 'avgR': np.float64(0.04), 'totR': np.float64(17.7), 'pf': np.float64(1.11), 'maxDD_R': np.float64(-11.7)}
+  breakout +compress  {'n': 147, 'win': np.float64(46.3), 'avgR': np.float64(0.043), 'totR': np.float64(6.3), 'pf': np.float64(1.1), 'maxDD_R': np.float64(-11.0)}
+  retest              {'n': 380, 'win': np.float64(46.3), 'avgR': np.float64(0.07), 'totR': np.float64(26.7), 'pf': np.float64(1.18), 'maxDD_R': np.float64(-8.8)}
+  retest   +compress  {'n': 127, 'win': np.float64(44.1), 'avgR': np.float64(0.06), 'totR': np.float64(7.6), 'pf': np.float64(1.13), 'maxDD_R': np.float64(-5.9)}
+     retest 2024: {'n': 45, 'win': np.float64(40.0), 'avgR': np.float64(-0.007), 'totR': np.float64(-0.3), 'pf': np.float64(0.98), 'maxDD_R': np.float64(-4.2)}
+     retest 2025: {'n': 187, 'win': np.float64(46.0), 'avgR': np.float64(0.087), 'totR': np.float64(16.3), 'pf': np.float64(1.21), 'maxDD_R': np.float64(-8.2)}
+     retest 2026: {'n': 148, 'win': np.float64(48.6), 'avgR': np.float64(0.073), 'totR': np.float64(10.7), 'pf': np.float64(1.21), 'maxDD_R': np.float64(-8.8)}
+
+### AAPL  (501 days)
+  breakout            {'n': 433, 'win': np.float64(44.8), 'avgR': np.float64(-0.044), 'totR': np.float64(-19.1), 'pf': np.float64(0.88), 'maxDD_R': np.float64(-32.6)}
+  breakout +compress  {'n': 166, 'win': np.float64(46.4), 'avgR': np.float64(-0.049), 'totR': np.float64(-8.2), 'pf': np.float64(0.88), 'maxDD_R': np.float64(-21.1)}
+  retest              {'n': 375, 'win': np.float64(44.8), 'avgR': np.float64(-0.039), 'totR': np.float64(-14.8), 'pf': np.float64(0.9), 'maxDD_R': np.float64(-27.8)}
+  retest   +compress  {'n': 140, 'win': np.float64(44.3), 'avgR': np.float64(-0.017), 'totR': np.float64(-2.3), 'pf': np.float64(0.96), 'maxDD_R': np.float64(-17.8)}
+     retest 2024: {'n': 38, 'win': np.float64(28.9), 'avgR': np.float64(-0.262), 'totR': np.float64(-9.9), 'pf': np.float64(0.46), 'maxDD_R': np.float64(-10.7)}
+     retest 2025: {'n': 191, 'win': np.float64(48.7), 'avgR': np.float64(-0.043), 'totR': np.float64(-8.2), 'pf': np.float64(0.89), 'maxDD_R': np.float64(-27.8)}
+     retest 2026: {'n': 146, 'win': np.float64(43.8), 'avgR': np.float64(0.023), 'totR': np.float64(3.3), 'pf': np.float64(1.07), 'maxDD_R': np.float64(-6.7)}
+
+### AMD  (501 days)
+  breakout            {'n': 444, 'win': np.float64(44.6), 'avgR': np.float64(-0.081), 'totR': np.float64(-36.1), 'pf': np.float64(0.79), 'maxDD_R': np.float64(-38.5)}
+  breakout +compress  {'n': 152, 'win': np.float64(40.8), 'avgR': np.float64(-0.181), 'totR': np.float64(-27.5), 'pf': np.float64(0.65), 'maxDD_R': np.float64(-29.4)}
+  retest              {'n': 386, 'win': np.float64(44.6), 'avgR': np.float64(-0.088), 'totR': np.float64(-34.0), 'pf': np.float64(0.78), 'maxDD_R': np.float64(-38.2)}
+  retest   +compress  {'n': 132, 'win': np.float64(37.1), 'avgR': np.float64(-0.214), 'totR': np.float64(-28.2), 'pf': np.float64(0.62), 'maxDD_R': np.float64(-28.9)}
+     retest 2024: {'n': 43, 'win': np.float64(46.5), 'avgR': np.float64(-0.045), 'totR': np.float64(-1.9), 'pf': np.float64(0.89), 'maxDD_R': np.float64(-5.6)}
+     retest 2025: {'n': 194, 'win': np.float64(44.3), 'avgR': np.float64(-0.084), 'totR': np.float64(-16.4), 'pf': np.float64(0.8), 'maxDD_R': np.float64(-21.3)}
+     retest 2026: {'n': 149, 'win': np.float64(44.3), 'avgR': np.float64(-0.106), 'totR': np.float64(-15.7), 'pf': np.float64(0.73), 'maxDD_R': np.float64(-20.2)}
+
+### META  (501 days)
+  breakout            {'n': 437, 'win': np.float64(42.6), 'avgR': np.float64(-0.105), 'totR': np.float64(-46.0), 'pf': np.float64(0.74), 'maxDD_R': np.float64(-48.9)}
+  breakout +compress  {'n': 146, 'win': np.float64(40.4), 'avgR': np.float64(-0.17), 'totR': np.float64(-24.8), 'pf': np.float64(0.64), 'maxDD_R': np.float64(-27.4)}
+  retest              {'n': 378, 'win': np.float64(42.9), 'avgR': np.float64(-0.124), 'totR': np.float64(-46.9), 'pf': np.float64(0.71), 'maxDD_R': np.float64(-52.7)}
+  retest   +compress  {'n': 123, 'win': np.float64(38.2), 'avgR': np.float64(-0.212), 'totR': np.float64(-26.0), 'pf': np.float64(0.6), 'maxDD_R': np.float64(-28.8)}
+     retest 2024: {'n': 45, 'win': np.float64(37.8), 'avgR': np.float64(-0.077), 'totR': np.float64(-3.5), 'pf': np.float64(0.82), 'maxDD_R': np.float64(-8.6)}
+     retest 2025: {'n': 187, 'win': np.float64(42.8), 'avgR': np.float64(-0.111), 'totR': np.float64(-20.8), 'pf': np.float64(0.74), 'maxDD_R': np.float64(-24.6)}
+     retest 2026: {'n': 146, 'win': np.float64(44.5), 'avgR': np.float64(-0.155), 'totR': np.float64(-22.6), 'pf': np.float64(0.64), 'maxDD_R': np.float64(-26.2)}
+
+### ALL tickers
+  breakout            {'n': 3198, 'win': np.float64(44.5), 'avgR': np.float64(-0.03), 'totR': np.float64(-95.9), 'pf': np.float64(0.93), 'maxDD_R': np.float64(-138.0)}
+  breakout +compress  {'n': 1148, 'win': np.float64(43.6), 'avgR': np.float64(-0.032), 'totR': np.float64(-37.0), 'pf': np.float64(0.93), 'maxDD_R': np.float64(-74.0)}
+  retest              {'n': 2757, 'win': np.float64(44.0), 'avgR': np.float64(-0.029), 'totR': np.float64(-78.7), 'pf': np.float64(0.94), 'maxDD_R': np.float64(-114.7)}
+  retest   +compress  {'n': 976, 'win': np.float64(40.8), 'avgR': np.float64(-0.049), 'totR': np.float64(-48.3), 'pf': np.float64(0.91), 'maxDD_R': np.float64(-62.7)}
