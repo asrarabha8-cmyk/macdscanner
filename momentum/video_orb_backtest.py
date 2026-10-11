@@ -165,4 +165,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException:
+        import traceback
+        os.makedirs("results", exist_ok=True)
+        with open("results/video_orb_error.txt", "w") as f:
+            f.write(traceback.format_exc())
+        raise
