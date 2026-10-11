@@ -173,6 +173,18 @@ def download_history(codes):
 
 
 def get_tasi():
+    # المصدر الأول: TradingView
+    try:
+        r = requests.post("https://scanner.tradingview.com/ksa/scan",
+                          json={"symbols": {"tickers": ["TADAWUL:TASI"]},
+                                "columns": ["close", "change"]},
+                          timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        d = r.json()["data"][0]["d"]
+        return {"close": rnd(d[0]), "change_pct": rnd(d[1]), "date": None}
+    except Exception as e:
+        print("TASI (TradingView) error:", e)
+    # احتياطي: Yahoo
     try:
         import yfinance as yf
         df = yf.download("^TASI.SR", period="10d", interval="1d",
