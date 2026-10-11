@@ -367,7 +367,7 @@ function renderSignals(list){
         <span>المخاطرة <strong>${pct(-s.risk_pct)}</strong></span>
         <span>الفوليوم <strong class="num">×${fmt(s.vol_ratio,1)}</strong></span>
         <span>م100 <strong class="num">${fmt(s.ma100)}</strong></span>
-        <span>السيولة <strong>${money(s.avg_value)} ر.س</strong></span>
+        <span>متوسط التداول اليومي <strong>${money(s.avg_value)} ر.س</strong></span>
         <a href="${tv(s.code)}" target="_blank" rel="noopener">فتح الشارت</a>
       </div>
     </article>`).join("");
@@ -399,7 +399,7 @@ function renderWatch(latest){
     {k:"dist100", t:"المسافة لـ م100", f:r=>pct(r.dist100,2)},
     {k:"ma200", t:"م200", f:r=>`<span class="num">${fmt(r.ma200)}</span>`},
     {k:"vol_ratio", t:"الفوليوم", f:r=>`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
-    {k:"avg_value", t:"السيولة", f:r=>money(r.avg_value)},
+    {k:"avg_value", t:"تداول يومي (ر.س)", f:r=>money(r.avg_value)},
   ], latest.watch||[], {sort:{k:"dist100",dir:-1}, empty:"لا توجد أسهم قريبة من الاختراق حالياً."});
   table($("misses"), [codeCol,
     {k:"close", t:"الإغلاق", f:r=>`<span class="num">${fmt(r.close)}</span>`},
@@ -446,7 +446,7 @@ function renderAll(u){
     {k:"dist100", t:"عن م100", f:r=>pct(r.dist100)},
     {k:"dist200", t:"عن م200", f:r=>pct(r.dist200)},
     {k:"vol_ratio", t:"الفوليوم", f:r=>r.vol_ratio==null?"—":`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
-    {k:"avg_value", t:"السيولة", f:r=>r.avg_value==null?"—":money(r.avg_value)},
+    {k:"avg_value", t:"تداول يومي (ر.س)", f:r=>r.avg_value==null?"—":money(r.avg_value)},
     {k:"sector", t:"القطاع", v:r=>sector(r.sector), f:r=>esc(sector(r.sector))},
   ];
   const apply = () => {
