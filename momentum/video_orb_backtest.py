@@ -123,7 +123,8 @@ def main():
     end = pd.Timestamp.today().normalize() - pd.Timedelta(days=1)
     start = end - pd.Timedelta(days=int(365 * a.years))
     os.makedirs(a.out, exist_ok=True)
-    lines, allrows = [f"Video ORB backtest  {start.date()} → {end.date()}  target {TARGET_R}R  cost {COST_R}R", ""]
+    lines = [f"Video ORB backtest  {start.date()} → {end.date()}  target {TARGET_R}R  cost {COST_R}R", ""]
+    allrows = []
     for tk in a.tickers:
         print(f"== {tk}", flush=True)
         df = polygon_5m(tk, start, end, key)
