@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ماسح تداول</title>
+<meta name="theme-color" content="#0B3D2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2EE; --surface:#FFFFFF; --ink:#0B3D2E; --ink-2:#4A6158; --line:#D5DED8;
+  --green:#1F8A5B; --green-bg:#E3F3EA; --red:#B5402F; --red-bg:#F8E6E2;
+  --gold:#A87B1E; --gold-bg:#F6EDD9; --blue:#2D5F8A; --blue-bg:#E4EDF5;
+  --muted-bg:#E6ECE8; --needle:#0B3D2E;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#08140F; --surface:#0F211A; --ink:#DCEDE4; --ink-2:#8FA99C; --line:#1F3A2F;
+    --green:#4CC48C; --green-bg:#123325; --red:#E37B69; --red-bg:#3A1C17;
+    --gold:#D9AE55; --gold-bg:#33290F; --blue:#7DAEDB; --blue-bg:#14283A;
+    --muted-bg:#152B22; --needle:#DCEDE4;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08140F; --surface:#0F211A; --ink:#DCEDE4; --ink-2:#8FA99C; --line:#1F3A2F;
+  --green:#4CC48C; --green-bg:#123325; --red:#E37B69; --red-bg:#3A1C17;
+  --gold:#D9AE55; --gold-bg:#33290F; --blue:#7DAEDB; --blue-bg:#14283A;
+  --muted-bg:#152B22; --needle:#DCEDE4;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+a{color:var(--blue)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 48px}
+
+/* رأس الصفحة + خط الجلسة */
+header.top{background:var(--ink);color:var(--bg);padding:18px 0 22px}
+:root[data-theme="dark"] header.top{background:#0D2A20;color:var(--ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) header.top{background:#0D2A20;color:var(--ink)}}
+.top .row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+h1{font-family:"Reem Kufi",serif;font-weight:700;font-size:26px;line-height:1.2;margin:0}
+.sub{opacity:.75;font-size:13px;margin-top:4px}
+.clock{text-align:left}
+.clock .t{font-size:24px;font-weight:600;line-height:1}
+.pill{display:inline-block;white-space:nowrap;margin-top:6px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.pill.open{background:#1F8A5B;color:#fff}
+.pill.auction{background:#A87B1E;color:#fff}
+.pill.closed{background:rgba(255,255,255,.16);color:inherit}
+
+.timeline{margin-top:18px;direction:ltr;position:relative;height:54px}
+.tl-bar{position:absolute;left:0;right:0;top:20px;height:8px;border-radius:4px;background:rgba(255,255,255,.14)}
+.tl-seg{position:absolute;top:20px;height:8px;border-radius:4px}
+.tl-mark{position:absolute;top:0;transform:translateX(-50%);font-size:11px;white-space:nowrap;opacity:.85;text-align:center}
+.tl-mark.bottom{top:32px}
+.tl-tick{position:absolute;top:16px;width:2px;height:16px;background:currentColor;opacity:.5;transform:translateX(-1px)}
+.tl-needle{position:absolute;top:12px;width:3px;height:24px;border-radius:2px;background:#F2D27A;transform:translateX(-1px);box-shadow:0 0 0 3px rgba(242,210,122,.25)}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;margin-top:-14px;position:relative}
+.fact{background:var(--surface);padding:10px 12px}
+.fact .k{font-size:12px;color:var(--ink-2)}
+.fact .v{font-size:16px;font-weight:600}
+.fact .s{font-size:12px;color:var(--ink-2)}
+@media (max-width:640px){.facts{grid-template-columns:repeat(2,1fr)}}
+.warn{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--gold-bg);color:var(--ink);font-size:13px;border:1px solid var(--line)}
+
+/* تبويبات */
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);margin:18px -16px 0;padding:10px 16px;
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;
+  padding:6px 14px;font:inherit;font-size:14px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab .c{font-size:12px;opacity:.7;margin-inline-start:6px}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+section.panel{display:none;padding-top:16px}
+section.panel.on{display:block}
+h2{font-size:18px;margin:4px 0 4px;font-weight:700}
+.hint{color:var(--ink-2);font-size:13px;margin:0 0 14px}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--ink-2)}
+
+/* الإشارة: سلّم السعر */
+.sig{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;margin-bottom:12px}
+.sig-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.sig-code{font-size:20px;font-weight:700}
+.sig-name{color:var(--ink-2);font-size:13px}
+.sig-rr{text-align:left}
+.sig-rr .v{font-size:20px;font-weight:700;color:var(--green)}
+.sig-rr .k{font-size:12px;color:var(--ink-2)}
+.ladder{direction:ltr;position:relative;height:66px;margin:14px 4px 4px}
+.ld-track{position:absolute;left:0;right:0;top:26px;height:6px;border-radius:3px;background:var(--muted-bg)}
+.ld-risk{position:absolute;top:26px;height:6px;background:var(--red);border-radius:3px 0 0 3px;opacity:.85}
+.ld-reward{position:absolute;top:26px;height:6px;background:var(--gold);border-radius:0 3px 3px 0}
+.ld-pt{position:absolute;top:20px;width:2px;height:18px;transform:translateX(-1px)}
+.ld-lbl{position:absolute;transform:translateX(-50%);font-size:11px;white-space:nowrap;text-align:center;line-height:1.25}
+.ld-lbl.up{top:0}
+.ld-lbl.dn{top:42px}
+.ld-lbl b{font-size:12px}
+.sig-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink-2);margin-top:6px}
+.sig-meta strong{color:var(--ink);font-weight:600}
+
+/* جداول */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--ink-2);background:var(--surface);position:sticky;top:0;cursor:pointer;user-select:none}
+th[data-sort]::after{content:"";display:inline-block;width:10px}
+th.asc::after{content:"▲";font-size:9px;margin-inline-start:4px}
+th.desc::after{content:"▼";font-size:9px;margin-inline-start:4px}
+tr:last-child td{border-bottom:0}
+td.code{font-weight:700}
+td .nm{display:block;font-weight:400;color:var(--ink-2);font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.pos{color:var(--green)} .neg{color:var(--red)}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.chip.signal,.chip.target{background:var(--green-bg);color:var(--green)}
+.chip.stop{background:var(--red-bg);color:var(--red)}
+.chip.watch,.chip.open{background:var(--blue-bg);color:var(--blue)}
+.chip.miss,.chip.expired{background:var(--gold-bg);color:var(--gold)}
+.chip.above,.chip.below,.chip.illiquid,.chip.stale{background:var(--muted-bg);color:var(--ink-2)}
+.why{font-size:12px;color:var(--gold)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat .v{font-size:20px;font-weight:700}
+.stat .k{font-size:12px;color:var(--ink-2)}
+@media (min-width:720px){.stats{grid-template-columns:repeat(6,1fr)}}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.filters input,.filters select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);
+  border-radius:10px;background:var(--surface);color:var(--ink)}
+.filters input{flex:1 1 180px}
+.count{font-size:12px;color:var(--ink-2);margin:6px 2px}
+
+.settings{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:720px){.settings{grid-template-columns:1fr 1fr}}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.box h3{margin:0 0 8px;font-size:15px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--ink-2)}
+h2 + .sub2{margin-top:18px}
+.sub2{font-size:16px;font-weight:700;margin:22px 0 8px}
+footer{margin-top:28px;font-size:12px;color:var(--ink-2)}
+.themebtn{background:none;border:1px solid rgba(255,255,255,.3);color:inherit;border-radius:8px;font:inherit;font-size:12px;padding:2px 8px;cursor:pointer;margin-top:6px}
+@media (prefers-reduced-motion:no-preference){.tl-needle{transition:left .6s ease}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="row">
+      <div>
+        <h1>ماسح تداول</h1>
+        <div class="sub">اختراق المتوسط 100 بهدف المتوسط 200 — فاصل يومي</div>
+        <button class="themebtn" id="themeBtn" type="button">تبديل المظهر</button>
+      </div>
+      <div class="clock">
+        <div class="t num" id="clock">--:--</div>
+        <div style="font-size:12px;opacity:.75">توقيت الرياض</div>
+        <span class="pill closed" id="mstatus">—</span>
+      </div>
+    </div>
+    <div class="timeline" id="timeline" aria-label="جدول جلسة اليوم"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="facts" id="facts">
+    <div class="fact"><div class="k">آخر تحديث</div><div class="v" id="fUpdated">—</div><div class="s" id="fUpdatedAgo"></div></div>
+    <div class="fact"><div class="k">جلسة البيانات</div><div class="v num" id="fDate">—</div><div class="s" id="fScanned"></div></div>
+    <div class="fact"><div class="k">الفحص القادم</div><div class="v" id="fNext">—</div><div class="s" id="fNextIn"></div></div>
+    <div class="fact"><div class="k">مؤشر تاسي</div><div class="v num" id="fTasi">—</div><div class="s num" id="fTasiChg"></div></div>
+  </div>
+  <div id="warnings"></div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="signals" aria-selected="true">الإشارات<span class="c num" id="cSignals"></span></button>
+    <button class="tab" role="tab" data-tab="watch" aria-selected="false">قيد المراقبة<span class="c num" id="cWatch"></span></button>
+    <button class="tab" role="tab" data-tab="history" aria-selected="false">متابعة الإشارات<span class="c num" id="cHistory"></span></button>
+    <button class="tab" role="tab" data-tab="all" aria-selected="false">كل الأسهم<span class="c num" id="cAll"></span></button>
+    <button class="tab" role="tab" data-tab="settings" aria-selected="false">الإعدادات والسجل</button>
+  </nav>
+
+  <section class="panel on" id="p-signals">
+    <h2>إشارات آخر جلسة</h2>
+    <p class="hint">أسهم أغلقت فوق المتوسط 100 بعد أن كانت تحته، بفوليوم مرتفع، والمتوسط 200 فوقها كهدف.</p>
+    <div id="signals"></div>
+  </section>
+
+  <section class="panel" id="p-watch">
+    <h2>قريبة من الاختراق</h2>
+    <p class="hint" id="watchHint">أسهم تحت المتوسط 100 بمسافة قليلة، سيولتها مقبولة، والمتوسط 200 فوقها.</p>
+    <div id="watch"></div>
+    <div class="sub2">اخترقت اليوم لكن لم تكتمل شروطها</div>
+    <div id="misses"></div>
+  </section>
+
+  <section class="panel" id="p-history">
+    <h2>متابعة الإشارات السابقة</h2>
+    <p class="hint">كل إشارة تُتابع يومياً: تُغلق عند لمس الهدف أو الوقف، أو تنتهي بعد مدة المتابعة القصوى.</p>
+    <div class="stats" id="stats"></div>
+    <div id="history"></div>
+  </section>
+
+  <section class="panel" id="p-all">
+    <h2>كل الأسهم المفحوصة</h2>
+    <p class="hint">بيانات آخر جلسة لكل سهم. اضغط على عنوان العمود للترتيب.</p>
+    <div class="filters">
+      <input id="q" type="search" placeholder="ابحث بالرمز أو الاسم" aria-label="بحث">
+      <select id="fStatus" aria-label="الحالة">
+        <option value="">كل الحالات</option>
+        <option value="signal">إشارة</option>
+        <option value="miss">اختراق ناقص</option>
+        <option value="watch">مراقبة</option>
+        <option value="above">فوق المتوسط 100</option>
+        <option value="below">تحت المتوسط 100</option>
+        <option value="illiquid">سيولة ضعيفة</option>
+        <option value="stale">بيانات متأخرة</option>
+      </select>
+      <select id="fSector" aria-label="القطاع"><option value="">كل القطاعات</option></select>
+    </div>
+    <div class="count" id="allCount"></div>
+    <div id="all"></div>
+  </section>
+
+  <section class="panel" id="p-settings">
+    <h2>الإعدادات والمواعيد</h2>
+    <p class="hint">القيم التي استخدمها الماسح في آخر فحص.</p>
+    <div class="settings">
+      <div class="box"><h3>شروط الاستراتيجية</h3><div id="setRules"></div></div>
+      <div class="box"><h3>المواعيد</h3><div id="setTimes"></div></div>
+    </div>
+    <div class="sub2">سجل التشغيل</div>
+    <div id="runs"></div>
+    <div class="sub2">رموز تعذّر جلب بياناتها</div>
+    <div id="failed" class="hint"></div>
+  </section>
+
+  <footer>للمتابعة والتحليل فقط، وليست توصية شراء أو بيع. مصادر البيانات: Yahoo Finance لأسعار الإغلاق، وTradingView لقائمة الأسهم.</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const RIYADH_OFFSET = 3 * 3600 * 1000;
+const STATUS_AR = {signal:"إشارة",miss:"اختراق ناقص",watch:"مراقبة",above:"فوق م100",below:"تحت م100",
+  illiquid:"سيولة ضعيفة",stale:"متأخرة",open:"مفتوحة",target:"حققت الهدف",stop:"ضربت الوقف",expired:"انتهت المدة"};
+const SECTOR_AR = {"Finance":"مالية","Energy Minerals":"طاقة","Non-Energy Minerals":"مواد أساسية",
+  "Process Industries":"صناعات تحويلية","Utilities":"مرافق","Communications":"اتصالات","Retail Trade":"تجزئة",
+  "Consumer Non-Durables":"سلع استهلاكية","Health Services":"خدمات صحية","Technology Services":"خدمات تقنية",
+  "Transportation":"نقل","Producer Manufacturing":"تصنيع","Industrial Services":"خدمات صناعية",
+  "Commercial Services":"خدمات تجارية","Consumer Services":"خدمات استهلاكية","Distribution Services":"توزيع",
+  "Electronic Technology":"تقنية إلكترونية","Health Technology":"تقنية صحية","Consumer Durables":"سلع معمرة",
+  "Miscellaneous":"متنوع"};
+const DAYS_AR = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+let SCHED = {run_weekdays:[0,1,2,3,4], run_hour:15, run_minute:45};
+let LATEST = null;
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = (x, d=2) => (x === null || x === undefined || isNaN(x)) ? "—" : Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (x, d=1) => (x === null || x === undefined) ? "—" : `<span class="num ${x>0?"pos":x<0?"neg":""}">${x>0?"+":""}${fmt(x,d)}%</span>`;
+const money = x => x >= 1e9 ? fmt(x/1e9,1)+" مليار" : x >= 1e6 ? fmt(x/1e6,1)+" مليون" : fmt(x,0);
+const sector = s => SECTOR_AR[s] || s || "";
+const tv = c => `https://www.tradingview.com/chart/?symbol=TADAWUL:${encodeURIComponent(c)}`;
+
+// وقت الرياض كـ "ساعة حائط" (UTC+3 بلا توقيت صيفي)
+function riyadhNow(){ return new Date(Date.now() + RIYADH_OFFSET); }  // استخدم getUTC*
+function riyadhStr(iso){
+  const d = new Date(new Date(iso).getTime() + RIYADH_OFFSET);
+  const p = n => String(n).padStart(2,"0");
+  return {date:`${d.getUTCFullYear()}-${p(d.getUTCMonth()+1)}-${p(d.getUTCDate())}`, time:`${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`, day:DAYS_AR[d.getUTCDay()]};
+}
+function ago(ms){
+  const m = Math.round(ms/60000);
+  if (m < 1) return "الآن";
+  if (m < 60) return `قبل ${m} دقيقة`;
+  const h = Math.floor(m/60); if (h < 24) return `قبل ${h} ساعة${m%60?" و"+(m%60)+" دقيقة":""}`;
+  const d = Math.floor(h/24); return `قبل ${d} يوم`;
+}
+function until(ms){
+  const m = Math.max(0, Math.round(ms/60000)); const h = Math.floor(m/60), mm = m%60;
+  if (h >= 24) { const d = Math.floor(h/24); return `بعد ${d} يوم و${h%24} ساعة`; }
+  return h ? `بعد ${h} ساعة و${mm} دقيقة` : `بعد ${mm} دقيقة`;
+}
+
+/* ───── الساعة وحالة السوق وخط الجلسة ───── */
+const T = (h,m) => h*60+m;
+const TL = {start:T(9,30), end:T(17,0), open:T(10,0), close:T(15,0), auction:T(15,10), run:T(15,45)};
+function marketState(r){
+  const day = r.getUTCDay(), min = r.getUTCHours()*60 + r.getUTCMinutes();
+  if (day === 5 || day === 6) return ["closed","عطلة نهاية الأسبوع"];
+  if (min < TL.open) return ["closed","قبل الافتتاح"];
+  if (min < TL.close) return ["open","السوق مفتوح"];
+  if (min < TL.auction) return ["auction","مزاد الإغلاق"];
+  return ["closed","السوق مغلق"];
+}
+function nextRun(r){
+  // يرجع الوقت القادم (ms UTC) للتشغيل المجدول
+  for (let i=0;i<8;i++){
+    const d = new Date(Date.UTC(r.getUTCFullYear(), r.getUTCMonth(), r.getUTCDate()+i, SCHED.run_hour, SCHED.run_minute));
+    if (SCHED.run_weekdays.includes(d.getUTCDay()) && d.getTime() > r.getTime()) return d.getTime() - RIYADH_OFFSET;
+  }
+  return null;
+}
+function drawTimeline(){
+  const el = $("timeline"), pos = m => ((m - TL.start)/(TL.end - TL.start)*100).toFixed(2)+"%";
+  const marks = [[TL.open,"الافتتاح 10:00",0],[TL.close,"الإغلاق 15:00",0],[TL.auction,"",0],[TL.run,"الفحص 15:45",1]];
+  let h = `<div class="tl-bar"></div>
+    <div class="tl-seg" style="left:${pos(TL.open)};width:calc(${pos(TL.close)} - ${pos(TL.open)});background:#1F8A5B"></div>
+    <div class="tl-seg" style="left:${pos(TL.close)};width:calc(${pos(TL.auction)} - ${pos(TL.close)});background:#A87B1E"></div>`;
+  for (const [m,l,b] of marks) h += `<div class="tl-tick" style="left:${pos(m)}"></div>${l?`<div class="tl-mark ${b?"bottom":""}" style="left:${pos(m)}">${l}</div>`:""}`;
+  h += `<div class="tl-needle" id="needle" title="الآن"></div>`;
+  el.innerHTML = h;
+}
+function tick(){
+  const r = riyadhNow(), p = n => String(n).padStart(2,"0");
+  $("clock").textContent = `${p(r.getUTCHours())}:${p(r.getUTCMinutes())}`;
+  const [cls, label] = marketState(r);
+  const ms = $("mstatus"); ms.className = "pill "+cls; ms.textContent = `${DAYS_AR[r.getUTCDay()]}، ${label}`;
+  const min = r.getUTCHours()*60 + r.getUTCMinutes(), nd = $("needle");
+  if (nd){ const weekend = r.getUTCDay()===5 || r.getUTCDay()===6;
+    nd.style.display = (weekend || min < TL.start || min > TL.end) ? "none" : "block";
+    nd.style.left = ((min - TL.start)/(TL.end - TL.start)*100)+"%"; }
+  const nr = nextRun(r);
+  if (nr){ const s = riyadhStr(new Date(nr).toISOString()); $("fNext").textContent = `${s.day} ${s.time}`; $("fNextIn").textContent = until(nr - Date.now()); }
+  if (LATEST && LATEST.run && LATEST.run.finished_utc) $("fUpdatedAgo").textContent = ago(Date.now() - new Date(LATEST.run.finished_utc).getTime());
+}
+
+/* ───── تحميل البيانات ───── */
+async function getJSON(name){
+  try { const r = await fetch(`data/${name}?t=${Date.now()}`, {cache:"no-store"}); if (!r.ok) return null; return await r.json(); }
+  catch(e){ return null; }
+}
+
+function ladder(s){
+  const lo = Math.min(s.stop, s.ma100), hi = s.target, pad = (hi - lo)*0.08 || 1;
+  const a = lo - pad, b = hi + pad, x = v => ((v - a)/(b - a)*100);
+  return `<div class="ladder" aria-label="الوقف ${s.stop} والدخول ${s.close} والهدف ${s.target}">
+    <div class="ld-track"></div>
+    <div class="ld-risk" style="left:${x(s.stop)}%;width:${x(s.close)-x(s.stop)}%"></div>
+    <div class="ld-reward" style="left:${x(s.close)}%;width:${x(s.target)-x(s.close)}%"></div>
+    <div class="ld-pt" style="left:${x(s.stop)}%;background:var(--red)"></div>
+    <div class="ld-pt" style="left:${x(s.ma100)}%;background:var(--ink-2);opacity:.6"></div>
+    <div class="ld-pt" style="left:${x(s.close)}%;background:var(--ink);height:24px;top:17px"></div>
+    <div class="ld-pt" style="left:${x(s.target)}%;background:var(--gold)"></div>
+    <div class="ld-lbl up" style="left:${x(s.stop)}%;color:var(--red)">الوقف<br><b class="num">${fmt(s.stop)}</b></div>
+    <div class="ld-lbl up" style="left:${x(s.target)}%;color:var(--gold)">الهدف م200<br><b class="num">${fmt(s.target)}</b></div>
+    <div class="ld-lbl dn" style="left:${x(s.close)}%"><b class="num">${fmt(s.close)}</b> الدخول</div>
+  </div>`;
+}
+function renderSignals(list){
+  if (!list.length){ $("signals").innerHTML = `<div class="empty">لا توجد إشارات في آخر جلسة. راجع تبويب «قيد المراقبة» للأسهم القريبة.</div>`; return; }
+  $("signals").innerHTML = list.map(s => `
+    <article class="sig">
+      <div class="sig-head">
+        <div><div class="sig-code num">${esc(s.code)}</div><div class="sig-name">${esc(s.name)}${s.sector?" — "+esc(sector(s.sector)):""}</div></div>
+        <div class="sig-rr"><div class="v num">${fmt(s.rr,1)}</div><div class="k">العائد ÷ المخاطرة</div></div>
+      </div>
+      ${ladder(s)}
+      <div class="sig-meta">
+        <span>المكسب للهدف <strong>${pct(s.upside_pct)}</strong></span>
+        <span>المخاطرة <strong>${pct(-s.risk_pct)}</strong></span>
+        <span>الفوليوم <strong class="num">×${fmt(s.vol_ratio,1)}</strong></span>
+        <span>م100 <strong class="num">${fmt(s.ma100)}</strong></span>
+        <span>السيولة <strong>${money(s.avg_value)} ر.س</strong></span>
+        <a href="${tv(s.code)}" target="_blank" rel="noopener">فتح الشارت</a>
+      </div>
+    </article>`).join("");
+}
+
+/* جدول قابل للترتيب */
+function table(el, cols, rows, opts={}){
+  const st = el._sort || opts.sort || null;
+  let data = rows.slice();
+  if (st){ const c = cols.find(c=>c.k===st.k); const get = c.v || (r=>r[c.k]);
+    data.sort((a,b)=>{ const x=get(a), y=get(b); if (x==null) return 1; if (y==null) return -1;
+      return (typeof x==="string" ? x.localeCompare(y,"ar") : x-y) * (st.dir); }); }
+  if (!data.length){ el.innerHTML = `<div class="empty">${opts.empty || "لا يوجد شيء هنا."}</div>`; return; }
+  el.innerHTML = `<div class="tbl-wrap"><table><thead><tr>${cols.map(c=>`<th data-sort="${c.k}" class="${st&&st.k===c.k?(st.dir>0?"asc":"desc"):""}">${c.t}</th>`).join("")}</tr></thead>
+    <tbody>${data.map(r=>`<tr>${cols.map(c=>`<td${c.cls?` class="${c.cls}"`:""}>${c.f?c.f(r):esc(r[c.k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  el.querySelectorAll("th").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.sort; const cur = el._sort || opts.sort;
+    el._sort = {k, dir: cur && cur.k===k ? -cur.dir : -1}; table(el, cols, rows, opts);
+  }));
+}
+const codeCol = {k:"code", t:"السهم", cls:"code", f:r=>`<a class="num" href="${tv(r.code)}" target="_blank" rel="noopener">${esc(r.code)}</a><span class="nm">${esc(r.name)}</span>`};
+
+function renderWatch(latest){
+  const band = latest.settings?.watch_band_pct ?? 3;
+  $("watchHint").textContent = `أسهم تحت المتوسط 100 بأقل من ${band}%، سيولتها مقبولة، والمتوسط 200 فوقها. تتحول لإشارة إذا أغلقت فوق المتوسط 100 بفوليوم مرتفع.`;
+  table($("watch"), [codeCol,
+    {k:"close", t:"الإغلاق", f:r=>`<span class="num">${fmt(r.close)}</span>`},
+    {k:"ma100", t:"م100", f:r=>`<span class="num">${fmt(r.ma100)}</span>`},
+    {k:"dist100", t:"المسافة لـ م100", f:r=>pct(r.dist100,2)},
+    {k:"ma200", t:"م200", f:r=>`<span class="num">${fmt(r.ma200)}</span>`},
+    {k:"vol_ratio", t:"الفوليوم", f:r=>`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
+    {k:"avg_value", t:"السيولة", f:r=>money(r.avg_value)},
+  ], latest.watch||[], {sort:{k:"dist100",dir:-1}, empty:"لا توجد أسهم قريبة من الاختراق حالياً."});
+  table($("misses"), [codeCol,
+    {k:"close", t:"الإغلاق", f:r=>`<span class="num">${fmt(r.close)}</span>`},
+    {k:"vol_ratio", t:"الفوليوم", f:r=>`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
+    {k:"reasons", t:"لماذا لم تكتمل", v:r=>(r.reasons||[]).join("، "), f:r=>`<span class="why">${esc((r.reasons||[]).join("، "))}</span>`},
+  ], latest.misses||[], {empty:"لا توجد اختراقات ناقصة في آخر جلسة."});
+}
+
+function renderHistory(h){
+  const closed = h.filter(x=>x.status==="target"||x.status==="stop"||x.status==="expired");
+  const wins = h.filter(x=>x.status==="target").length, losses = h.filter(x=>x.status==="stop").length;
+  const open = h.filter(x=>x.status==="open").length;
+  const avg = closed.length ? closed.reduce((s,x)=>s+(x.return_pct||0),0)/closed.length : null;
+  const wr = (wins+losses) ? wins/(wins+losses)*100 : null;
+  $("stats").innerHTML = [
+    ["كل الإشارات", `<span class="num">${h.length}</span>`],
+    ["مفتوحة", `<span class="num">${open}</span>`],
+    ["حققت الهدف", `<span class="num pos">${wins}</span>`],
+    ["ضربت الوقف", `<span class="num neg">${losses}</span>`],
+    ["نسبة النجاح", wr==null?"—":`<span class="num">${fmt(wr,0)}%</span>`],
+    ["متوسط العائد", avg==null?"—":pct(avg)],
+  ].map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("");
+  table($("history"), [codeCol,
+    {k:"date", t:"تاريخ الإشارة", f:r=>`<span class="num">${esc(r.date)}</span>`},
+    {k:"status", t:"الحالة", f:r=>`<span class="chip ${r.status}">${STATUS_AR[r.status]||r.status}</span>`},
+    {k:"entry", t:"الدخول", f:r=>`<span class="num">${fmt(r.entry)}</span>`},
+    {k:"last_close", t:"آخر سعر", f:r=>`<span class="num">${fmt(r.status==="open"?r.last_close:r.exit_price)}</span>`},
+    {k:"return_pct", t:"العائد", f:r=>pct(r.return_pct)},
+    {k:"target", t:"الهدف", f:r=>`<span class="num">${fmt(r.target)}</span>`},
+    {k:"stop", t:"الوقف", f:r=>`<span class="num">${fmt(r.stop)}</span>`},
+    {k:"days", t:"أيام", f:r=>`<span class="num">${r.days??0}</span>`},
+    {k:"exit_date", t:"تاريخ الخروج", f:r=>`<span class="num">${esc(r.exit_date||"—")}</span>`},
+  ], h, {sort:{k:"date",dir:-1}, empty:"لم تظهر أي إشارة بعد. ستُضاف هنا تلقائياً من أول إشارة."});
+}
+
+function renderAll(u){
+  const rows = (u && u.rows) || [];
+  const sectors = [...new Set(rows.map(r=>r.sector).filter(Boolean))].sort((a,b)=>sector(a).localeCompare(sector(b),"ar"));
+  $("fSector").innerHTML = `<option value="">كل القطاعات</option>` + sectors.map(s=>`<option value="${esc(s)}">${esc(sector(s))}</option>`).join("");
+  const cols = [codeCol,
+    {k:"status", t:"الحالة", f:r=>`<span class="chip ${r.status}">${STATUS_AR[r.status]||r.status}</span>`},
+    {k:"close", t:"الإغلاق", f:r=>`<span class="num">${fmt(r.close)}</span>`},
+    {k:"chg_pct", t:"التغير", f:r=>pct(r.chg_pct,2)},
+    {k:"dist100", t:"عن م100", f:r=>pct(r.dist100)},
+    {k:"dist200", t:"عن م200", f:r=>pct(r.dist200)},
+    {k:"vol_ratio", t:"الفوليوم", f:r=>r.vol_ratio==null?"—":`<span class="num">×${fmt(r.vol_ratio,1)}</span>`},
+    {k:"avg_value", t:"السيولة", f:r=>r.avg_value==null?"—":money(r.avg_value)},
+    {k:"sector", t:"القطاع", v:r=>sector(r.sector), f:r=>esc(sector(r.sector))},
+  ];
+  const apply = () => {
+    const q = $("q").value.trim().toLowerCase(), st = $("fStatus").value, sc = $("fSector").value;
+    const f = rows.filter(r => (!q || r.code.includes(q) || String(r.name).toLowerCase().includes(q)) && (!st || r.status===st) && (!sc || r.sector===sc));
+    $("allCount").textContent = `${f.length} من ${rows.length} سهم`;
+    table($("all"), cols, f, {sort:{k:"dist100",dir:-1}, empty:"لا توجد أسهم تطابق البحث."});
+  };
+  ["q","fStatus","fSector"].forEach(id => $(id).addEventListener("input", apply));
+  apply();
+}
+
+function renderSettings(latest, runs){
+  const s = latest.settings || {}, sc = latest.schedule || {};
+  const range = t => { const [a,b] = String(t||"").split(/\s*[–-]\s*/); return b ? `من <span class="num">${esc(a)}</span> إلى <span class="num">${esc(b)}</span>` : esc(t); };
+  const kv = (k,v) => `<div class="kv"><span>${k}</span><span>${v}</span></div>`;
+  $("setRules").innerHTML = [
+    kv("المتوسط السريع", `<span class="num">MA${s.ma_fast}</span> بسيط، يومي`),
+    kv("المتوسط البطيء (الهدف)", `<span class="num">MA${s.ma_slow}</span> بسيط، يومي`),
+    kv("شرط الاختراق", "إغلاق أمس تحت م100 وإغلاق اليوم فوقه"),
+    kv("شرط الفوليوم", `${s.vol_mult==2?"ضعف":s.vol_mult+" أضعاف"} متوسط ${s.vol_lookback} يوماً أو أكثر`),
+    kv("أدنى سيولة يومية", `${money(s.min_avg_value_sar)} ر.س`),
+    kv("م200 فوق م100", s.require_slow_above_fast ? "مطلوب" : "غير مطلوب"),
+    kv("الوقف", "قاع شمعة الاختراق"),
+    kv("نطاق المراقبة", `<span class="num">${s.watch_band_pct}%</span> تحت م100`),
+    kv("مدة المتابعة القصوى", `<span class="num">${s.max_hold_days}</span> يوم تداول`),
+    kv("السوق الموازية (نمو)", s.exclude_nomu ? "مستبعدة" : "مشمولة"),
+  ].join("");
+  const r = latest.run || {};
+  $("setTimes").innerHTML = [
+    kv("أيام التداول", esc(sc.days||"الأحد – الخميس")),
+    kv("الجلسة", range(sc.session)),
+    kv("مزاد الإغلاق", range(sc.closing_auction)),
+    kv("موعد الفحص اليومي", `<span class="num">${esc(sc.run_time||"")}</span> بتوقيت الرياض`),
+    kv("مصدر قائمة الأسهم", esc(r.universe_source||"—")),
+    kv("مدة آخر فحص", r.duration_s!=null ? `<span class="num">${r.duration_s}</span> ثانية` : "—"),
+  ].join("");
+  table($("runs"), [
+    {k:"run_utc", t:"وقت التشغيل", f:x=>{const s=riyadhStr(x.run_utc); return `<span class="num">${s.date} ${s.time}</span>`}},
+    {k:"data_date", t:"الجلسة", f:x=>`<span class="num">${esc(x.data_date||"—")}</span>`},
+    {k:"status", t:"النتيجة", f:x=>x.status==="ok"?`<span class="chip target">تم</span>`:`<span class="chip stop">خطأ</span> <span class="why">${esc(x.error||"")}</span>`},
+    {k:"scanned", t:"فُحص", f:x=>`<span class="num">${x.scanned??"—"}</span>`},
+    {k:"signals", t:"إشارات", f:x=>`<span class="num">${x.signals??"—"}</span>`},
+    {k:"watch", t:"مراقبة", f:x=>`<span class="num">${x.watch??"—"}</span>`},
+    {k:"alert_sent", t:"تيليجرام", f:x=>x.alert_sent?"أُرسل":"—"},
+    {k:"event", t:"المُشغّل", f:x=>({repository_dispatch:"مجدول",workflow_dispatch:"يدوي",local:"محلي"})[x.event]||esc(x.event)},
+  ], (runs||[]).slice(0,30), {empty:"لا يوجد سجل بعد."});
+  const f = latest.failed_codes || [];
+  $("failed").textContent = f.length ? f.join("، ") : "لا يوجد.";
+}
+
+function renderTop(latest, runs){
+  const r = latest.run || {};
+  if (r.finished_utc){ const s = riyadhStr(r.finished_utc); $("fUpdated").innerHTML = `${s.day} <span class="num">${s.time}</span>`; }
+  $("fDate").textContent = r.data_date || "—";
+  $("fScanned").textContent = r.scanned != null ? `فُحص ${r.scanned} سهم` : "";
+  if (latest.tasi){ $("fTasi").textContent = fmt(latest.tasi.close); $("fTasiChg").innerHTML = pct(latest.tasi.change_pct,2); }
+  const w = [];
+  const last = (runs||[])[0];
+  if (last && last.status !== "ok") w.push(`آخر محاولة تشغيل فشلت: ${esc(last.error||"")}. البيانات المعروضة من آخر فحص ناجح.`);
+  if (r.finished_utc && Date.now() - new Date(r.finished_utc).getTime() > 4*24*3600*1000) w.push("آخر تحديث أقدم من أربعة أيام. تأكد أن المهمة المجدولة تعمل.");
+  $("warnings").innerHTML = w.map(x=>`<div class="warn">${x}</div>`).join("");
+}
+
+async function load(){
+  const [latest, universe, history, runs] = await Promise.all([getJSON("latest.json"), getJSON("universe.json"), getJSON("history.json"), getJSON("runs.json")]);
+  if (!latest){
+    $("signals").innerHTML = `<div class="empty">لم يُشغَّل الماسح بعد. ستظهر النتائج هنا بعد أول فحص (الساعة 15:45 من الأحد إلى الخميس).</div>`;
+    return;
+  }
+  LATEST = latest;
+  if (latest.schedule && latest.schedule.run_weekdays) SCHED = latest.schedule;
+  renderTop(latest, runs);
+  $("cSignals").textContent = (latest.signals||[]).length;
+  $("cWatch").textContent = (latest.watch||[]).length;
+  $("cHistory").textContent = (history||[]).length;
+  $("cAll").textContent = (universe && universe.rows || []).length;
+  renderSignals(latest.signals||[]);
+  renderWatch(latest);
+  renderHistory(history||[]);
+  renderAll(universe);
+  renderSettings(latest, runs);
+  tick();
+}
+
+/* تبويبات */
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x===b ? "true" : "false"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+b.dataset.tab));
+  try { localStorage.setItem("sa_tab", b.dataset.tab); } catch(e){}
+}));
+try { const t = localStorage.getItem("sa_tab"); const b = t && document.querySelector(`.tab[data-tab="${t}"]`); if (b) b.click(); } catch(e){}
+
+/* المظهر */
+try { const th = localStorage.getItem("sa_theme"); if (th) document.documentElement.dataset.theme = th; } catch(e){}
+$("themeBtn").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = nx;
+  try { localStorage.setItem("sa_theme", nx); } catch(e){}
+});
+
+drawTimeline(); tick(); setInterval(tick, 30000);
+load(); setInterval(load, 5*60*1000);
+})();
+</script>
+</body>
+</html>

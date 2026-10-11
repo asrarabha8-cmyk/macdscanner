@@ -1,0 +1,63 @@
+name: SA MA100-200 Scan (Tadawul)
+
+# ماسح السوق السعودي — منفصل عن ماسحات السوق الأمريكي.
+# يُشغَّل بحدث repository_dispatch (sa_ma) من مهمة Claude المجدولة
+# الأحد–الخميس 15:45 بتوقيت الرياض (جدول GitHub الذاتي يُسقط تشغيلات).
+on:
+  repository_dispatch:
+    types: [sa_ma]
+  workflow_dispatch:
+    inputs:
+      force_alert:
+        description: "أرسل تنبيه تيليجرام حتى لو أُرسل لنفس الجلسة"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sa-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: تثبيت المكتبات
+        run: pip install --quiet yfinance pandas numpy requests
+
+      - name: فحص السوق السعودي
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          SA_TG_TOKEN: ${{ secrets.SA_TG_TOKEN }}
+          SA_TG_CHAT: ${{ secrets.SA_TG_CHAT }}
+          SA_FORCE_ALERT: ${{ github.event.inputs.force_alert == 'true' && '1' || '0' }}
+        run: python sa/sa_ma_scanner.py
+
+      - name: حفظ بيانات الواجهة
+        if: always()
+        run: |
+          git config user.name  "sa-scanner-bot"
+          git config user.email "sa-scanner-bot@users.noreply.github.com"
+          git add docs/sa/data || true
+          git diff --cached --quiet || git commit -m "sa scan $(TZ=Asia/Riyadh date +'%F %H:%M')"
+          git pull --rebase --autostash || true
+          git push || true
+
+      - name: تنبيه عند الفشل
+        if: failure()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: |
+          curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="⚠️ ماسح السعودي فشل اليوم — راجع Actions" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
