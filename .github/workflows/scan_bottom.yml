@@ -1,0 +1,41 @@
+name: Bottom Hunter + Perp Filter
+
+on:
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [bottom]          # تشغيل من مهمة Claude المجدولة
+  schedule:
+    - cron: "15 22 * * 1-5"  # احتياطي: 1:15 فجراً بتوقيت الرياض (cron في GitHub غير مضمون)
+
+permissions:
+  contents: write            # logs/bottom + لقطات logs/perp
+
+concurrency:
+  group: bottom-hunter
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install --quiet yfinance pandas numpy requests lxml
+      - name: Scan
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: python bottom_hunter_scanner.py
+      - name: Save logs
+        if: always()
+        run: |
+          git config user.name "bottom-bot"
+          git config user.email "bottom-bot@users.noreply.github.com"
+          git add logs/bottom logs/perp || true
+          git diff --cached --quiet || git commit -m "bottom + perp snapshot $(date -u +%F)"
+          git pull --rebase -q || true
+          git push || true
