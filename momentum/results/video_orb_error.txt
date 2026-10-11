@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/runner/work/macdscanner/macdscanner/momentum/video_orb_backtest.py", line 169, in <module>
+    main()
+  File "/home/runner/work/macdscanner/macdscanner/momentum/video_orb_backtest.py", line 143, in main
+    allrows.append(t)
+    ^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'append'
