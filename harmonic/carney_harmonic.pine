@@ -77,8 +77,7 @@ var array<float>  P_STOP  = array.from(1.000, 1.130, 1.270, 1.414, 2.000, 2.000)
 var array<float>  AB_MULT = array.from(1.0, 1.27, 1.618)
 
 enabled(int i) =>
-    i == 0 ? onGartley : i == 1 ? onBat : i == 2 ? onAltBat :
-    i == 3 ? onButter  : i == 4 ? onCrab : onDCrab
+    array.get(array.from(onGartley, onBat, onAltBat, onButter, onCrab, onDCrab), i)
 
 // ═══ جدول النسب العكسية — ص ٨٠ ═══════════════════════════════════════════════
 // ارتداد نقطة C  →  إسقاط BC المثالي
@@ -96,11 +95,11 @@ bcFromReciprocal(float cRetr, float bcLeg, float anchor, float c, float sign) =>
             k := key
     // احتمالات الإسقاط لذلك المفتاح — وعند 0.382 أربعة احتمالات
     array<float> opts = k == 0.382 ? array.from(2.24, 2.618, 3.14, 3.618) :
-                        k == 0.50  ? array.from(2.0)   :
-                        k == 0.618 ? array.from(1.618) :
-                        k == 0.707 ? array.from(1.414) :
-                        k == 0.786 ? array.from(1.272) :
-                        k == 0.886 ? array.from(1.13)  : array.from(2.0)
+                         k == 0.50  ? array.from(2.0)   :
+                         k == 0.618 ? array.from(1.618) :
+                         k == 0.707 ? array.from(1.414) :
+                         k == 0.786 ? array.from(1.272) :
+                         k == 0.886 ? array.from(1.13)  : array.from(2.0)
     // اختر ما يُكمّل المرساة أقربَ ما يكون (طريقة الطبقات في الكتاب)
     float best = na
     float gap  = 1e18
@@ -170,14 +169,14 @@ leg(int b1, float p1, int b2, float p2, color col, int w) =>
 
 tag(int b, float p, string txt, color col, bool below) =>
     array.push(D5.tags, label.new(b, p, txt, color = color.new(col, 85),
-        textcolor = col, style = below ? label.style_label_up : label.style_label_down,
-        size = size.small))
+         textcolor = col, size = size.small,
+         style = below ? label.style_label_up : label.style_label_down))
 
 drawLevel(float px, int b1, int b2, color col, string txt) =>
     l = line.new(b1, px, b2, px, color = col, style = line.style_dashed, width = 1)
     array.push(D5.lvls, l)
     array.push(D5.tags, label.new(b2, px, txt, color = color.new(col, 100),
-        textcolor = col, style = label.style_label_left, size = size.tiny))
+         textcolor = col, style = label.style_label_left, size = size.tiny))
 
 // ═══ الكشف ════════════════════════════════════════════════════════════════════
 
@@ -341,9 +340,9 @@ if barstate.isconfirmed and array.size(pvPrice) >= 5
                         leg(Cb, Cp, Db, Dp, col, 2)
                         // أضلاع XB و BD المتقاطعة التي تُبرز شكل M/W
                         array.push(D5.legs, line.new(Xb, Xp, Bb, Bp, color = color.new(col, 60),
-                            style = line.style_dotted))
+                             style = line.style_dotted))
                         array.push(D5.legs, line.new(Bb, Bp, Db, Dp, color = color.new(col, 60),
-                            style = line.style_dotted))
+                             style = line.style_dotted))
                         tag(Xb, Xp, "X", col, not bull)
                         tag(Ab, Ap, "A", col, bull)
                         tag(Bb, Bp, "B", col, not bull)
