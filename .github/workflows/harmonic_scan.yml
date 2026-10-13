@@ -8,6 +8,11 @@ on:
     types: [harmonic]
   workflow_dispatch:
     inputs:
+      universe:
+        description: "قائمة الرموز"
+        type: choice
+        options: ["watchlist", "universe", "forex"]
+        default: "watchlist"
       stage:
         description: "أدنى مرحلة تُرسل"
         type: choice
@@ -21,8 +26,8 @@ on:
       pivot_method:
         description: "طريقة المحاور"
         type: choice
-        options: ["fractal", "zigzag_pct", "zigzag_atr"]
-        default: "fractal"
+        options: ["zigzag_atr", "fractal", "zigzag_pct"]
+        default: "zigzag_atr"
       pivot:
         description: "قوة المحور الكسري"
         type: choice
@@ -30,7 +35,7 @@ on:
         default: "5"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: harmonic-scan
@@ -64,16 +69,47 @@ jobs:
             TBAR)   FILTER="--stage SIGNAL --stage TBAR" ;;
             *)      FILTER="--stage SIGNAL --stage TBAR --stage WATCH" ;;
           esac
+          case "${{ inputs.universe || 'watchlist' }}" in
+            universe) LIST="--tickers universe.txt" ;;
+            forex)    LIST="--tickers forex.txt" ;;
+            *)        LIST="--tickers ../watchlist.txt" ;;
+          esac
+          echo "القائمة: $LIST"
           python harmonic_scan.py \
-            --tickers ../watchlist.txt \
+            $LIST \
             --tf "${{ inputs.tf || '1d' }}" \
-            --pivot-method "${{ inputs.pivot_method || 'fractal' }}" \
+            --pivot-method "${{ inputs.pivot_method || 'zigzag_atr' }}" \
             --pivot "${{ inputs.pivot || '5' }}" \
             --period 2y \
             $FILTER \
             --notify \
             --json harmonic_hits.json \
             | tee harmonic_report.txt
+
+      # التقرير يُحفظ في الريبو ليُقرأ من الواجهة ويُقارن بين الفحوص
+      - name: حفظ التقرير في الريبو
+        if: always()
+        run: |
+          mkdir -p docs/harmonic
+          STAMP=$(TZ=Asia/Riyadh date +'%Y-%m-%d_%H%M')
+          {
+            echo "# فحص كارني التوافقي — $STAMP (الرياض)"
+            echo ""
+            echo "القائمة \`${{ inputs.universe || 'watchlist' }}\` ·"
+            echo "الفاصل \`${{ inputs.tf || '1d' }}\` ·"
+            echo "المحاور \`${{ inputs.pivot_method || 'zigzag_atr' }}\` ·"
+            echo "أدنى مرحلة \`${{ inputs.stage || 'TBAR' }}\`"
+            echo ""
+            echo '```'
+            cat harmonic/harmonic_report.txt 2>/dev/null || echo "لم يكتمل"
+            echo '```'
+          } > docs/harmonic/scan_latest.md
+          git config user.name  "harmonic-bot"
+          git config user.email "harmonic-bot@users.noreply.github.com"
+          git add docs/harmonic || true
+          git diff --cached --quiet || git commit -m "harmonic scan $STAMP"
+          git pull --rebase --autostash || true
+          git push || true
 
       - name: رفع النتائج
         if: always()
