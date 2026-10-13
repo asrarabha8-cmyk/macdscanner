@@ -1,0 +1,153 @@
+name: Harmonic Backtest (Carney)
+
+# باك تست نماذج كارني على بيانات حقيقية.
+# يُشغَّل يدوياً من Actions — الهدف منه الإجابة على سؤال واحد:
+# هل تملك النماذج ميزة فوق الدخول العشوائي بنفس الهندسة؟
+on:
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "رموز مفصولة بفاصلة (فارغ = watchlist.txt)"
+        type: string
+        default: ""
+      period:
+        description: "المدة التاريخية"
+        type: choice
+        options: ["2y", "5y", "10y", "max"]
+        default: "10y"
+      tf:
+        description: "الفاصل الزمني"
+        type: choice
+        options: ["1d", "1wk", "1h"]
+        default: "1d"
+      pivot_method:
+        description: "طريقة المحاور — أكبر متغير وحده، والكتاب صامت عنه"
+        type: choice
+        options: ["fractal", "zigzag_pct", "zigzag_atr"]
+        default: "fractal"
+      pivot:
+        description: "قوة المحور الكسري (تُستخدم مع fractal فقط)"
+        type: choice
+        options: ["3", "4", "5", "7", "10"]
+        default: "5"
+      signal_only:
+        description: "مرحلة SIGNAL فقط (أكثر التزاماً بالكتاب)"
+        type: boolean
+        default: false
+      max_hold:
+        description: "أقصى شمعات للصفقة"
+        type: string
+        default: "60"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harmonic-bt
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: تثبيت المكتبات
+        run: pip install --quiet -r harmonic/requirements.txt
+
+      - name: تحقق من الميكانيكا قبل أي رقم
+        working-directory: harmonic
+        run: |
+          echo "::group::اختبارات الكاشف"
+          python test_harmonic.py
+          echo "::endgroup::"
+          echo "::group::اختبارات الباك تست — أهمها اختبار التسريب المستقبلي"
+          python test_backtest.py
+          echo "::endgroup::"
+
+      - name: الباك تست على بيانات حقيقية
+        working-directory: harmonic
+        run: |
+          if [ -n "${{ inputs.symbols }}" ]; then
+            ARGS="--symbols ${{ inputs.symbols }}"
+          else
+            ARGS="--tickers ../watchlist.txt"
+          fi
+          if [ "${{ inputs.signal_only }}" = "true" ]; then
+            ARGS="$ARGS --signal-only"
+          fi
+          python backtest.py $ARGS \
+            --period "${{ inputs.period }}" \
+            --tf "${{ inputs.tf }}" \
+            --pivot-method "${{ inputs.pivot_method }}" \
+            --pivot "${{ inputs.pivot }}" \
+            --max-hold "${{ inputs.max_hold }}" \
+            --json bt_results.json \
+            | tee bt_report.txt
+
+      - name: مسح منطق المحاور — الطرق والعتبات
+        working-directory: harmonic
+        continue-on-error: true
+        run: |
+          # الكتاب لا يذكر طريقة تحديد المحاور أبداً، وهي أكبر متغير وحده في
+          # النتيجة. فنقيس أثرها بأنفسنا عبر الطرق الثلاث وعتبات كل واحدة.
+          if [ -n "${{ inputs.symbols }}" ]; then S="--symbols ${{ inputs.symbols }}"; else S="--tickers ../watchlist.txt"; fi
+          COMMON="--period ${{ inputs.period }} --tf ${{ inputs.tf }} --max-hold ${{ inputs.max_hold }} --no-baseline"
+
+          sweep() {   # الوسائط: وصف، ثم بقية الخيارات
+            local label="$1"; shift
+            printf '%-24s' "$label" >> pivot_sweep.txt
+            python backtest.py $S $COMMON "$@" 2>/dev/null \
+              | grep -E "^الإجمالي|^لا صفقات" | head -1 >> pivot_sweep.txt \
+              || echo "(فشل)" >> pivot_sweep.txt
+          }
+
+          echo "مسح منطق المحاور — نفس جدول النسب، منطق محاور مختلف" > pivot_sweep.txt
+          echo "" >> pivot_sweep.txt
+          for P in 3 4 5 7 10; do
+            sweep "fractal $P" --pivot-method fractal --pivot "$P"
+          done
+          for Z in 4 6 8 10; do
+            sweep "zigzag_pct ${Z}%" --pivot-method zigzag_pct --zz-pct "$Z"
+          done
+          for A in 2.0 2.5 3.0 3.5; do
+            sweep "zigzag_atr ${A}xATR" --pivot-method zigzag_atr --zz-atr "$A"
+          done
+          cat pivot_sweep.txt
+
+      - name: رفع النتائج
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harmonic-backtest-${{ inputs.period }}-${{ inputs.pivot_method }}${{ inputs.pivot }}
+          path: |
+            harmonic/bt_report.txt
+            harmonic/bt_results.json
+            harmonic/pivot_sweep.txt
+          retention-days: 30
+
+      - name: الملخص في صفحة التشغيل
+        if: always()
+        working-directory: harmonic
+        run: |
+          {
+            echo "## باك تست نماذج كارني"
+            echo ""
+            echo "\`${{ inputs.period }}\` · \`${{ inputs.tf }}\` · محاور \`${{ inputs.pivot_method }}\` \`${{ inputs.pivot }}\` · أقصى حمل \`${{ inputs.max_hold }}\`"
+            echo ""
+            echo '```'
+            cat bt_report.txt 2>/dev/null || echo "لم يكتمل"
+            echo '```'
+            if [ -f pivot_sweep.txt ]; then
+              echo ""
+              echo "### أثر منطق المحاور"
+              echo '```'
+              cat pivot_sweep.txt
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

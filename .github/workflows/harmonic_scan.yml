@@ -1,0 +1,107 @@
+name: Harmonic Scan (Carney)
+
+# ماسح نماذج كارني التوافقية — منفصل عن بقية ماسحات الريبو.
+# يُشغَّل بحدث repository_dispatch (harmonic) من مهمة مجدولة، أو يدوياً.
+# (جدول GitHub الذاتي يُسقط تشغيلات، فبقية ماسحات الريبو تتبع النمط نفسه.)
+on:
+  repository_dispatch:
+    types: [harmonic]
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "أدنى مرحلة تُرسل"
+        type: choice
+        options: ["SIGNAL", "TBAR", "WATCH"]
+        default: "TBAR"
+      tf:
+        description: "الفاصل الزمني"
+        type: choice
+        options: ["1d", "1wk", "1h"]
+        default: "1d"
+      pivot_method:
+        description: "طريقة المحاور"
+        type: choice
+        options: ["fractal", "zigzag_pct", "zigzag_atr"]
+        default: "fractal"
+      pivot:
+        description: "قوة المحور الكسري"
+        type: choice
+        options: ["3", "4", "5", "7", "10"]
+        default: "5"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harmonic-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: تثبيت المكتبات
+        run: pip install --quiet yfinance pandas numpy requests
+
+      - name: الفحص
+        working-directory: harmonic
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          HARMONIC_TG_TOKEN: ${{ secrets.HARMONIC_TG_TOKEN }}
+          HARMONIC_TG_CHAT: ${{ secrets.HARMONIC_TG_CHAT }}
+        run: |
+          STAGE="${{ inputs.stage || 'TBAR' }}"
+          case "$STAGE" in
+            SIGNAL) FILTER="--stage SIGNAL" ;;
+            TBAR)   FILTER="--stage SIGNAL --stage TBAR" ;;
+            *)      FILTER="--stage SIGNAL --stage TBAR --stage WATCH" ;;
+          esac
+          python harmonic_scan.py \
+            --tickers ../watchlist.txt \
+            --tf "${{ inputs.tf || '1d' }}" \
+            --pivot-method "${{ inputs.pivot_method || 'fractal' }}" \
+            --pivot "${{ inputs.pivot || '5' }}" \
+            --period 2y \
+            $FILTER \
+            --notify \
+            --json harmonic_hits.json \
+            | tee harmonic_report.txt
+
+      - name: رفع النتائج
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harmonic-scan
+          path: |
+            harmonic/harmonic_report.txt
+            harmonic/harmonic_hits.json
+          retention-days: 14
+
+      - name: الملخص في صفحة التشغيل
+        if: always()
+        working-directory: harmonic
+        run: |
+          {
+            echo "## ماسح كارني التوافقي"
+            echo '```'
+            cat harmonic_report.txt 2>/dev/null || echo "لم يكتمل"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: تنبيه عند الفشل
+        if: failure()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+        run: |
+          curl -s --data-urlencode chat_id="$TG_CHAT" \
+            --data-urlencode text="⚠️ ماسح كارني التوافقي فشل — راجع Actions" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null

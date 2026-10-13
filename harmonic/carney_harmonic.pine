@@ -1,0 +1,407 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  Carney Harmonic — نماذج توافقية بالالتزام الحرفي بكتاب كارني المجلد ٣
+//  Harmonic Trading Volume 3: Reaction vs. Reversal (Scott M. Carney, 2016)
+//
+//  يطابق harmonic_carney.py بنفس جدول النسب ونفس التسامحات ونفس منطق T-Bar،
+//  حتى يعطي الماسح والمؤشر نفس النتيجة على نفس الشمعة.
+//
+//  المراحل الثلاث — الرسم ليس إشارة:
+//    WATCH   ٤ من ٥ نقاط مثبتة، الـ PRZ مُسقطة ولم تُختبر   (أثر المغناطيس، ص ٢٣٧)
+//    T-BAR   السعر اختبر آخر رقم في الـ PRZ                  (النموذج مكتمل رسمياً)
+//    SIGNAL  T-Bar+1 مع تغيّر طابع السعر                     (الفرصة حيّة، ص ١٥٣)
+//
+//  غير مشمول بقصد: Shark و 5-0 (بنية 0-X-A-B-C) · Cypher (ليس في الكتاب)
+//                  HSI (معادلة ملكية غير منشورة — البديل المنصوص هو RSI)
+// ─────────────────────────────────────────────────────────────────────────────
+//@version=6
+indicator("Carney Harmonic | كارني التوافقي", overlay = true, max_labels_count = 500,
+          max_lines_count = 500, max_boxes_count = 200, max_bars_back = 1000)
+
+// ═══ المدخلات ════════════════════════════════════════════════════════════════
+
+grpP = "المحاور — أكبر متغير وحده، والكتاب صامت عنه"
+pivLen   = input.int(5, "قوة المحور (يميناً ويساراً)", minval = 2, maxval = 30, group = grpP,
+     tooltip = "الكتاب لا يذكر طريقة تحديد المحاور أبداً. اضبطه بصرياً على شارتات تعرفها.")
+maxPiv   = input.int(20, "عدد المحاور المحفوظة", minval = 8, maxval = 40, group = grpP)
+
+grpB = "شروط الكتاب"
+minBars  = input.int(30, "أدنى امتداد للنموذج (شمعة)", minval = 10, group = grpB,
+     tooltip = "ص ٣١٨: النموذج يجب أن يمتد على ٣٠ شمعة على الأقل (نظرية النهاية المركزية)")
+przWidth = input.float(5.0, "نافذة تقارب الـ PRZ %", minval = 1.0, maxval = 20.0, step = 0.5,
+     group = grpB, tooltip = "ص ١٥٢: الـ PRZ تشكل ٣–٥% من مدى النموذج الكلي")
+przTol   = input.float(1.5, "تسامح وصول D للـ PRZ %", minval = 0.1, maxval = 10.0, step = 0.1,
+     group = grpB, tooltip = "معامل برمجي لا كتابي: الـ PEZ عند كارني = PRZ + طرف الـ T-Bar، أي يحدده سلوك السعر")
+confirmN = input.int(5, "شمعات تأكيد تغيّر الطابع", minval = 2, maxval = 10, group = grpB,
+     tooltip = "ص ١٩٧: الاستمرار الواضح يجب أن يتحقق خلال ٣–٥ شمعات بعد الـ T-Bar")
+
+grpR = "تأكيد RSI"
+useRsi   = input.bool(false, "اشترط تشبع RSI عند الإتمام", group = grpR)
+rsiLen   = input.int(14, "مدة RSI", minval = 2, group = grpR)
+rsiOS    = input.float(31.0, "حد التشبع البيعي", group = grpR,
+     tooltip = "ص ٢١٤: القراءة يجب أن تكون أقل من ٣١ فعلياً — 30.65 مقبولة")
+rsiOB    = input.float(69.0, "حد التشبع الشرائي", group = grpR)
+
+grpF = "النماذج"
+onGartley = input.bool(true,  "Gartley",       group = grpF, inline = "g1")
+onBat     = input.bool(true,  "Bat",           group = grpF, inline = "g1")
+onAltBat  = input.bool(true,  "Alternate Bat", group = grpF, inline = "g2")
+onButter  = input.bool(true,  "Butterfly",     group = grpF, inline = "g2")
+onCrab    = input.bool(true,  "Crab",          group = grpF, inline = "g3")
+onDCrab   = input.bool(true,  "Deep Crab",     group = grpF, inline = "g3")
+
+grpV = "العرض"
+showWatch = input.bool(true, "اعرض مرحلة المراقبة", group = grpV)
+showLines = input.bool(true, "ارسم أضلاع النموذج", group = grpV)
+showPRZ   = input.bool(true, "ارسم صندوق الـ PRZ", group = grpV)
+showLevels= input.bool(true, "ارسم الوقف والأهداف", group = grpV)
+bullCol   = input.color(color.new(#089981, 0), "صاعد", group = grpV, inline = "c")
+bearCol   = input.color(color.new(#f23645, 0), "هابط", group = grpV, inline = "c")
+
+// ═══ جدول النسب — منقول من كتلة Elements في الفصل الثاني ═════════════════════
+// تسامح نقطة B عند كارني بنقاط مئوية مطلقة لا نسبةً:
+//   "+/-3%" على 61.8% يعني 58.8%–64.8% بنص الكتاب (ص ٩١)
+
+// الأعمدة: bMin bMax bcMin bcMax xaIdeal xaMin xaMax abcdMin abcdMax stopXA
+var array<string> P_NAME  = array.from("Gartley", "Bat", "Alternate Bat", "Butterfly", "Crab", "Deep Crab")
+var array<float>  P_BMIN  = array.from(0.588, 0.382, 0.352, 0.756, 0.382, 0.886)
+var array<float>  P_BMAX  = array.from(0.648, 0.500, 0.382, 0.816, 0.618, 0.936)
+var array<float>  P_BCMIN = array.from(1.130, 1.618, 2.000, 1.618, 2.618, 2.000)
+var array<float>  P_BCMAX = array.from(1.618, 2.618, 3.618, 2.240, 3.618, 3.618)
+var array<float>  P_XAID  = array.from(0.786, 0.886, 1.000, 1.270, 1.618, 1.618)
+var array<float>  P_XAMIN = array.from(0.756, 0.856, 0.886, 1.240, 1.568, 1.568)
+var array<float>  P_XAMAX = array.from(0.886, 0.916, 1.130, 1.414, 1.902, 1.902)
+var array<float>  P_ABMIN = array.from(1.000, 1.000, 1.518, 1.000, 1.000, 1.000)
+var array<float>  P_ABMAX = array.from(1.270, 1.618, 1.718, 1.270, 1.618, 1.618)
+var array<float>  P_STOP  = array.from(1.000, 1.130, 1.270, 1.414, 2.000, 2.000)
+// معاملات إسقاط AB=CD الواردة في الكتاب
+var array<float>  AB_MULT = array.from(1.0, 1.27, 1.618)
+
+enabled(int i) =>
+    i == 0 ? onGartley : i == 1 ? onBat : i == 2 ? onAltBat :
+    i == 3 ? onButter  : i == 4 ? onCrab : onDCrab
+
+// ═══ جدول النسب العكسية — ص ٨٠ ═══════════════════════════════════════════════
+// ارتداد نقطة C  →  إسقاط BC المثالي
+
+var array<float> R_KEY = array.from(0.382, 0.50, 0.618, 0.707, 0.786, 0.886, 1.0)
+
+bcFromReciprocal(float cRetr, float bcLeg, float anchor, float c, float sign) =>
+    // اختر مفتاح الجدول الأقرب لارتداد C الفعلي
+    float k = 0.382
+    float bestK = 1e9
+    for ki = 0 to array.size(R_KEY) - 1
+        float key = array.get(R_KEY, ki)
+        if math.abs(key - cRetr) < bestK
+            bestK := math.abs(key - cRetr)
+            k := key
+    // احتمالات الإسقاط لذلك المفتاح — وعند 0.382 أربعة احتمالات
+    array<float> opts = k == 0.382 ? array.from(2.24, 2.618, 3.14, 3.618) :
+                        k == 0.50  ? array.from(2.0)   :
+                        k == 0.618 ? array.from(1.618) :
+                        k == 0.707 ? array.from(1.414) :
+                        k == 0.786 ? array.from(1.272) :
+                        k == 0.886 ? array.from(1.13)  : array.from(2.0)
+    // اختر ما يُكمّل المرساة أقربَ ما يكون (طريقة الطبقات في الكتاب)
+    float best = na
+    float gap  = 1e18
+    for oi = 0 to array.size(opts) - 1
+        float lv = c + sign * array.get(opts, oi) * bcLeg
+        if math.abs(lv - anchor) < gap
+            gap  := math.abs(lv - anchor)
+            best := lv
+    best
+
+// ═══ المحاور — كسرية متناوبة ══════════════════════════════════════════════════
+
+var array<float> pvPrice = array.new<float>()
+var array<int>   pvBar   = array.new<int>()
+var array<bool>  pvHigh  = array.new<bool>()      // true = قمة
+
+ph = ta.pivothigh(high, pivLen, pivLen)
+pl = ta.pivotlow(low,  pivLen, pivLen)
+
+pushPivot(float px, int bar, bool isHigh) =>
+    int n = array.size(pvHigh)
+    if n > 0 and array.get(pvHigh, n - 1) == isHigh
+        // توالي محورين من نفس النوع → استبقِ الأكثر تطرفاً (شرط التناوب)
+        float prev = array.get(pvPrice, n - 1)
+        if (isHigh and px > prev) or (not isHigh and px < prev)
+            array.set(pvPrice, n - 1, px)
+            array.set(pvBar,   n - 1, bar)
+    else
+        array.push(pvPrice, px)
+        array.push(pvBar,   bar)
+        array.push(pvHigh,  isHigh)
+        if array.size(pvPrice) > maxPiv
+            array.shift(pvPrice)
+            array.shift(pvBar)
+            array.shift(pvHigh)
+
+if not na(ph)
+    pushPivot(ph, bar_index - pivLen, true)
+if not na(pl)
+    pushPivot(pl, bar_index - pivLen, false)
+
+// ═══ الرسم ════════════════════════════════════════════════════════════════════
+
+type Drawn
+    array<line>  legs
+    array<label> tags
+    box          przBox
+    array<line>  lvls
+
+var Drawn D5 = Drawn.new(array.new<line>(), array.new<label>(), na, array.new<line>())
+
+clearDrawn() =>
+    for ln in D5.legs
+        line.delete(ln)
+    array.clear(D5.legs)
+    for lb in D5.tags
+        label.delete(lb)
+    array.clear(D5.tags)
+    if not na(D5.przBox)
+        box.delete(D5.przBox)
+    for ln in D5.lvls
+        line.delete(ln)
+    array.clear(D5.lvls)
+
+leg(int b1, float p1, int b2, float p2, color col, int w) =>
+    array.push(D5.legs, line.new(b1, p1, b2, p2, color = col, width = w))
+
+tag(int b, float p, string txt, color col, bool below) =>
+    array.push(D5.tags, label.new(b, p, txt, color = color.new(col, 85),
+        textcolor = col, style = below ? label.style_label_up : label.style_label_down,
+        size = size.small))
+
+drawLevel(float px, int b1, int b2, color col, string txt) =>
+    l = line.new(b1, px, b2, px, color = col, style = line.style_dashed, width = 1)
+    array.push(D5.lvls, l)
+    array.push(D5.tags, label.new(b2, px, txt, color = color.new(col, 100),
+        textcolor = col, style = label.style_label_left, size = size.tiny))
+
+// ═══ الكشف ════════════════════════════════════════════════════════════════════
+
+var string  curName  = ""
+var string  curStage = ""
+var bool    curBull  = false
+var int     curIdx   = -1
+var float   curEntry = na
+var float   curStop  = na
+var float   curTp1   = na
+var float   curTp2   = na
+var int     curConf  = 0
+
+newSignal = false
+newTbar   = false
+newWatch  = false
+
+if barstate.isconfirmed and array.size(pvPrice) >= 5
+    int n = array.size(pvPrice)
+
+    // ── خماسية كاملة: آخر خمسة محاور ────────────────────────────────────────
+    float Xp = array.get(pvPrice, n - 5), Ap = array.get(pvPrice, n - 4)
+    float Bp = array.get(pvPrice, n - 3), Cp = array.get(pvPrice, n - 2)
+    float Dp = array.get(pvPrice, n - 1)
+    int   Xb = array.get(pvBar,   n - 5), Ab = array.get(pvBar,   n - 4)
+    int   Bb = array.get(pvBar,   n - 3), Cb = array.get(pvBar,   n - 2)
+    int   Db = array.get(pvBar,   n - 1)
+    bool  bull = not array.get(pvHigh, n - 5)      // X قاع → نموذج صاعد
+
+    // التناوب الصحيح
+    bool altOk = array.get(pvHigh, n-5) != array.get(pvHigh, n-4) and
+                 array.get(pvHigh, n-4) != array.get(pvHigh, n-3) and
+                 array.get(pvHigh, n-3) != array.get(pvHigh, n-2) and
+                 array.get(pvHigh, n-2) != array.get(pvHigh, n-1)
+
+    float xaLeg = math.abs(Ap - Xp)
+    float abLeg = math.abs(Ap - Bp)
+    float bcLeg = math.abs(Cp - Bp)
+    float cdLeg = math.abs(Cp - Dp)
+
+    bool shapeOk = bull ? (Bp < Cp and Cp < Ap) : (Ap < Cp and Cp < Bp)
+    bool spanOk  = (Db - Xb) >= minBars
+    bool legsOk  = math.min(math.min(xaLeg, abLeg), math.min(bcLeg, cdLeg)) > 0
+
+    if altOk and shapeOk and spanOk and legsOk
+        float bR  = abLeg / xaLeg
+        float bcR = cdLeg / bcLeg
+        float xaR = math.abs(Ap - Dp) / xaLeg
+        float abR = cdLeg / abLeg
+        float sign = bull ? -1.0 : 1.0
+
+        float patRange = math.max(math.max(Xp, Ap), math.max(math.max(Bp, Cp), Dp)) -
+                         math.min(math.min(Xp, Ap), math.min(math.min(Bp, Cp), Dp))
+        float window = przWidth / 100.0 * patRange
+        float tol    = przTol   / 100.0 * patRange
+
+        for i = 0 to array.size(P_NAME) - 1
+            if not enabled(i)
+                continue
+            if bR  < array.get(P_BMIN, i)  or bR  > array.get(P_BMAX, i)
+                continue
+            if bcR < array.get(P_BCMIN, i) or bcR > array.get(P_BCMAX, i)
+                continue
+            if xaR < array.get(P_XAMIN, i) or xaR > array.get(P_XAMAX, i)
+                continue
+            // ص ٧٥: AB=CD حد أدنى بنيوي إلزامي (CD ≥ AB)، ويُتجاوَز عادةً
+            if abR < 0.97
+                continue
+
+            // ── الـ PRZ: مرساتها ضلع XA، والمستويان الآخران يُكمّلانها ──────
+            float anchor = Ap + sign * array.get(P_XAID, i) * xaLeg
+            // معامل إسقاط AB=CD الكتابي الأقرب للمرساة
+            float abMult = 1.0
+            float bestGap = 1e18
+            for mi = 0 to array.size(AB_MULT) - 1
+                float m = array.get(AB_MULT, mi)
+                if m >= array.get(P_ABMIN, i) and m <= array.get(P_ABMAX, i)
+                    float lv = Cp + sign * m * abLeg
+                    if math.abs(lv - anchor) < bestGap
+                        bestGap := math.abs(lv - anchor)
+                        abMult  := m
+            float lvAbcd = Cp + sign * abMult * abLeg
+            float lvBc   = bcFromReciprocal(bcLeg / abLeg, bcLeg, anchor, Cp, sign)
+
+            // درجة الطبقات: كم مستوى من الثلاثة تقارب مع المرساة
+            int conf = 1
+            float lo = anchor, hi = anchor
+            if math.abs(lvAbcd - anchor) <= window
+                conf += 1
+                lo := math.min(lo, lvAbcd)
+                hi := math.max(hi, lvAbcd)
+            if not na(lvBc) and math.abs(lvBc - anchor) <= window
+                conf += 1
+                lo := math.min(lo, lvBc)
+                hi := math.max(hi, lvBc)
+
+            // D يجب أن تقع داخل الـ PRZ
+            if Dp < lo - tol or Dp > hi + tol
+                continue
+
+            // ── الـ T-Bar: أول شمعة تختبر **آخر رقم** في الـ PRZ ────────────
+            float far = bull ? lo : hi
+            int tbar = -1
+            int back = bar_index - Db
+            for k = 0 to math.min(back, confirmN)
+                int off = bar_index - (Db + k)
+                bool tested = bull ? (low[off]  <= far + tol)
+                                   : (high[off] >= far - tol)
+                if tested and tbar == -1
+                    tbar := Db + k
+
+            string stage = "WATCH"
+            if tbar >= 0
+                stage := "T-BAR"
+                // تغيّر الطابع: شمعات فردية في اتجاه الانعكاس خلال ٣–٥ شمعات
+                int dir = 0
+                bool prog = false
+                for k = 1 to confirmN
+                    int off = bar_index - (tbar + k)
+                    if off >= 0
+                        bool good = bull ? (close[off] > open[off]) : (close[off] < open[off])
+                        dir += good ? 1 : 0
+                        int toff = bar_index - tbar
+                        prog := prog or (bull ? close[off] > close[toff] : close[off] < close[toff])
+                if dir >= 2 and prog
+                    stage := "SIGNAL"
+
+            // تأكيد RSI اختياري
+            float rv = ta.rsi(close, rsiLen)
+            int toff2 = tbar >= 0 ? bar_index - tbar : 0
+            float rsiAt = tbar >= 0 ? rv[toff2] : rv
+            if useRsi and stage == "SIGNAL"
+                bool rok = bull ? rsiAt <= rsiOS : rsiAt >= rsiOB
+                if not rok
+                    stage := "T-BAR"
+
+            // ── التسجيل والرسم ──────────────────────────────────────────────
+            if Db != curIdx or stage != curStage
+                newSignal := stage == "SIGNAL" and curStage != "SIGNAL"
+                newTbar   := stage == "T-BAR"  and curStage != "T-BAR"
+                newWatch  := stage == "WATCH"  and curIdx != Db
+
+                curName  := array.get(P_NAME, i)
+                curStage := stage
+                curBull  := bull
+                curIdx   := Db
+                curConf  := conf
+                curEntry := Dp
+                curStop  := Ap + sign * array.get(P_STOP, i) * xaLeg
+                // ص ٢٩٥–٢٩٦: الأهداف تُقاس من A إلى نقطة الانعكاس D
+                curTp1   := Dp + 0.382 * (Ap - Dp)
+                curTp2   := Dp + 0.618 * (Ap - Dp)
+
+                color col = bull ? bullCol : bearCol
+                if stage != "WATCH" or showWatch
+                    clearDrawn()
+                    if showLines
+                        leg(Xb, Xp, Ab, Ap, col, 2)
+                        leg(Ab, Ap, Bb, Bp, col, 2)
+                        leg(Bb, Bp, Cb, Cp, col, 2)
+                        leg(Cb, Cp, Db, Dp, col, 2)
+                        // أضلاع XB و BD المتقاطعة التي تُبرز شكل M/W
+                        array.push(D5.legs, line.new(Xb, Xp, Bb, Bp, color = color.new(col, 60),
+                            style = line.style_dotted))
+                        array.push(D5.legs, line.new(Bb, Bp, Db, Dp, color = color.new(col, 60),
+                            style = line.style_dotted))
+                        tag(Xb, Xp, "X", col, not bull)
+                        tag(Ab, Ap, "A", col, bull)
+                        tag(Bb, Bp, "B", col, not bull)
+                        tag(Cb, Cp, "C", col, bull)
+
+                    string body = curName + "  " + stage +
+                         "\nB " + str.tostring(bR, "#.###") +
+                         " · BC " + str.tostring(bcR, "#.###") +
+                         " · XA " + str.tostring(xaR, "#.###") +
+                         "\nطبقات " + str.tostring(conf) + "/3" +
+                         " · RSI " + str.tostring(rsiAt, "#.#") +
+                         " · " + str.tostring(Db - Xb) + " شمعة"
+                    tag(Db, Dp, body, col, bull)
+
+                    if showPRZ
+                        D5.przBox := box.new(Cb, hi, Db + 12, lo,
+                             border_color = color.new(col, 40),
+                             bgcolor = color.new(col, 88))
+
+                    if showLevels and stage != "WATCH"
+                        drawLevel(curStop, Db, Db + 22, color.new(bearCol, 20), "وقف " + str.tostring(curStop, format.mintick))
+                        drawLevel(curTp1,  Db, Db + 22, color.new(col, 30),     "TP1 " + str.tostring(curTp1,  format.mintick))
+                        drawLevel(curTp2,  Db, Db + 22, color.new(col, 30),     "TP2 " + str.tostring(curTp2,  format.mintick))
+            break
+
+// ═══ التنبيهات — ثلاثة منفصلة بحسب المرحلة ═══════════════════════════════════
+
+alertcondition(newWatch,  "مراقبة — ٤ من ٥ نقاط",
+     "نموذج توافقي قيد التشكل: الـ PRZ مُسقطة ولم تُختبر بعد")
+alertcondition(newTbar,   "شمعة الإتمام (T-Bar)",
+     "اكتمل النموذج رسمياً: السعر اختبر آخر رقم في الـ PRZ — راقب تغيّر الطابع")
+alertcondition(newSignal, "إشارة — T-Bar+1",
+     "الفرصة حيّة: تغيّر طابع السعر بعد شمعة الإتمام")
+
+if newSignal
+    alert(curName + " " + (curBull ? "صاعد" : "هابط") +
+          " | دخول " + str.tostring(curEntry, format.mintick) +
+          " | وقف "  + str.tostring(curStop,  format.mintick) +
+          " | TP1 "  + str.tostring(curTp1,   format.mintick) +
+          " | TP2 "  + str.tostring(curTp2,   format.mintick) +
+          " | طبقات " + str.tostring(curConf) + "/3",
+          alert.freq_once_per_bar_close)
+
+// ═══ لوحة الحالة ══════════════════════════════════════════════════════════════
+
+var table hud = table.new(position.top_right, 2, 6, border_width = 1)
+if barstate.islast and curIdx > 0
+    color hc = curBull ? bullCol : bearCol
+    table.cell(hud, 0, 0, "النموذج", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 0, curName, text_color = hc, text_size = size.small)
+    table.cell(hud, 0, 1, "المرحلة", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 1, curStage, text_color = hc, text_size = size.small)
+    table.cell(hud, 0, 2, "الطبقات", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 2, str.tostring(curConf) + "/3", text_color = hc, text_size = size.small)
+    table.cell(hud, 0, 3, "دخول", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 3, str.tostring(curEntry, format.mintick), text_color = hc, text_size = size.small)
+    table.cell(hud, 0, 4, "وقف", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 4, str.tostring(curStop, format.mintick), text_color = bearCol, text_size = size.small)
+    table.cell(hud, 0, 5, "TP1 · TP2", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 5, str.tostring(curTp1, format.mintick) + " · " +
+                          str.tostring(curTp2, format.mintick), text_color = hc, text_size = size.small)
