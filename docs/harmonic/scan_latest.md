@@ -1,0 +1,47 @@
+# فحص كارني التوافقي — 2026-10-14_0220 (الرياض)
+
+القائمة `universe` ·
+الفاصل `1d` ·
+المحاور `zigzag_atr` ·
+أدنى مرحلة `WATCH`
+
+```
+الرمز  النموذج        المرحلة الاتجاه       دخول      وقف      TP1      TP2       B   PRZ%  شمعات
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+TRV    Butterfly      SIGNAL  هابط        280.70   284.29   268.66   261.23   0.767   0.0%     52
+UDR    Deep Crab      SIGNAL  صاعد         37.40    36.28    39.24    40.38   0.889   0.0%     54
+ESS    Butterfly      SIGNAL  صاعد        238.46   235.58   249.17   255.78   0.779   0.0%     41
+JBLU   Bat            SIGNAL  هابط          6.16     6.80     5.29     4.74   0.432   0.0%     41
+NVDA   Gartley        SIGNAL  هابط        193.63   199.94   184.43   178.75   0.607   1.0%     37
+MA     Gartley        SIGNAL  صاعد        562.51   553.86   577.51   586.77   0.642   3.3%     36
+ATI    Deep Crab      SIGNAL  هابط         66.80    69.03    61.67    58.50   0.907   4.4%     46
+VICI   Gartley        SIGNAL  صاعد         27.01    26.55    27.97    28.56   0.645   4.5%     47
+VLRS   Butterfly      TBAR    صاعد          6.78     6.53     7.63     8.15   0.783   3.7%     36
+AMZN   Alternate Bat  WATCH   هابط        287.20   298.78        —        —   0.354   0.0%     39
+WMT    Gartley        WATCH   هابط        113.72   116.87        —        —   0.617   0.0%     32
+PM     Deep Crab      WATCH   هابط        206.33   212.31        —        —   0.925   0.0%     27
+AMGN   Butterfly      WATCH   صاعد        328.82   315.41        —        —   0.780   0.0%     54
+DE     Crab           WATCH   صاعد        491.61   437.40        —        —   0.544   0.0%     33
+MO     Crab           WATCH   هابط         85.18    90.20        —        —   0.543   0.0%     48
+SCHW   Crab           WATCH   صاعد         71.01    60.73        —        —   0.566   0.0%     60
+PNC    Gartley        WATCH   صاعد        220.24   209.70        —        —   0.631   0.0%     86
+USB    Bat            WATCH   صاعد         53.90    50.54        —        —   0.384   0.0%     76
+F      Deep Crab      WATCH   صاعد          9.59     7.66        —        —   0.901   0.0%     48
+WELL   Bat            WATCH   صاعد        201.57   186.80        —        —   0.499   0.0%     59
+FOXA   Alternate Bat  WATCH   صاعد         48.34    42.24        —        —   0.355   0.0%     55
+CPA    Gartley        WATCH   هابط        146.65   152.67        —        —   0.597   0.0%     35
+DLTR   Deep Crab      WATCH   صاعد        104.29    96.55        —        —   0.936   0.1%     29
+GOOGL  Gartley        WATCH   هابط        371.94   384.48        —        —   0.642   0.7%     40
+MRK    Bat            WATCH   صاعد        129.72   122.23        —        —   0.476   0.7%     34
+EXPE   Deep Crab      WATCH   صاعد        192.52   160.24        —        —   0.887   2.7%     37
+ESS    Butterfly      WATCH   صاعد        263.10   258.54        —        —   0.758   3.5%     44
+IBM    Bat            WATCH   هابط        298.96   326.44        —        —   0.467   3.5%     66
+MMM    Butterfly      WATCH   صاعد        145.10   140.59        —        —   0.786   4.0%     58
+SNPS   Butterfly      WATCH   هابط        488.51   507.39        —        —   0.814   4.0%     22
+TCOM   Deep Crab      WATCH   صاعد         32.21    28.60        —        —   0.933   4.5%     61
+PG     Gartley        WATCH   هابط        150.13   153.68        —        —   0.605   5.0%     31
+GOOG   Gartley        WATCH   هابط        367.00   381.81        —        —   0.611   5.0%     40
+
+SIGNAL: 8 · TBAR: 1 · WATCH: 24
+كُتبت النتائج في harmonic_hits.json
+```
