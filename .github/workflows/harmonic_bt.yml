@@ -40,7 +40,7 @@ on:
         default: "60"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: harmonic-bt
@@ -81,6 +81,7 @@ jobs:
           if [ "${{ inputs.signal_only }}" = "true" ]; then
             ARGS="$ARGS --signal-only"
           fi
+          echo "الرموز: $ARGS"
           python backtest.py $ARGS \
             --period "${{ inputs.period }}" \
             --tf "${{ inputs.tf }}" \
@@ -119,6 +120,43 @@ jobs:
             sweep "zigzag_atr ${A}xATR" --pivot-method zigzag_atr --zz-atr "$A"
           done
           cat pivot_sweep.txt
+
+      # التقرير يُحفظ في الريبو لا في artifact فقط: الـ artifact ينتهي بعد
+      # ٣٠ يوماً وتحميله يحتاج نطاقاً خارجياً، أما الملف المحفوظ فيُقرأ عبر
+      # واجهة GitHub مباشرة ويبقى مع تاريخ الريبو للمقارنة بين التشغيلات.
+      - name: حفظ التقرير في الريبو
+        if: always()
+        run: |
+          mkdir -p docs/harmonic
+          STAMP=$(TZ=Asia/Riyadh date +'%Y-%m-%d_%H%M')
+          TAG="${{ inputs.period }}_${{ inputs.pivot_method }}${{ inputs.pivot }}_${{ inputs.tf }}"
+          {
+            echo "# باك تست نماذج كارني — $STAMP (الرياض)"
+            echo ""
+            echo "المدة \`${{ inputs.period }}\` · الفاصل \`${{ inputs.tf }}\` ·"
+            echo "المحاور \`${{ inputs.pivot_method }}\` \`${{ inputs.pivot }}\` ·"
+            echo "أقصى حمل \`${{ inputs.max_hold }}\` شمعة ·"
+            echo "مرحلة الدخول \`${{ inputs.signal_only == true && 'SIGNAL' || 'TBAR' }}\`"
+            echo ""
+            echo '## النتيجة'
+            echo ''
+            echo '```'
+            cat harmonic/bt_report.txt 2>/dev/null || echo "لم يكتمل"
+            echo '```'
+            echo ''
+            echo '## مسح منطق المحاور'
+            echo ''
+            echo '```'
+            cat harmonic/pivot_sweep.txt 2>/dev/null || echo "لم يُنفَّذ"
+            echo '```'
+          } > "docs/harmonic/bt_${TAG}.md"
+          cp "docs/harmonic/bt_${TAG}.md" docs/harmonic/latest.md
+          git config user.name  "harmonic-bot"
+          git config user.email "harmonic-bot@users.noreply.github.com"
+          git add docs/harmonic || true
+          git diff --cached --quiet || git commit -m "harmonic bt $STAMP ($TAG)"
+          git pull --rebase --autostash || true
+          git push || true
 
       - name: رفع النتائج
         if: always()
