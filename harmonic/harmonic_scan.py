@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -31,6 +32,62 @@ DEFAULT_SYMBOLS = [
 ]
 
 STAGE_ORDER = {Stage.SIGNAL: 0, Stage.TBAR: 1, Stage.WATCH: 2, Stage.FAILED: 3}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# التنبيه — نفس اصطلاح بقية ماسحات الريبو (TG_TOKEN / TG_CHAT)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def notify(text: str) -> None:
+    token = os.environ.get("HARMONIC_TG_TOKEN") or os.environ.get("TG_TOKEN")
+    chat = os.environ.get("HARMONIC_TG_CHAT") or os.environ.get("TG_CHAT")
+    if not token or not chat:
+        print(text)
+        return
+    try:
+        import requests
+    except ImportError:
+        print(text)
+        return
+    r = requests.post(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        data={"chat_id": chat, "text": text, "parse_mode": "HTML"}, timeout=30,
+    )
+    if not r.ok:
+        print("Telegram error:", r.text, file=sys.stderr)
+
+
+def build_alert(hits: list, interval: str) -> str:
+    """رسالة تيليجرام — الإشارات أولاً، والمراقبة مجمّعة في سطر."""
+    sig = [p for p in hits if p.stage is Stage.SIGNAL]
+    tb = [p for p in hits if p.stage is Stage.TBAR]
+    watch = [p for p in hits if p.stage is Stage.WATCH]
+
+    lines = [f"<b>نماذج كارني التوافقية</b> · {interval}"]
+
+    for title, group in (("🎯 إشارة (T-Bar+1)", sig), ("⏳ شمعة الإتمام", tb)):
+        if not group:
+            continue
+        lines.append(f"\n<b>{title}</b>")
+        for p in group:
+            d = "صاعد" if p.direction == "bullish" else "هابط"
+            lines.append(
+                f"<code>{p.symbol:<6}</code> {p.pattern} {d}"
+                f" · طبقات {p.confluence}/3"
+                f"\n   دخول {p.entry:.2f} · وقف {p.stop:.2f}"
+                f" · TP1 {p.tp1:.2f} · TP2 {p.tp2:.2f}"
+            )
+
+    if watch:
+        names = ", ".join(f"{p.symbol}({p.pattern[:4]})" for p in watch[:12])
+        more = f" +{len(watch) - 12}" if len(watch) > 12 else ""
+        lines.append(f"\n<b>👁 مراقبة</b> ({len(watch)}): {names}{more}")
+
+    if not sig and not tb and not watch:
+        return ""
+
+    lines.append("\n<i>الرسم ليس إشارة — الدخول عند T-Bar+1 بنص الكتاب.</i>")
+    return "\n".join(lines)
 
 
 def fetch(symbols: list[str], period: str, interval: str) -> dict[str, pd.DataFrame]:
@@ -55,6 +112,22 @@ def fetch(symbols: list[str], period: str, interval: str) -> dict[str, pd.DataFr
     return out
 
 
+def read_tickers(path: Path) -> list[str]:
+    """
+    يقرأ ملف رموز سطراً سطراً، ويتجاهل التعليقات والفراغ.
+
+    ملفات watchlist في هذا الريبو تبدأ بأسطر تعليق عربية بـ `#`، فالقراءة
+    بـ split() على الملف كله كانت تعدّ كل كلمة رمزاً.
+    """
+    out: list[str] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        out.append(line.split()[0].upper())
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="ماسح نماذج كارني التوافقية")
     ap.add_argument("--symbols", help="رموز مفصولة بفاصلة")
@@ -68,12 +141,14 @@ def main() -> None:
     ap.add_argument("--require-rsi", action="store_true",
                     help="اشترط تشبع RSI عند شمعة الإتمام")
     ap.add_argument("--json", type=Path, help="اكتب النتائج JSON")
+    ap.add_argument("--notify", action="store_true",
+                    help="أرسل تنبيه تيليجرام (TG_TOKEN / TG_CHAT)")
     args = ap.parse_args()
 
     if args.symbols:
         symbols = [s.strip().upper() for s in args.symbols.split(",") if s.strip()]
     elif args.tickers:
-        symbols = [s.strip().upper() for s in args.tickers.read_text().split() if s.strip()]
+        symbols = read_tickers(args.tickers)
     else:
         symbols = DEFAULT_SYMBOLS
 
@@ -123,6 +198,11 @@ def main() -> None:
     for p in hits:
         by_stage[p.stage.value] = by_stage.get(p.stage.value, 0) + 1
     print("\n" + " · ".join(f"{k}: {v}" for k, v in by_stage.items()))
+
+    if args.notify:
+        msg = build_alert(hits, args.interval)
+        if msg:
+            notify(msg)
 
     if args.json:
         args.json.write_text(

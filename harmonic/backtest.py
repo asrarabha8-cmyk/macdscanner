@@ -361,6 +361,22 @@ def fetch(symbols: list[str], period: str, interval: str) -> dict[str, pd.DataFr
     return out
 
 
+def read_tickers(path: Path) -> list[str]:
+    """
+    يقرأ ملف رموز سطراً سطراً، ويتجاهل التعليقات والفراغ.
+
+    ملفات watchlist في هذا الريبو تبدأ بأسطر تعليق عربية بـ `#`، فالقراءة
+    بـ split() على الملف كله كانت تعدّ كل كلمة رمزاً.
+    """
+    out: list[str] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        out.append(line.split()[0].upper())
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="باك تست نماذج كارني التوافقية")
     ap.add_argument("--symbols", help="رموز مفصولة بفاصلة")
@@ -389,7 +405,7 @@ def main() -> None:
         if args.symbols:
             syms = [s.strip().upper() for s in args.symbols.split(",") if s.strip()]
         elif args.tickers:
-            syms = [s.strip().upper() for s in args.tickers.read_text().split() if s.strip()]
+            syms = read_tickers(args.tickers)
         else:
             syms = ["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "SPY", "QQQ"]
         print(f"جلب {len(syms)} رمزاً · {args.period} · {args.interval}", file=sys.stderr)
