@@ -1,1 +1,32 @@
-[]
+[
+ {
+  "code": "1830",
+  "name": "Leejam Sports Co.",
+  "sector": "Consumer Services",
+  "date": "2026-10-13",
+  "entry": 79.05,
+  "stop": 77.05,
+  "target": 83.4,
+  "rr": 2.17,
+  "vol_ratio": 2.26,
+  "status": "open",
+  "days": 0,
+  "last_close": 79.05,
+  "return_pct": 0.0
+ },
+ {
+  "code": "1182",
+  "name": "Amlak International for Real Estate Finance Company",
+  "sector": "Finance",
+  "date": "2026-10-13",
+  "entry": 8.89,
+  "stop": 8.69,
+  "target": 9.47,
+  "rr": 2.89,
+  "vol_ratio": 4.22,
+  "status": "open",
+  "days": 0,
+  "last_close": 8.89,
+  "return_pct": 0.0
+ }
+]
