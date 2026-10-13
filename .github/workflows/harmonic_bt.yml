@@ -160,6 +160,10 @@ jobs:
             echo '```'
           } > "docs/harmonic/bt_${TAG}.md"
           cp "docs/harmonic/bt_${TAG}.md" docs/harmonic/latest.md
+          # الصفقات الخام تُحفظ أيضاً: بلا قيم R الفردية لا يمكن حساب
+          # الخطأ المعياري ولا كشف أن نتيجةً يحملها أثرٌ شاذ أو صفقتان.
+          cp harmonic/bt_results.json "docs/harmonic/trades_${TAG}.json" 2>/dev/null || true
+          cp harmonic/bt_results.json docs/harmonic/latest_trades.json 2>/dev/null || true
           git config user.name  "harmonic-bot"
           git config user.email "harmonic-bot@users.noreply.github.com"
           git add docs/harmonic || true
