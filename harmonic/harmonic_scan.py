@@ -137,6 +137,11 @@ def main() -> None:
     ap.add_argument("--stage", choices=[s.value for s in Stage], action="append",
                     help="اقتصر على مرحلة (يمكن تكرارها)")
     ap.add_argument("--pivot", type=int, default=5, help="قوة المحور يميناً ويساراً")
+    ap.add_argument("--pivot-method", default="fractal",
+                    choices=["fractal", "zigzag_pct", "zigzag_atr"],
+                    help="طريقة تحديد المحاور")
+    ap.add_argument("--zz-pct", type=float, default=6.0)
+    ap.add_argument("--zz-atr", type=float, default=2.5)
     ap.add_argument("--min-bars", type=int, default=30, help="أدنى امتداد للنموذج")
     ap.add_argument("--require-rsi", action="store_true",
                     help="اشترط تشبع RSI عند شمعة الإتمام")
@@ -153,8 +158,11 @@ def main() -> None:
         symbols = DEFAULT_SYMBOLS
 
     cfg = Config(
+        pivot_method=args.pivot_method,
         pivot_left=args.pivot,
         pivot_right=args.pivot,
+        zz_pct=args.zz_pct,
+        zz_atr_mult=args.zz_atr,
         min_pattern_bars=args.min_bars,
         require_rsi=args.require_rsi,
     )

@@ -20,8 +20,13 @@ on:
         type: choice
         options: ["1d", "1wk", "1h"]
         default: "1d"
+      pivot_method:
+        description: "طريقة المحاور — أكبر متغير وحده، والكتاب صامت عنه"
+        type: choice
+        options: ["fractal", "zigzag_pct", "zigzag_atr"]
+        default: "fractal"
       pivot:
-        description: "قوة المحور — أكبر متغير وحده، والكتاب صامت عنه"
+        description: "قوة المحور الكسري (تُستخدم مع fractal فقط)"
         type: choice
         options: ["3", "4", "5", "7", "10"]
         default: "5"
@@ -79,30 +84,47 @@ jobs:
           python backtest.py $ARGS \
             --period "${{ inputs.period }}" \
             --tf "${{ inputs.tf }}" \
+            --pivot-method "${{ inputs.pivot_method }}" \
             --pivot "${{ inputs.pivot }}" \
             --max-hold "${{ inputs.max_hold }}" \
             --json bt_results.json \
             | tee bt_report.txt
 
-      - name: مقارنة قوى المحاور
+      - name: مسح منطق المحاور — الطرق والعتبات
         working-directory: harmonic
         continue-on-error: true
         run: |
-          # الكتاب لا يذكر طريقة تحديد المحاور، فنقيس أثرها بأنفسنا
-          echo "مقارنة أثر قوة المحور على النتيجة" | tee pivot_sweep.txt
+          # الكتاب لا يذكر طريقة تحديد المحاور أبداً، وهي أكبر متغير وحده في
+          # النتيجة. فنقيس أثرها بأنفسنا عبر الطرق الثلاث وعتبات كل واحدة.
+          if [ -n "${{ inputs.symbols }}" ]; then S="--symbols ${{ inputs.symbols }}"; else S="--tickers ../watchlist.txt"; fi
+          COMMON="--period ${{ inputs.period }} --tf ${{ inputs.tf }} --max-hold ${{ inputs.max_hold }} --no-baseline"
+
+          sweep() {   # الوسائط: وصف، ثم بقية الخيارات
+            local label="$1"; shift
+            printf '%-24s' "$label" >> pivot_sweep.txt
+            python backtest.py $S $COMMON "$@" 2>/dev/null \
+              | grep -E "^الإجمالي|^لا صفقات" | head -1 >> pivot_sweep.txt \
+              || echo "(فشل)" >> pivot_sweep.txt
+          }
+
+          echo "مسح منطق المحاور — نفس جدول النسب، منطق محاور مختلف" > pivot_sweep.txt
+          echo "" >> pivot_sweep.txt
           for P in 3 4 5 7 10; do
-            echo "── محور $P ──" | tee -a pivot_sweep.txt
-            if [ -n "${{ inputs.symbols }}" ]; then S="--symbols ${{ inputs.symbols }}"; else S="--tickers ../watchlist.txt"; fi
-            python backtest.py $S --period "${{ inputs.period }}" --tf "${{ inputs.tf }}" \
-              --pivot "$P" --max-hold "${{ inputs.max_hold }}" --no-baseline \
-              2>/dev/null | grep -E "الإجمالي|لا صفقات" | tee -a pivot_sweep.txt || true
+            sweep "fractal $P" --pivot-method fractal --pivot "$P"
           done
+          for Z in 4 6 8 10; do
+            sweep "zigzag_pct ${Z}%" --pivot-method zigzag_pct --zz-pct "$Z"
+          done
+          for A in 2.0 2.5 3.0 3.5; do
+            sweep "zigzag_atr ${A}xATR" --pivot-method zigzag_atr --zz-atr "$A"
+          done
+          cat pivot_sweep.txt
 
       - name: رفع النتائج
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: harmonic-backtest-${{ inputs.period }}-pivot${{ inputs.pivot }}
+          name: harmonic-backtest-${{ inputs.period }}-${{ inputs.pivot_method }}${{ inputs.pivot }}
           path: |
             harmonic/bt_report.txt
             harmonic/bt_results.json
@@ -116,14 +138,14 @@ jobs:
           {
             echo "## باك تست نماذج كارني"
             echo ""
-            echo "\`${{ inputs.period }}\` · \`${{ inputs.tf }}\` · محور \`${{ inputs.pivot }}\` · أقصى حمل \`${{ inputs.max_hold }}\`"
+            echo "\`${{ inputs.period }}\` · \`${{ inputs.tf }}\` · محاور \`${{ inputs.pivot_method }}\` \`${{ inputs.pivot }}\` · أقصى حمل \`${{ inputs.max_hold }}\`"
             echo ""
             echo '```'
             cat bt_report.txt 2>/dev/null || echo "لم يكتمل"
             echo '```'
             if [ -f pivot_sweep.txt ]; then
               echo ""
-              echo "### أثر قوة المحور"
+              echo "### أثر منطق المحاور"
               echo '```'
               cat pivot_sweep.txt
               echo '```'

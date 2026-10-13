@@ -33,6 +33,7 @@ __all__ = [
     "Pivot",
     "HarmonicPattern",
     "find_pivots",
+    "PivotMethod",
     "find_patterns",
     "rsi",
 ]
@@ -155,9 +156,17 @@ class Config:
     وحده في أي ماسح هارمونيك. اضبطها بصرياً على شارتات تعرفها قبل الاعتماد عليها.
     """
 
-    # منطق المحاور — [param] الكتاب لا يذكر طريقة تحديد المحاور أبداً
+    # منطق المحاور — [param] الكتاب لا يذكر طريقة تحديد المحاور أبداً،
+    # وهذه أكبر مجموعة معاملات أثراً في النتيجة كلها.
+    pivot_method: PivotMethod = "fractal"
     pivot_left: int = 5
     pivot_right: int = 5
+    # الافتراضات أدناه مضبوطة بالقياس لا بالحدس: العتبة الضيقة تُنتج موجات
+    # أقصر من شرط الكتاب (٣٠ شمعة) فلا يخرج نموذج واحد. عند 3% كان وسيط
+    # الموجة شمعتين — أي نموذج ≈٨ شمعات — والنتيجة صفر نماذج دائماً.
+    zz_pct: float = 6.0            # عتبة zigzag_pct % — وسيط الموجة ≈١١ شمعة
+    zz_atr_mult: float = 2.5       # عتبة zigzag_atr بمضاعف ATR — ≈١١ شمعة
+    atr_period: int = 14
 
     # [كتاب] ص ٣١٨: النموذج يجب أن يمتد على ٣٠ شمعة على الأقل (نظرية النهاية المركزية)
     min_pattern_bars: int = 30
@@ -210,36 +219,23 @@ class Pivot:
     price: float
     kind: Literal["high", "low"]
 
+    # الشمعة التي صار عندها هذا المحور **معلوماً** لمن يتابع السوق لحظةً بلحظة.
+    # تختلف بحسب طريقة التحديد، ولا يجوز افتراضها:
+    #   fractal  →  index + right   (لا بد من مرور right شمعة)
+    #   zigzag   →  الشمعة التي تجاوز فيها الارتداد عتبة الانعكاس
+    # الباك تست يعتمد عليها حرفياً — وبلا هذا الحقل يتسرب المستقبل.
+    confirmed_at: int = -1
 
-def find_pivots(
-    high: Sequence[float],
-    low: Sequence[float],
-    left: int,
-    right: int,
-) -> list[Pivot]:
+
+PivotMethod = Literal["fractal", "zigzag_pct", "zigzag_atr"]
+
+
+def _alternate(raw: list[Pivot]) -> list[Pivot]:
     """
-    محاور كسرية (fractal) متناوبة.
+    يفرض التناوب: عند توالي محورين من نفس النوع يُستبقى الأكثر تطرفاً.
 
-    محور قمة = أعلى من `left` شمعة قبله و `right` شمعة بعده.
-    ثم يُفرض التناوب: عند توالي محورين من نفس النوع يُستبقى الأكثر تطرفاً.
-
-    التناوب شرط بنيوي: نموذج X-A-B-C-D يتطلب تعاقب قمة/قاع بالضرورة.
+    التناوب شرط بنيوي لا تجميلي: نموذج X-A-B-C-D يتطلب تعاقب قمة/قاع بالضرورة.
     """
-    h = np.asarray(high, dtype=float)
-    l = np.asarray(low, dtype=float)
-    n = len(h)
-    raw: list[Pivot] = []
-
-    for i in range(left, n - right):
-        window_h = h[i - left : i + right + 1]
-        if h[i] == window_h.max() and (window_h == h[i]).sum() == 1:
-            raw.append(Pivot(i, float(h[i]), "high"))
-            continue
-        window_l = l[i - left : i + right + 1]
-        if l[i] == window_l.min() and (window_l == l[i]).sum() == 1:
-            raw.append(Pivot(i, float(l[i]), "low"))
-
-    # فرض التناوب
     out: list[Pivot] = []
     for p in raw:
         if not out or out[-1].kind != p.kind:
@@ -250,6 +246,139 @@ def find_pivots(
         if more_extreme:
             out[-1] = p
     return out
+
+
+def _fractal_pivots(h: np.ndarray, l: np.ndarray, left: int, right: int) -> list[Pivot]:
+    """محاور كسرية: أعلى/أدنى من `left` شمعة قبلها و `right` بعدها."""
+    n = len(h)
+    raw: list[Pivot] = []
+    for i in range(left, n - right):
+        win_h = h[i - left : i + right + 1]
+        if h[i] == win_h.max() and (win_h == h[i]).sum() == 1:
+            raw.append(Pivot(i, float(h[i]), "high", i + right))
+            continue
+        win_l = l[i - left : i + right + 1]
+        if l[i] == win_l.min() and (win_l == l[i]).sum() == 1:
+            raw.append(Pivot(i, float(l[i]), "low", i + right))
+    return _alternate(raw)
+
+
+def _atr(h: np.ndarray, l: np.ndarray, c: np.ndarray, period: int) -> np.ndarray:
+    """ATR بطريقة Wilder."""
+    prev_c = np.concatenate([[c[0]], c[:-1]])
+    tr = np.maximum(h - l, np.maximum(np.abs(h - prev_c), np.abs(l - prev_c)))
+    out = np.full_like(tr, np.nan)
+    if len(tr) <= period:
+        return np.full_like(tr, float(np.mean(tr)) if len(tr) else 0.0)
+    out[period] = tr[1 : period + 1].mean()
+    for i in range(period + 1, len(tr)):
+        out[i] = (out[i - 1] * (period - 1) + tr[i]) / period
+    first = out[period]
+    out[:period] = first
+    return out
+
+
+def _zigzag_pivots(
+    h: np.ndarray, l: np.ndarray, c: np.ndarray,
+    threshold: np.ndarray,
+) -> list[Pivot]:
+    """
+    ZigZag بعتبة انعكاس. `threshold` مصفوفة عتبة سعرية لكل شمعة، فتخدم
+    النسبة المئوية الثابتة ومضاعف الـ ATR المتغير بالصيغة نفسها.
+
+    لحظة التثبيت هنا **ليست** إزاحة ثابتة: المحور يُثبَّت في الشمعة التي
+    تجاوز فيها الارتداد العتبة. وهذا هو الفرق الجوهري عن المحاور الكسرية،
+    وتجاهله يُدخل تسريباً مستقبلياً في الباك تست.
+    """
+    n = len(h)
+    if n < 3:
+        return []
+
+    raw: list[Pivot] = []
+    # نبدأ بالاتجاه الذي يتحرك إليه السعر أولاً بعتبة كافية
+    ext_i, ext_px = 0, float(h[0])
+    ext_lo_i, ext_lo_px = 0, float(l[0])
+    direction = 0            # +1 = نبحث عن قمة، -1 = نبحث عن قاع
+
+    for i in range(1, n):
+        thr = float(threshold[i]) if threshold[i] > 0 else 0.0
+        if thr <= 0:
+            continue
+
+        if direction >= 0 and h[i] >= ext_px:
+            ext_i, ext_px = i, float(h[i])
+        if direction <= 0 and l[i] <= ext_lo_px:
+            ext_lo_i, ext_lo_px = i, float(l[i])
+
+        if direction == 0:
+            if ext_px - l[i] >= thr:
+                raw.append(Pivot(ext_i, ext_px, "high", i))
+                direction = -1
+                ext_lo_i, ext_lo_px = i, float(l[i])
+            elif h[i] - ext_lo_px >= thr:
+                raw.append(Pivot(ext_lo_i, ext_lo_px, "low", i))
+                direction = +1
+                ext_i, ext_px = i, float(h[i])
+            continue
+
+        if direction == +1:
+            # نتتبع قمة؛ تُثبَّت حين يهبط السعر عنها بمقدار العتبة
+            if ext_px - l[i] >= thr:
+                raw.append(Pivot(ext_i, ext_px, "high", i))
+                direction = -1
+                ext_lo_i, ext_lo_px = i, float(l[i])
+        else:
+            # نتتبع قاعاً؛ يُثبَّت حين يصعد السعر عنه بمقدار العتبة
+            if h[i] - ext_lo_px >= thr:
+                raw.append(Pivot(ext_lo_i, ext_lo_px, "low", i))
+                direction = +1
+                ext_i, ext_px = i, float(h[i])
+
+    return _alternate(raw)
+
+
+def find_pivots(
+    high: Sequence[float],
+    low: Sequence[float],
+    left: int = 5,
+    right: int = 5,
+    close: Sequence[float] | None = None,
+    method: PivotMethod = "fractal",
+    zz_pct: float = 3.0,
+    zz_atr_mult: float = 2.0,
+    atr_period: int = 14,
+) -> list[Pivot]:
+    """
+    محاور متناوبة بإحدى ثلاث طرق.
+
+    الكتاب **لا يذكر طريقة تحديد المحاور أبداً**، وهي أكبر متغير وحده في أي
+    ماسح هارمونيك: نفس جدول النسب حرفياً مع منطق محاور مختلف يعطي قائمتين
+    مختلفتين كلياً. فالطرق الثلاث هنا ليست ترفاً — هي ما يجعل هذا المتغير
+    قابلاً للقياس بدل أن يُفترض.
+
+    fractal     أعلى/أدنى من N شمعة على الجانبين. بسيط، لكن عتبته ثابتة
+                بالزمن لا بالحركة، فيخلط بين سهم هادئ وسهم متقلب.
+    zigzag_pct  يسجّل المحور حين يرتد السعر نسبةً مئوية. عتبة بالحركة لا
+                بالزمن، لكنها لا تتأقلم مع تغيّر التقلب.
+    zigzag_atr  نفسها بعتبة مضاعف ATR، فتتأقلم مع تقلب كل سهم وكل فترة.
+                الأنسب عادةً لقائمة رموز مختلطة.
+    """
+    h = np.asarray(high, dtype=float)
+    l = np.asarray(low, dtype=float)
+
+    if method == "fractal":
+        return _fractal_pivots(h, l, left, right)
+
+    c = np.asarray(close if close is not None else (h + l) / 2.0, dtype=float)
+
+    if method == "zigzag_pct":
+        thr = c * (zz_pct / 100.0)
+    elif method == "zigzag_atr":
+        thr = _atr(h, l, c, atr_period) * zz_atr_mult
+    else:
+        raise ValueError(f"طريقة محاور غير معروفة: {method}")
+
+    return _zigzag_pivots(h, l, c, thr)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -293,6 +422,9 @@ class HarmonicPattern:
 
     tbar_index: int | None = None
     rsi_at_tbar: float | None = None
+    # الشمعة التي صارت عندها نقطة D معلومة — تختلف بحسب طريقة المحاور،
+    # والباك تست يبني توقيت الدخول عليها لا على افتراض ثابت.
+    d_confirmed_at: int | None = None
     bars_span: int = 0
     note: str = ""
 
@@ -454,7 +586,11 @@ def find_patterns(
     r = rsi(c, cfg.rsi_period)
     last = len(df) - 1
 
-    pivots = find_pivots(h, l, cfg.pivot_left, cfg.pivot_right)
+    pivots = find_pivots(
+        h, l, cfg.pivot_left, cfg.pivot_right, close=c,
+        method=cfg.pivot_method, zz_pct=cfg.zz_pct,
+        zz_atr_mult=cfg.zz_atr_mult, atr_period=cfg.atr_period,
+    )
     if len(pivots) < 4:
         return []
     pivots = pivots[-cfg.max_lookback_pivots :]
@@ -582,6 +718,7 @@ def _validate_quint(
             confluence=prz["confluence"], prz_levels=levels,
             entry=D.price, stop=stop, tp1=tp1, tp2=tp2,
             tbar_index=tbar_idx, rsi_at_tbar=rsi_tbar,
+            d_confirmed_at=D.confirmed_at if D.confirmed_at >= 0 else D.index,
             bars_span=span, note=spec.note,
         ))
         break   # نموذج واحد لكل بنية — أول مطابقة في ترتيب SPECS

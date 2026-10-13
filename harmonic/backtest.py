@@ -53,6 +53,7 @@ class Trade:
     confluence: int
 
     d_bar: int
+    d_confirmed_at: int
     tbar: int
     entry_bar: int
     entry: float
@@ -199,7 +200,11 @@ def backtest_symbol(
         bull = p.direction == "bullish"
 
         # ── التوقيت السليم: المحور لا يُعرف قبل تثبيته ──────────────────────
-        known_at = d_bar + cfg.pivot_right
+        # لحظة التثبيت تأتي من المحور نفسه لا من افتراض ثابت: المحاور الكسرية
+        # تتأخر `pivot_right` دائماً، أما الـ zigzag فتأخره متغير بحسب متى
+        # تجاوز الارتداد العتبة. افتراض رقم ثابت هنا يُدخل تسريباً مستقبلياً.
+        known_at = p.d_confirmed_at if p.d_confirmed_at is not None \
+                   else d_bar + cfg.pivot_right
         entry_bar = max(known_at, p.tbar_index) + 1
         if entry_bar > last:
             continue                       # الإشارة في آخر البيانات — لا نتيجة بعد
@@ -231,7 +236,8 @@ def backtest_symbol(
         trades.append(Trade(
             symbol=symbol, pattern=p.pattern, direction=p.direction,
             confluence=p.confluence,
-            d_bar=d_bar, tbar=p.tbar_index, entry_bar=entry_bar,
+            d_bar=d_bar, d_confirmed_at=known_at,
+            tbar=p.tbar_index, entry_bar=entry_bar,
             entry=entry, stop=float(p.stop), tp1=tp1, tp2=tp2,
             outcome=outcome, exit_bar=ex_bar, exit_px=float(ex_px),
             bars_held=ex_bar - entry_bar,
@@ -385,6 +391,11 @@ def main() -> None:
     ap.add_argument("--period", default="5y")
     ap.add_argument("--tf", dest="interval", default="1d")
     ap.add_argument("--pivot", type=int, default=5)
+    ap.add_argument("--pivot-method", default="fractal",
+                    choices=["fractal", "zigzag_pct", "zigzag_atr"],
+                    help="طريقة تحديد المحاور — الكتاب صامت عنها وهي أكبر متغير")
+    ap.add_argument("--zz-pct", type=float, default=6.0, help="عتبة zigzag_pct %%")
+    ap.add_argument("--zz-atr", type=float, default=2.5, help="عتبة zigzag_atr بمضاعف ATR")
     ap.add_argument("--min-bars", type=int, default=30)
     ap.add_argument("--max-hold", type=int, default=60, help="أقصى شمعات للصفقة")
     ap.add_argument("--signal-only", action="store_true",
@@ -394,7 +405,9 @@ def main() -> None:
     ap.add_argument("--json", type=Path)
     args = ap.parse_args()
 
-    cfg = Config(pivot_left=args.pivot, pivot_right=args.pivot,
+    cfg = Config(pivot_method=args.pivot_method,
+                 pivot_left=args.pivot, pivot_right=args.pivot,
+                 zz_pct=args.zz_pct, zz_atr_mult=args.zz_atr,
                  min_pattern_bars=args.min_bars, require_rsi=args.require_rsi)
     stage = Stage.SIGNAL if args.signal_only else Stage.TBAR
 
@@ -429,9 +442,16 @@ def main() -> None:
         print("لا صفقات. وسّع المدة، أو أنقص --pivot، أو أزل --signal-only.")
         return
 
+    pv_desc = args.pivot_method
+    if args.pivot_method == "fractal":
+        pv_desc += f" {args.pivot}"
+    elif args.pivot_method == "zigzag_pct":
+        pv_desc += f" {args.zz_pct}%"
+    else:
+        pv_desc += f" {args.zz_atr}×ATR"
     print(f"\n{'═' * 78}")
     print(f"باك تست نماذج كارني · {len(data)} رمز · مرحلة الدخول {stage.value}"
-          f" · محور {args.pivot} · أقصى حمل {args.max_hold} شمعة")
+          f" · محاور {pv_desc} · أقصى حمل {args.max_hold} شمعة")
     print("═" * 78)
 
     s = summarize(all_trades)

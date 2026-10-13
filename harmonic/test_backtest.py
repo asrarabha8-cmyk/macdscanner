@@ -93,45 +93,62 @@ def test_r_definition() -> bool:
 
 def test_no_lookahead() -> bool:
     print("\n" + "=" * 74)
-    print("٣. لا تسريب مستقبلي — الاختبار الحاسم")
+    print("٣. لا تسريب مستقبلي — الاختبار الحاسم، على الطرق الثلاث")
     print("=" * 74)
-    print("  نقطة D محور كسري لا يُثبَّت إلا بعد مرور pivot_right شمعة.")
-    print("  فشمعة الدخول يجب أن تكون بعد التثبيت **وبعد** الـ T-Bar.\n")
+    print("  نقطة D محور، ولا تُعرف قبل تثبيتها. ولحظة التثبيت تختلف بالطريقة:")
+    print("  الكسرية تتأخر pivot_right دائماً، والـ zigzag تأخرها متغير.")
+    print("  افتراض رقم ثابت لكل الطرق = تسريب مستقبلي صامت.\n")
 
     rng = np.random.default_rng(3)
-    cfg = Config(pivot_left=5, pivot_right=5, min_pattern_bars=30)
-    checked = violations = 0
-    examples = []
+    methods = [
+        ("fractal",    Config(pivot_method="fractal", pivot_left=5, pivot_right=5)),
+        ("zigzag_pct", Config(pivot_method="zigzag_pct", zz_pct=6.0)),
+        ("zigzag_atr", Config(pivot_method="zigzag_atr", zz_atr_mult=2.5)),
+    ]
 
+    series = []
     for _ in range(400):
         ret = rng.normal(0.0003, 0.015, 600)
         c = 100 * np.exp(np.cumsum(ret))
         o = np.concatenate([[c[0]], c[:-1]])
         w = np.abs(rng.normal(0, 0.007, 600)) * c
-        df = frame(o, np.maximum(o, c) + w, np.minimum(o, c) - w, c)
+        series.append(frame(o, np.maximum(o, c) + w, np.minimum(o, c) - w, c))
 
-        for t in backtest_symbol(df, cfg, "T", max_hold=60, min_stage=Stage.TBAR):
-            checked += 1
-            known_at = t.d_bar + cfg.pivot_right
-            need = max(known_at, t.tbar) + 1
-            if t.entry_bar < need:
-                violations += 1
-                if len(examples) < 3:
-                    examples.append((t.d_bar, t.tbar, t.entry_bar, need))
-            # سعر الدخول يجب أن يكون افتتاح شمعة الدخول لا سعر D
-            if abs(t.entry - df["open"].iloc[t.entry_bar]) > 1e-9:
-                violations += 1
-            # الخروج لا يسبق الدخول
-            if t.exit_bar < t.entry_bar:
-                violations += 1
+    all_ok = True
+    for name, cfg in methods:
+        checked = violations = 0
+        examples = []
+        lags = []
+        for df in series:
+            for t in backtest_symbol(df, cfg, "T", max_hold=60, min_stage=Stage.TBAR):
+                checked += 1
+                lags.append(t.d_confirmed_at - t.d_bar)
+                need = max(t.d_confirmed_at, t.tbar) + 1
+                if t.entry_bar < need:
+                    violations += 1
+                    if len(examples) < 2:
+                        examples.append((t.d_bar, t.d_confirmed_at, t.tbar,
+                                         t.entry_bar, need))
+                # الدخول بافتتاح شمعة الدخول لا بسعر D
+                if abs(t.entry - df["open"].iloc[t.entry_bar]) > 1e-9:
+                    violations += 1
+                # لحظة التثبيت لا تسبق المحور نفسه
+                if t.d_confirmed_at < t.d_bar:
+                    violations += 1
+                if t.exit_bar < t.entry_bar:
+                    violations += 1
 
-    print(f"  صفقات مفحوصة: {checked}")
-    print(f"  خروق التوقيت : {violations}")
-    for d, tb, eb, need in examples:
-        print(f"    D={d} T-Bar={tb} دخول={eb} (الأدنى المسموح {need})")
-    good = violations == 0 and checked > 0
-    print(f"\n  {'✓ لا تسريب' if good else '✗ يوجد تسريب — النتائج بلا قيمة'}")
-    return good
+        ok = violations == 0
+        all_ok &= ok
+        lag_txt = (f"تأخر التثبيت: وسيط {int(np.median(lags))} أقصى {max(lags)}"
+                   if lags else "—")
+        print(f"  {'✓' if ok else '✗'} {name:<12} صفقات {checked:>4}"
+              f"  خروق {violations:>3}   {lag_txt}")
+        for d, ca, tb, eb, need in examples:
+            print(f"      D={d} تثبيت={ca} T-Bar={tb} دخول={eb} (الأدنى {need})")
+
+    print(f"\n  {'✓ لا تسريب في أي طريقة' if all_ok else '✗ يوجد تسريب — النتائج بلا قيمة'}")
+    return all_ok
 
 
 # ═══ ٤. المقياس العشوائي على سوق صاعد اصطناعياً ══════════════════════════════
@@ -153,7 +170,7 @@ def test_baseline_catches_drift() -> bool:
 
     fake = [Trade(
         symbol="T", pattern="Gartley", direction="bullish", confluence=3,
-        d_bar=100, tbar=100, entry_bar=100, entry=float(o[100]),
+        d_bar=100, d_confirmed_at=105, tbar=100, entry_bar=100, entry=float(o[100]),
         stop=float(o[100]) * 0.95, tp1=float(o[100]) * 1.02,
         tp2=float(o[100]) * 1.04, outcome="tp1", exit_bar=110,
         exit_px=float(c[110]), bars_held=10, r_multiple=0.4, pct=2.0,

@@ -18,8 +18,13 @@ on:
         type: choice
         options: ["1d", "1wk", "1h"]
         default: "1d"
+      pivot_method:
+        description: "طريقة المحاور"
+        type: choice
+        options: ["fractal", "zigzag_pct", "zigzag_atr"]
+        default: "fractal"
       pivot:
-        description: "قوة المحور"
+        description: "قوة المحور الكسري"
         type: choice
         options: ["3", "4", "5", "7", "10"]
         default: "5"
@@ -62,6 +67,7 @@ jobs:
           python harmonic_scan.py \
             --tickers ../watchlist.txt \
             --tf "${{ inputs.tf || '1d' }}" \
+            --pivot-method "${{ inputs.pivot_method || 'fractal' }}" \
             --pivot "${{ inputs.pivot || '5' }}" \
             --period 2y \
             $FILTER \
