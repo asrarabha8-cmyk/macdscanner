@@ -9,7 +9,7 @@ on:
       universe:
         description: "قائمة الرموز"
         type: choice
-        options: ["universe", "watchlist"]
+        options: ["universe", "forex", "watchlist"]
         default: "universe"
       symbols:
         description: "رموز مفصولة بفاصلة (تتجاوز الاختيار أعلاه)"
@@ -82,6 +82,8 @@ jobs:
             ARGS="--symbols ${{ inputs.symbols }}"
           elif [ "${{ inputs.universe }}" = "watchlist" ]; then
             ARGS="--tickers ../watchlist.txt"
+          elif [ "${{ inputs.universe }}" = "forex" ]; then
+            ARGS="--tickers forex.txt"
           else
             ARGS="--tickers universe.txt"
           fi
@@ -106,6 +108,7 @@ jobs:
           # النتيجة. فنقيس أثرها بأنفسنا عبر الطرق الثلاث وعتبات كل واحدة.
           if [ -n "${{ inputs.symbols }}" ]; then S="--symbols ${{ inputs.symbols }}"
           elif [ "${{ inputs.universe }}" = "watchlist" ]; then S="--tickers ../watchlist.txt"
+          elif [ "${{ inputs.universe }}" = "forex" ]; then S="--tickers forex.txt"
           else S="--tickers universe.txt"; fi
           COMMON="--period ${{ inputs.period }} --tf ${{ inputs.tf }} --max-hold ${{ inputs.max_hold }} --no-baseline"
 

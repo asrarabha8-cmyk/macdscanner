@@ -1,0 +1,35 @@
+# أزواج فوركس — بيئة الكتاب الأصلية.
+# كل أمثلة كارني في المجلد ٣ فوركس على ٥ و١٥ و٦٠ دقيقة، لا أسهماً يومية.
+# صيغة yfinance: الزوج + =X
+EURUSD=X
+GBPUSD=X
+USDJPY=X
+AUDUSD=X
+USDCHF=X
+USDCAD=X
+NZDUSD=X
+EURJPY=X
+GBPJPY=X
+EURGBP=X
+AUDJPY=X
+EURAUD=X
+CHFJPY=X
+CADJPY=X
+NZDJPY=X
+EURCHF=X
+GBPCHF=X
+AUDNZD=X
+AUDCAD=X
+GBPAUD=X
+EURCAD=X
+EURNZD=X
+GBPCAD=X
+GBPNZD=X
+AUDCHF=X
+NZDCAD=X
+NZDCHF=X
+USDSGD=X
+USDMXN=X
+USDZAR=X
+USDSEK=X
+USDNOK=X
