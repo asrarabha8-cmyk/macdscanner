@@ -68,6 +68,21 @@ CRYPTO = {"BTC-USD"}
 ALWAYS |= CRYPTO
 TICKERS = sorted(set(UNIVERSE.split()) | ALWAYS)
 
+# ------------------------------------------------------------------
+# إضافة: أسهم رخيصة عقودها تناسب ميزانية صغيرة — قسم منفصل في التنبيه
+# لا تغيّر القائمة الأصلية ولا شروط العقد؛ نفس منطق الإشارة ونفس فلتر الأوبشن
+# ------------------------------------------------------------------
+CHEAP_MAX_PRICE = float(os.environ.get("CHEAP_MAX_PRICE", 50))   # أقصى سعر للسهم
+CHEAP_MAX_SHOW  = int(os.environ.get("CHEAP_MAX_SHOW", 6))       # أقصى عدد يُعرض
+CHEAP_UNIVERSE = """
+F GM AAL JBLU CCL NCLH NIO RIVN LCID PLUG SOFI SNAP LYFT PINS T VZ PFE INTC
+KVUE WBD HPE KMI KEY RF HBAN CSX CLF AA BBAI SOUN IONQ ACHR JOBY OPEN RIG
+ET KGC NU GRAB ITUB VALE BBD ABEV CPNG DKNG CHWY RKT PCG AES BAC KHC MARA
+RIOT CLSK HUT
+"""
+CHEAP = set(CHEAP_UNIVERSE.split()) - set(TICKERS)   # الجديد فقط، بدون تكرار
+SCAN_TICKERS = sorted(set(TICKERS) | CHEAP)
+
 
 # ------------------------------------------------------------------
 # أدوات
@@ -232,7 +247,7 @@ def main():
     now = dt.datetime.now(dt.timezone.utc)
     print(f"scan بطيء {now:%Y-%m-%d %H:%M} UTC — {len(TICKERS)} رمز")
 
-    d1 = fetch(TICKERS, "2y", "1d")
+    d1 = fetch(SCAN_TICKERS, "2y", "1d")
     names = liquid(d1)
     print(f"بعد فلتر السيولة: {len(names)}")
     if not names:
@@ -241,6 +256,7 @@ def main():
     h1 = fetch(names, "180d", "1h")
 
     entries, permits = [], []
+    cheap_entries = []
     for t in names:
         if t not in h1:
             continue
@@ -251,12 +267,16 @@ def main():
             continue
         if not res:
             continue
+        if t in CHEAP:   # القسم الجديد فقط — لا يدخل القائمة الأصلية
+            if res["state"] == "entry" and res["price"] <= CHEAP_MAX_PRICE:
+                cheap_entries.append((t, res))
+            continue
         if res["state"] == "entry":
             entries.append((t, res))
         elif res["state"] == "permit":
             permits.append(t)
 
-    if not entries:
+    if not entries and not cheap_entries:
         print(f"لا إشارات دخول. إذن مفتوح على: {', '.join(permits) or 'لا شيء'}")
         return
 
@@ -274,7 +294,30 @@ def main():
         lines.append("")
     if permits:
         lines.append("إذن مفتوح بلا تقاطع: " + ", ".join(permits[:15]))
+    lines += cheap_section(cheap_entries)
     notify("\n".join(lines))
+
+
+def cheap_section(cheap_entries) -> list[str]:
+    """قسم إضافي: أسهم رخيصة (≤ CHEAP_MAX_PRICE) — عقودها أقرب لميزانية صغيرة."""
+    if not cheap_entries:
+        return []
+    from swing_options import suggest, render, BUDGET
+    cheap_entries.sort(key=lambda x: x[1]["risk_pct"])
+    lines = ["", f"💵 <b>أسهم رخيصة — عقود أقرب لميزانية ${BUDGET:.0f}</b> (سعر ≤ ${CHEAP_MAX_PRICE:.0f})", ""]
+    for t, r in cheap_entries[:CHEAP_MAX_SHOW]:
+        lines += [
+            f"<b>{t}</b>  {r['price']:.2f}",
+            f"ستوب {r['stop']:.2f}  ({r['risk_pct']:.2f}%)",
+            f"أهداف {r['tp1']:.2f} / {r['tp2']:.2f} / {r['tp3']:.2f}",
+        ]
+        try:   # بحث مستقل عن حد البحث الأصلي حتى لا يأخذ من حصة القسم الأول
+            lines += render(suggest(t, "CALL", float(r["price"]), stop=r["stop"], target=r["tp2"]))
+        except Exception as e:  # noqa: BLE001
+            print(f"cheap options {t}: {e}", file=sys.stderr)
+            lines.append("   ⚪ أوبشن: تعذّر جلب السلسلة")
+        lines.append("")
+    return lines
 
 
 if __name__ == "__main__":
