@@ -56,6 +56,9 @@ staleBars = input.int(20, "بعد كم شمعة يُعد النموذج منته
      + "كأنه قائم. هذا الحد يمنع ذلك.")
 
 grpV = "العرض"
+keepPatterns = input.int(6, "كم نموذجاً سابقاً يبقى مرسوماً", minval = 0, maxval = 30,
+     group = grpV, tooltip = "نماذج كارني نادرة جداً، فمسح السابق عند كل جديد يترك الشارت "
+     + "فارغاً أغلب الوقت. النماذج السابقة تبقى مرسومة بلون باهت. صفر = النموذج الحالي فقط.")
 showWatch = input.bool(true, "اعرض مرحلة المراقبة", group = grpV)
 showLines = input.bool(true, "ارسم أضلاع النموذج", group = grpV)
 showPRZ   = input.bool(true, "ارسم صندوق الـ PRZ", group = grpV)
@@ -161,6 +164,11 @@ type Drawn
 
 var Drawn D5 = Drawn.new(array.new<line>(), array.new<label>(), na, array.new<line>())
 
+// أرشيف النماذج السابقة — تبقى مرسومة بلون باهت بدل أن تُمحى
+var array<line>  histLines = array.new<line>()
+var array<label> histTags  = array.new<label>()
+var array<box>   histBoxes = array.new<box>()
+
 clearDrawn() =>
     for ln in D5.legs
         line.delete(ln)
@@ -173,6 +181,36 @@ clearDrawn() =>
     for ln in D5.lvls
         line.delete(ln)
     array.clear(D5.lvls)
+    0
+
+// ينقل أشكال النموذج الحالي إلى الأرشيف بلون باهت بدل حذفها.
+// مسح السابق عند كل جديد كان يترك الشارت فارغاً لأن النماذج نادرة جداً.
+archiveDrawn() =>
+    for ln in D5.legs
+        line.set_color(ln, color.new(color.gray, 55))
+        array.push(histLines, ln)
+    array.clear(D5.legs)
+    for lb in D5.tags
+        label.set_color(lb, color.new(color.gray, 92))
+        label.set_textcolor(lb, color.new(color.gray, 20))
+        array.push(histTags, lb)
+    array.clear(D5.tags)
+    if not na(D5.przBox)
+        box.set_bgcolor(D5.przBox, color.new(color.gray, 94))
+        box.set_border_color(D5.przBox, color.new(color.gray, 65))
+        array.push(histBoxes, D5.przBox)
+        D5.przBox := na
+    // الوقف والأهداف تخص الفرصة الحيّة وحدها، فتُحذف لا تُؤرشَف
+    for ln in D5.lvls
+        line.delete(ln)
+    array.clear(D5.lvls)
+    // تشذيب الأرشيف من الأقدم
+    while array.size(histLines) > keepPatterns * 8
+        line.delete(array.shift(histLines))
+    while array.size(histTags) > keepPatterns * 6
+        label.delete(array.shift(histTags))
+    while array.size(histBoxes) > keepPatterns
+        box.delete(array.shift(histBoxes))
     0
 
 leg(int b1, float p1, int b2, float p2, color col, int w) =>
@@ -328,6 +366,7 @@ if barstate.isconfirmed and array.size(pvPrice) >= 5
                     stage := "T-BAR"
 
             // ── التسجيل والرسم ──────────────────────────────────────────────
+            bool isNewPattern = Db != curIdx
             if Db != curIdx or stage != curStage
                 newSignal := stage == "SIGNAL" and curStage != "SIGNAL"
                 newTbar   := stage == "T-BAR"  and curStage != "T-BAR"
@@ -346,7 +385,12 @@ if barstate.isconfirmed and array.size(pvPrice) >= 5
 
                 color col = bull ? bullCol : bearCol
                 if stage != "WATCH" or showWatch
-                    clearDrawn()
+                    // نموذج جديد → أرشِف السابق ليبقى مرئياً.
+                    // نفس النموذج تغيّرت مرحلته → امسحه وأعد رسمه بحالته الجديدة.
+                    if isNewPattern
+                        archiveDrawn()
+                    else
+                        clearDrawn()
                     if showLines
                         leg(Xb, Xp, Ab, Ap, col, 2)
                         leg(Ab, Ap, Bb, Bp, col, 2)
