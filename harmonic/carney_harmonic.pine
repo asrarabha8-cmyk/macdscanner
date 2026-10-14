@@ -396,7 +396,7 @@ if newSignal
 
 // ═══ لوحة الحالة ══════════════════════════════════════════════════════════════
 
-var table hud = table.new(position.top_right, 2, 6, border_width = 1)
+var table hud = table.new(position.top_right, 2, 7, border_width = 1)
 if barstate.islast and curIdx > 0
     color hc = curBull ? bullCol : bearCol
     table.cell(hud, 0, 0, "النموذج", text_color = color.gray, text_size = size.small)
@@ -412,3 +412,12 @@ if barstate.islast and curIdx > 0
     table.cell(hud, 0, 5, "TP1 · TP2", text_color = color.gray, text_size = size.small)
     table.cell(hud, 1, 5, str.tostring(curTp1, format.mintick) + " · " +
                           str.tostring(curTp2, format.mintick), text_color = hc, text_size = size.small)
+    // بُعد النموذج عن السعر الحالي: النموذج قد يكون خارج المجال المعروض
+    // تماماً فلا يُرى رسمه، فيظن المستخدم أن المؤشر لا يعمل. هذا الصف
+    // يقول له أين ينظر، وكم شمعة مضت منذ الإتمام.
+    float gap = (close - curEntry) / curEntry * 100.0
+    int   age = bar_index - curIdx
+    table.cell(hud, 0, 6, "بُعد · عمر", text_color = color.gray, text_size = size.small)
+    table.cell(hud, 1, 6, str.tostring(gap, "+#.##") + "% · " +
+                          str.tostring(age) + " شمعة",
+               text_color = math.abs(gap) > 1.0 ? color.orange : hc, text_size = size.small)
