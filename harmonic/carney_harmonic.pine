@@ -135,6 +135,10 @@ pushPivot(float px, int bar, bool isHigh) =>
             array.shift(pvPrice)
             array.shift(pvBar)
             array.shift(pvHigh)
+    // سطر ختامي موحّد: فرع if ينتهي بما لا يُرجِع قيمة، وفرع else ينتهي
+    // بـ array.shift على مصفوفة منطقية وهي تُرجِع bool. وبلا هذا السطر يرى
+    // باين فرعين بنوعَي إرجاع مختلفين (void ثم series bool) فيرفض الدالة.
+    0
 
 if not na(ph)
     pushPivot(ph, bar_index - pivLen, true)
@@ -163,20 +167,24 @@ clearDrawn() =>
     for ln in D5.lvls
         line.delete(ln)
     array.clear(D5.lvls)
+    0
 
 leg(int b1, float p1, int b2, float p2, color col, int w) =>
     array.push(D5.legs, line.new(b1, p1, b2, p2, color = col, width = w))
+    0
 
 tag(int b, float p, string txt, color col, bool below) =>
     array.push(D5.tags, label.new(b, p, txt, color = color.new(col, 85),
          textcolor = col, size = size.small,
          style = below ? label.style_label_up : label.style_label_down))
+    0
 
 drawLevel(float px, int b1, int b2, color col, string txt) =>
     l = line.new(b1, px, b2, px, color = col, style = line.style_dashed, width = 1)
     array.push(D5.lvls, l)
     array.push(D5.tags, label.new(b2, px, txt, color = color.new(col, 100),
          textcolor = col, style = label.style_label_left, size = size.tiny))
+    0
 
 // ═══ الكشف ════════════════════════════════════════════════════════════════════
 
