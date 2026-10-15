@@ -9,12 +9,14 @@
   "target": 83.4,
   "rr": 2.17,
   "vol_ratio": 2.26,
-  "status": "open",
-  "days": 1,
-  "last_close": 79.0,
-  "return_pct": -0.06,
+  "status": "stop",
+  "days": 2,
+  "last_close": 78.4,
+  "return_pct": -2.53,
   "max_high": 79.75,
-  "min_low": 77.9
+  "min_low": 76.2,
+  "exit_date": "2026-10-15",
+  "exit_price": 77.05
  },
  {
   "code": "1182",
@@ -26,11 +28,13 @@
   "target": 9.47,
   "rr": 2.89,
   "vol_ratio": 4.22,
-  "status": "open",
-  "days": 1,
-  "last_close": 8.76,
-  "return_pct": -1.46,
+  "status": "stop",
+  "days": 2,
+  "last_close": 8.55,
+  "return_pct": -2.25,
   "max_high": 8.96,
-  "min_low": 8.75
+  "min_low": 8.5,
+  "exit_date": "2026-10-15",
+  "exit_price": 8.69
  }
 ]
