@@ -270,7 +270,8 @@ def log_row(r: Result) -> dict:
             "direction": "bull" if r.bull else "bear", "score": r.score, "decision": r.decision,
             "spot": round(r.spot, 2), "stop": round(r.stock["stop"], 2),
             "target": round(r.stock["target"], 2), "rr": round(r.stock["rr"], 2),
-            "net_flow": round(r.flow["net"], 3), "flip": r.gex["flip"],
+            "net_flow": round(r.flow["net"], 3),
+            "flip": round(r.gex["flip"], 2) if r.gex["flip"] else None,
             "call_wall": r.gex["call_wall"], "put_wall": r.gex["put_wall"],
             "contract": o.get("name", ""), "contract_mid": round(o.get("mid", 0), 2),
             "vetoes": " | ".join(r.vetoes)}
