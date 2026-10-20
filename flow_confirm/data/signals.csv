@@ -1,0 +1,2 @@
+time_ny,ticker,mode,direction,score,decision,spot,stop,target,rr,net_flow,flip,call_wall,put_wall,contract,contract_mid,vetoes,source
+2026-10-20 16:31,SPY,intraday,bear,39,no,769.02,771.33,768.0,0.44,-0.066,769.0137562089495,773.0,768.0,769P 21/10/2026,1.79,جدار البوت قريب جداً (768، 0.1٪) | العائد/المخاطرة ضعيف (0.4),check
