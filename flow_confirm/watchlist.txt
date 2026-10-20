@@ -1,0 +1,15 @@
+# قائمة المراقبة للماسح — رمز في كل سطر (عدّلها كما تريد)
+SPY
+QQQ
+NVDA
+TSLA
+AAPL
+MSFT
+AMZN
+META
+GOOGL
+AMD
+AVGO
+PLTR
+NFLX
+CRWV

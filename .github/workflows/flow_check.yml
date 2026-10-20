@@ -1,0 +1,70 @@
+# نظام التأكيد بالسيولة — فحص يدوي: Actions → Flow Check → Run workflow
+name: Flow Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: "الرمز (أو عدة رموز بفاصلة) مثل NVDA,SPY"
+        required: true
+        default: "SPY"
+      mode:
+        description: "الإطار"
+        type: choice
+        options: [intraday, swing, both]
+        default: intraday
+      side:
+        description: "الاتجاه (auto = من التدفق)"
+        type: choice
+        options: [auto, call, put]
+        default: auto
+  repository_dispatch:
+    types: [flow_check]   # client_payload: {tickers, mode, side}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flow-confirm-data
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: flow_confirm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Run check
+        env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+          TICKERS: ${{ inputs.tickers || github.event.client_payload.tickers || 'SPY' }}
+          MODE: ${{ inputs.mode || github.event.client_payload.mode || 'intraday' }}
+          SIDE: ${{ inputs.side || github.event.client_payload.side || 'auto' }}
+        run: python confirm.py "$TICKERS" --mode "$MODE" --side "$SIDE" --telegram
+      - name: Commit log
+        if: always()
+        run: |
+          git config user.name  "flow-confirm-bot"
+          git config user.email "flow-confirm-bot@users.noreply.github.com"
+          git add data || true
+          git diff --cached --quiet || git commit -m "flow check $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
+      - name: Telegram on failure
+        if: failure()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: |
+          curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="⚠️ Flow Check فشل — راجع Actions" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null

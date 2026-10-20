@@ -1,0 +1,78 @@
+# نظام التأكيد بالسيولة — الماسح التلقائي (الأوقات UTC، والسكربت يتحقق من وقت نيويورك)
+# يومي: كل ٣٠ دقيقة أثناء الجلسة | سوينغ: مرة قرب الإغلاق (٣:٣٥ مساءً نيويورك)
+name: Flow Scan
+
+on:
+  schedule:
+    - cron: "*/30 13-20 * * 1-5"   # intraday
+    - cron: "35 19,20 * * 1-5"     # swing
+  repository_dispatch:
+    types: [flow_scan]   # client_payload: {mode: intraday|swing}
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [intraday, swing]
+        default: intraday
+      force:
+        description: "تجاهل وقت السوق (للتجربة)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flow-confirm-data
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: flow_confirm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Pick mode
+        id: m
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ inputs.mode }}" >> $GITHUB_OUTPUT
+            if [ "${{ inputs.force }}" = "true" ]; then echo "force=--force" >> $GITHUB_OUTPUT; fi
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "mode=${{ github.event.client_payload.mode || 'intraday' }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "35 19,20 * * 1-5" ]; then
+            echo "mode=swing" >> $GITHUB_OUTPUT
+          else
+            echo "mode=intraday" >> $GITHUB_OUTPUT
+          fi
+      - name: Scan
+        env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: python scan.py --mode ${{ steps.m.outputs.mode }} ${{ steps.m.outputs.force }}
+      - name: Commit log & alert state
+        if: always()
+        run: |
+          git config user.name  "flow-confirm-bot"
+          git config user.email "flow-confirm-bot@users.noreply.github.com"
+          git add data || true
+          git diff --cached --quiet || git commit -m "flow scan ${{ steps.m.outputs.mode }} $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
+      - name: Telegram on failure
+        if: failure()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: |
+          curl -s --data-urlencode chat_id="$TG_CHAT" --data-urlencode text="⚠️ Flow Scan فشل — راجع Actions" \
+            "https://api.telegram.org/bot$TG_TOKEN/sendMessage" > /dev/null
