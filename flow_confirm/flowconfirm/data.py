@@ -125,18 +125,20 @@ def last_session(df: pd.DataFrame) -> pd.DataFrame:
     return df[df.index.date == df.index[-1].date()]
 
 
-def extended_price(raw: pd.DataFrame, session: pd.DataFrame):
+def extended_price(raw: pd.DataFrame, session: pd.DataFrame, need_volume: bool = True):
     """آخر سعر تداول بعد نهاية آخر جلسة رسمية (بعد الإغلاق أو قبل الافتتاح)."""
     if raw.empty or session.empty:
         return None, 0
     after = raw[raw.index > session.index[-1]]
-    after = after[after["volume"] > 0]
+    if need_volume:  # yfinance يعرض حجم صفر لشموع ما بعد الجلسة، فلا نفلتر هناك
+        after = after[after["volume"] > 0]
     return (float(after["close"].iloc[-1]) if not after.empty else None), len(after)
 
 
 def fetch_bars(ticker: str, now: dt.datetime):
     """يرجع: شموع آخر جلسة، الشموع اليومية، وسعر خارج الجلسة إن وُجد."""
     use_polygon = bool(C.POLYGON_KEY) and not ticker.startswith("^")
+    note = "" if use_polygon else "|no_key"
     if use_polygon:
         try:
             raw = _polygon_aggs(ticker, 5, "minute", (now - dt.timedelta(days=7)).date(), now.date())
@@ -146,9 +148,11 @@ def fetch_bars(ticker: str, now: dt.datetime):
                 sess = last_session(raw)
                 ext, n = extended_price(raw, sess)
                 return sess, daily, ext, f"polygon:{n}"
-
+            note = "|pg_empty"
         except Exception as e:  # نرجع لـ yfinance
             print(f"[{ticker}] Polygon فشل: {e} — استخدام yfinance")
+            code = getattr(getattr(e, "response", None), "status_code", "")
+            note = f"|pg_err:{type(e).__name__}:{code}"  # بدون نص الخطأ حتى لا يتسرب المفتاح
     try:
         raw = _yf().Ticker(ticker).history(period="5d", interval="5m", prepost=True, auto_adjust=False)
         raw = raw.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].astype(float)
@@ -158,8 +162,8 @@ def fetch_bars(ticker: str, now: dt.datetime):
     except Exception:
         raw = _yf_hist(ticker, "5d", "5m")
     sess = last_session(raw)
-    ext, n = extended_price(raw, sess)
-    return sess, _yf_hist(ticker, "1y", "1d"), ext, f"yf:{n}"
+    ext, n = extended_price(raw, sess, need_volume=False)
+    return sess, _yf_hist(ticker, "1y", "1d"), ext, f"yf:{n}{note}"
 
 
 
