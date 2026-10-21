@@ -2,6 +2,24 @@
  {
   "kind": "check",
   "mode": "both",
+  "run_utc": "2026-10-21T19:47:40Z",
+  "finished_utc": "2026-10-21T19:47:44Z",
+  "duration_s": 3,
+  "event": "repository_dispatch",
+  "tickers": [
+   "SPY",
+   "SPY"
+  ],
+  "scanned": 2,
+  "errors": 0,
+  "enter": 0,
+  "wait": 0,
+  "alerts": 2,
+  "status": "ok"
+ },
+ {
+  "kind": "check",
+  "mode": "both",
   "run_utc": "2026-10-21T19:46:38Z",
   "finished_utc": "2026-10-21T19:46:44Z",
   "duration_s": 5,
