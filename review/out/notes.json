@@ -1,0 +1,164 @@
+{
+ "smc_breakout_cols": [
+  "date",
+  "ticker",
+  "entry",
+  "stop",
+  "risk_pct",
+  "t1",
+  "t2",
+  "t3",
+  "rr",
+  "max_gain_pct",
+  "outcome"
+ ],
+ "cascade_runs_total": 673,
+ "cascade_runs_with_alert": 11,
+ "slow_runs_total": 91,
+ "slow_runs_with_alert": 19,
+ "ma_runs_with_alert": 4,
+ "ema_runs_with_alert": 4,
+ "sa_history": [
+  {
+   "code": "1830",
+   "name": "Leejam Sports Co.",
+   "sector": "Consumer Services",
+   "date": "2026-10-13",
+   "entry": 79.05,
+   "stop": 77.05,
+   "target": 83.4,
+   "rr": 2.17,
+   "vol_ratio": 2.26,
+   "status": "stop",
+   "days": 2,
+   "last_close": 78.4,
+   "return_pct": -2.53,
+   "max_high": 79.75,
+   "min_low": 76.2,
+   "exit_date": "2026-10-15",
+   "exit_price": 77.05
+  },
+  {
+   "code": "1182",
+   "name": "Amlak International for Real Estate Finance Company",
+   "sector": "Finance",
+   "date": "2026-10-13",
+   "entry": 8.89,
+   "stop": 8.69,
+   "target": 9.47,
+   "rr": 2.89,
+   "vol_ratio": 4.22,
+   "status": "stop",
+   "days": 2,
+   "last_close": 8.55,
+   "return_pct": -2.25,
+   "max_high": 8.96,
+   "min_low": 8.5,
+   "exit_date": "2026-10-15",
+   "exit_price": 8.69
+  }
+ ],
+ "optitrader": [
+  {
+   "date": "2026-10-02",
+   "symbol": "AMD",
+   "kind": "CALL",
+   "entry": 3.39,
+   "exit": 1.82,
+   "pnl": -157.0,
+   "pnl_pct": -46.31,
+   "reason": "🛑 وقف العقد −45%"
+  },
+  {
+   "date": "2026-10-07",
+   "symbol": "COIN",
+   "kind": "PUT",
+   "entry": 1.53,
+   "exit": 1.17,
+   "pnl": -36.0,
+   "pnl_pct": -23.53,
+   "reason": "⏰ وقت الخروج المحدد"
+  }
+ ],
+ "flow_decisions": {
+  "no": 9,
+  "wait": 4
+ },
+ "sip": {
+  "trades": 40,
+  "wins": 15,
+  "losses": 25,
+  "avg_pct": 0.09,
+  "days": 4
+ },
+ "spy0dte": [
+  {
+   "t": "2026-10-10 12:17",
+   "lines": [
+    "🟢 SPY 0DTE — 2026-10-08: اليوم مؤهل",
+    "📈 إغلاق شمعة 5د فوق 775.33 = Call",
+    "📉 إغلاق تحت 774.45 = Put",
+    "📈 CALL سترايك 775 انتهاء اليوم",
+    "🛑 الوقف: 0.94 (−35%)",
+    "⏰ وقت الخروج — SPY 775 Call",
+    "Call 775 | دخول 1.47 ← خروج 0.94 (وقف)"
+   ]
+  },
+  {
+   "t": "2026-10-12 21:41",
+   "lines": []
+  },
+  {
+   "t": "2026-10-12 22:07",
+   "lines": []
+  },
+  {
+   "t": "2026-10-13 19:50",
+   "lines": []
+  },
+  {
+   "t": "2026-10-13 20:14",
+   "lines": []
+  },
+  {
+   "t": "2026-10-14 17:57",
+   "lines": []
+  },
+  {
+   "t": "2026-10-14 18:36",
+   "lines": []
+  },
+  {
+   "t": "2026-10-15 17:43",
+   "lines": []
+  },
+  {
+   "t": "2026-10-15 18:15",
+   "lines": []
+  },
+  {
+   "t": "2026-10-16 17:19",
+   "lines": []
+  },
+  {
+   "t": "2026-10-16 18:01",
+   "lines": []
+  },
+  {
+   "t": "2026-10-19 19:14",
+   "lines": []
+  },
+  {
+   "t": "2026-10-19 19:54",
+   "lines": []
+  },
+  {
+   "t": "2026-10-20 17:55",
+   "lines": []
+  },
+  {
+   "t": "2026-10-20 18:27",
+   "lines": []
+  }
+ ]
+}
