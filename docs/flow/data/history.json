@@ -1,0 +1,23 @@
+[
+ {
+  "id": "NVDA-intraday-2026-10-21T15:51:48Z",
+  "ticker": "NVDA",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-21T15:51:48Z",
+  "score": 72,
+  "entry": 220.575,
+  "stop": 219.5828,
+  "target": 222.5,
+  "rr": 1.9402,
+  "contract": "220C 23/10/2026",
+  "contract_mid": 2.965,
+  "status": "open",
+  "last_price": 220.575,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ }
+]
