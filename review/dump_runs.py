@@ -91,13 +91,14 @@ def main():
         if a["expired"] or a["name"] in seen or a["name"] in ("github-pages",) or "backtest" in a["name"] \
                 or a["name"] == "kronos-results":
             continue
-        seen.add(a["name"])  # newest of each name only
+        if a["name"] != "alerts-log":
+            seen.add(a["name"])  # newest of each name only (alerts-log: keep every run)
         z = requests.get(a["archive_download_url"], headers=H, timeout=120)
         if z.status_code != 200:
             continue
         with zipfile.ZipFile(io.BytesIO(z.content)) as zz:
             for name in zz.namelist():
-                (ad / f"{a['name']}__{Path(name).name}").write_bytes(zz.read(name))
+                (ad / f"{a['name']}__{a['id']}__{Path(name).name}").write_bytes(zz.read(name))
     print("artifacts:", sorted(seen))
 
 
