@@ -2,6 +2,11 @@ name: Alerts Review
 
 on:
   workflow_dispatch:
+    inputs:
+      dump_only:
+        description: "Only dump logs (skip scoring)"
+        required: false
+        default: "false"
   push:
     branches: [main]
     paths: [review/trigger.txt]
@@ -29,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python review/dump_runs.py
       - name: Evaluate
-        if: hashFiles('review/evaluate.py') != ''
+        if: hashFiles('review/evaluate.py') != '' && github.event.inputs.dump_only != 'true'
         run: python review/evaluate.py
       - name: Save
         if: always()
