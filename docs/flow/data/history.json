@@ -14,11 +14,11 @@
   "contract": "387.5C 23/10/2026",
   "contract_mid": 10.575,
   "status": "open",
-  "last_price": 386.86,
-  "return_pct": 0.0,
+  "last_price": 387.11,
+  "return_pct": 0.06,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-10-21T15:51:48Z",
@@ -35,8 +35,8 @@
   "contract": "220C 23/10/2026",
   "contract_mid": 2.965,
   "status": "open",
-  "last_price": 221.54,
-  "return_pct": 0.44,
+  "last_price": 221.7,
+  "return_pct": 0.51,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
