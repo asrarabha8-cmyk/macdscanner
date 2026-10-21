@@ -22,7 +22,7 @@ jobs:
           python-version: "3.11"
 
       - name: تثبيت المكتبات
-        run: pip install yfinance pandas requests lxml
+        run: pip install yfinance pandas requests lxml html5lib beautifulsoup4
 
       - name: تشغيل الماسح
         env:
