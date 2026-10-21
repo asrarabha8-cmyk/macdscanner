@@ -13,11 +13,11 @@
   "rr": 9.1729,
   "contract": "387.5C 23/10/2026",
   "contract_mid": 10.575,
-  "status": "open",
-  "last_price": 387.11,
-  "return_pct": 0.06,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "stop",
+  "last_price": 385.4275,
+  "return_pct": -0.37,
+  "exit_price": 385.4275,
+  "exit_utc": "2026-10-21T19:00:00Z",
   "days": 1
  },
  {
@@ -35,8 +35,8 @@
   "contract": "220C 23/10/2026",
   "contract_mid": 2.965,
   "status": "open",
-  "last_price": 221.7,
-  "return_pct": 0.51,
+  "last_price": 221.31,
+  "return_pct": 0.33,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
