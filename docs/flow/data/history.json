@@ -14,10 +14,10 @@
   "contract": "220C 23/10/2026",
   "contract_mid": 2.965,
   "status": "open",
-  "last_price": 220.575,
-  "return_pct": 0.0,
+  "last_price": 220.15,
+  "return_pct": -0.19,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  }
 ]
