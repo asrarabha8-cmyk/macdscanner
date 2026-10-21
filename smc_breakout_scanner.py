@@ -95,8 +95,54 @@ def finviz_screen() -> list[str]:
     except Exception as e:
         print(f"تحليل الجدول فشل: {e}", file=sys.stderr)
 
-    print("لم أجد نتائج في صفحة فينفيز.", file=sys.stderr)
+    # الطريقة الثالثة: روابط الأسهم داخل جدول النتائج (تصمد لو تغيّر شكل الجدول)
+    links = re.findall(r'href="quote\.ashx\?t=([A-Z][A-Z0-9.\-]{0,6})&[^"]*&p=d', html)
+    if links:
+        return list(dict.fromkeys(links))
+
+    title = re.search(r"<title>(.*?)</title>", html, re.S)
+    total = re.search(r"Total:\s*</?\w*[^>]*>?\s*(\d+)", html)
+    print(f"لم أجد نتائج في صفحة فينفيز (HTTP {r.status_code}، {len(html)} حرف، "
+          f"العنوان: {title.group(1).strip()[:60] if title else '—'}، Total: {total.group(1) if total else '—'})",
+          file=sys.stderr)
     return []
+
+
+# ------------------------------------------------------------------
+# احتياطي — نفس الفلتر من ماسح TradingView لو فينفيز ما رجّع شي
+# ------------------------------------------------------------------
+def tradingview_screen() -> list[str]:
+    """نفس شروط فينفيز: أمريكي، فوليوم > 500K، فلوت < 50M، سعر > 1، فوليوم نسبي > 2،
+    تغير اليوم > 5%، وقمة جديدة لشهر (≈ 20 جلسة)."""
+    payload = {
+        "filter": [
+            {"left": "type", "operation": "equal", "right": "stock"},
+            {"left": "exchange", "operation": "in_range", "right": ["NASDAQ", "NYSE", "AMEX"]},
+            {"left": "volume", "operation": "greater", "right": 500_000},
+            {"left": "float_shares_outstanding", "operation": "less", "right": 50_000_000},
+            {"left": "close", "operation": "greater", "right": 1},
+            {"left": "relative_volume_10d_calc", "operation": "greater", "right": 2},
+            {"left": "change", "operation": "greater", "right": 5},
+        ],
+        "columns": ["name", "high", "High.1M", "country"],
+        "range": [0, 300],
+    }
+    try:
+        r = requests.post("https://scanner.tradingview.com/america/scan", json=payload,
+                          headers=UA, timeout=30)
+        r.raise_for_status()
+    except Exception as e:
+        print(f"TradingView فشل: {e}", file=sys.stderr)
+        return []
+    out = []
+    for row in r.json().get("data", []):
+        name, high, high_1m, country = (row.get("d") or [None] * 4)[:4]
+        if not name or (country and country != "United States"):
+            continue
+        if high is not None and high_1m is not None and high < high_1m:
+            continue  # ما سوّى قمة جديدة لشهر
+        out.append(str(name).upper())
+    return out
 
 
 # ------------------------------------------------------------------
@@ -244,7 +290,12 @@ def main():
     state = load_state()
 
     tickers = finviz_screen()
-    print(f"scan {now:%Y-%m-%d %H:%M} UTC — فينفيز أعطى {len(tickers)} مرشحاً")
+    tv = tradingview_screen()
+    print(f"scan {now:%Y-%m-%d %H:%M} UTC — فينفيز أعطى {len(tickers)} مرشحاً · TradingView {len(tv)}: "
+          f"{' '.join(tv[:20])}")
+    if not tickers and tv:
+        print("فينفيز فاضي — أكمل بمرشحي TradingView (نفس الشروط)")
+        tickers = tv
     if not tickers:
         return
 
