@@ -1,5 +1,20 @@
 [
  {
+  "code": "2330",
+  "name": "Advanced Petrochemical Co.",
+  "sector": "Process Industries",
+  "date": "2026-10-21",
+  "entry": 24.36,
+  "stop": 23.44,
+  "target": 24.76,
+  "rr": 0.44,
+  "vol_ratio": 2.07,
+  "status": "open",
+  "days": 0,
+  "last_close": 24.36,
+  "return_pct": 0.0
+ },
+ {
   "code": "1830",
   "name": "Leejam Sports Co.",
   "sector": "Consumer Services",
