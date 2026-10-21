@@ -24,6 +24,7 @@ class Snapshot:
     daily: pd.DataFrame      # شموع يومية
     earnings: dt.date | None
     asof: dt.datetime
+    ext_price: float | None = None   # آخر سعر خارج الجلسة (بعد/قبل) إن وُجد بعد آخر جلسة
 
 
 def now_ny() -> dt.datetime:
@@ -123,18 +124,38 @@ def last_session(df: pd.DataFrame) -> pd.DataFrame:
     return df[df.index.date == df.index[-1].date()]
 
 
+def extended_price(raw: pd.DataFrame, session: pd.DataFrame):
+    """آخر سعر تداول بعد نهاية آخر جلسة رسمية (بعد الإغلاق أو قبل الافتتاح)."""
+    if raw.empty or session.empty:
+        return None
+    after = raw[raw.index > session.index[-1]]
+    after = after[after["volume"] > 0]
+    return float(after["close"].iloc[-1]) if not after.empty else None
+
+
 def fetch_bars(ticker: str, now: dt.datetime):
+    """يرجع: شموع آخر جلسة، الشموع اليومية، وسعر خارج الجلسة إن وُجد."""
     use_polygon = bool(C.POLYGON_KEY) and not ticker.startswith("^")
     if use_polygon:
         try:
-            intra = _polygon_aggs(ticker, 5, "minute", (now - dt.timedelta(days=7)).date(), now.date())
+            raw = _polygon_aggs(ticker, 5, "minute", (now - dt.timedelta(days=7)).date(), now.date())
             daily = _polygon_aggs(ticker, 1, "day", (now - dt.timedelta(days=200)).date(), now.date())
             if not daily.empty:
                 daily.index = daily.index.normalize()
-                return last_session(intra), daily
+                sess = last_session(raw)
+                return sess, daily, extended_price(raw, sess)
         except Exception as e:  # نرجع لـ yfinance
             print(f"[{ticker}] Polygon فشل: {e} — استخدام yfinance")
-    return last_session(_yf_hist(ticker, "5d", "5m")), _yf_hist(ticker, "1y", "1d")
+    try:
+        raw = _yf().Ticker(ticker).history(period="5d", interval="5m", prepost=True, auto_adjust=False)
+        raw = raw.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].astype(float)
+        if raw.index.tz is None:
+            raw.index = raw.index.tz_localize(NY)
+        raw = raw.tz_convert(NY)
+    except Exception:
+        raw = _yf_hist(ticker, "5d", "5m")
+    sess = last_session(raw)
+    return sess, _yf_hist(ticker, "1y", "1d"), extended_price(raw, sess)
 
 
 def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
@@ -156,7 +177,7 @@ def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
 def get_snapshot(ticker: str, mode: str) -> Snapshot:
     cfg = C.MODES[mode]
     now = now_ny()
-    intra, daily = fetch_bars(ticker, now)
+    intra, daily, ext = fetch_bars(ticker, now)
     if not intra.empty:
         spot = float(intra["close"].iloc[-1])
     elif not daily.empty:
@@ -165,4 +186,4 @@ def get_snapshot(ticker: str, mode: str) -> Snapshot:
         spot = float(_yf().Ticker(ticker).fast_info["last_price"])
     chain = fetch_chain(ticker, cfg, now)
     return Snapshot(ticker.upper(), spot, chain, intra, daily,
-                    fetch_earnings(ticker, now.date()), now)
+                    fetch_earnings(ticker, now.date()), now, ext)

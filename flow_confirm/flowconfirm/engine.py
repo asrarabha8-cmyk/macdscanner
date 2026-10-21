@@ -215,6 +215,14 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto") -> Result:
         if days <= max(horizon, 1):
             warnings.append(f"⚠️ إعلان نتائج {snap.earnings:%d/%m} قبل انتهاء العقد — خطر انهيار التذبذب")
 
+    if snap.ext_price:
+        gap = (snap.ext_price / snap.spot - 1) * 100
+        if abs(gap) >= C.GAP_VETO_PCT:
+            vetoes.append(f"السعر تحرك {gap:+.1f}٪ خارج الجلسة (الآن {snap.ext_price:.2f} مقابل إغلاق "
+                          f"{snap.spot:.2f}) — الأرقام مبنية على الإغلاق، أعد الفحص بعد الافتتاح بـ ١٥ دقيقة")
+        elif abs(gap) >= 0.5:
+            warnings.append(f"تداول خارج الجلسة: {snap.ext_price:.2f} ({gap:+.1f}٪)")
+
     score = round(sum(c.pts for c in comps))
     neutral = abs(fl["net"]) < C.NEUTRAL_FLOW
     if vetoes or score < C.WAIT_SCORE:

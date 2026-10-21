@@ -49,11 +49,11 @@ def make_bars(now, up=True):
     return bars, daily
 
 
-def run(name, bullish, up, side="auto", mode="intraday"):
+def run(name, bullish, up, side="auto", mode="intraday", ext=None):
     now = dt.datetime(2026, 10, 20, 12, 30, tzinfo=NY)
     bars, daily = make_bars(now, up)
     spot = float(bars["close"].iloc[-1])
-    snap = Snapshot("TEST", spot, make_chain(now, spot, bullish), bars, daily, None, now)
+    snap = Snapshot("TEST", spot, make_chain(now, spot, bullish), bars, daily, None, now, ext)
     r = engine.evaluate(snap, mode, side)
     print(f"===== {name} =====")
     print(notify.plain(engine.format_message(r)), "\n")
@@ -73,4 +73,6 @@ if __name__ == "__main__":
 
     r4 = run("تدفق هابط + سعر هابط", False, False)
     assert not r4.bull and r4.decision in ("enter", "wait")
+    r5 = run("قفزة ١٥٪ بعد الإغلاق (مثل SMCI)", True, True, ext=115.0)
+    assert r5.decision == "no" and any("خارج الجلسة" in v for v in r5.vetoes)
     print("✅ كل الاختبارات نجحت")
