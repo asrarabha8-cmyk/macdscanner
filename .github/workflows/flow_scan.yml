@@ -67,6 +67,7 @@ jobs:
           git config user.name  "flow-confirm-bot"
           git config user.email "flow-confirm-bot@users.noreply.github.com"
           git add data || true
+          git add ../docs/flow/data || true
           git diff --cached --quiet || git commit -m "flow scan ${{ steps.m.outputs.mode }} $(date -u +%F)"
           git pull --rebase --autostash || true
           git push || true

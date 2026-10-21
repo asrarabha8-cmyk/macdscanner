@@ -10,8 +10,8 @@ import time
 import traceback
 from pathlib import Path
 
-from flowconfirm import engine, notify
-from flowconfirm.data import get_snapshot, now_ny
+from flowconfirm import engine, notify, web
+from flowconfirm.data import bars_since, get_snapshot, now_ny
 
 WATCHLIST = Path(__file__).resolve().parent / "watchlist.txt"
 
@@ -43,9 +43,16 @@ def main():
     a = ap.parse_args()
 
     now = now_ny()
+    try:  # متابعة إشارات الدخول المفتوحة في كل تشغيل، حتى خارج النافذة
+        web.update_history(bars_since)
+    except Exception:
+        traceback.print_exc()
     if not a.force and not in_window(a.mode, now):
         print(f"خارج نافذة التشغيل ({now:%a %H:%M} NY) — لا شيء")
         return
+
+    started = dt.datetime.now(dt.timezone.utc)
+    items = []
 
     allowed = {"enter"} if a.min_decision == "enter" else {"enter", "wait"}
     hits, errors = [], []
@@ -54,6 +61,7 @@ def main():
             r = engine.evaluate(get_snapshot(t, a.mode), a.mode)
             notify.log_signal(engine.log_row(r) | {"source": "scan"})
             print(f"{t:6} {r.decision:5} {r.score:3.0f} {'bull' if r.bull else 'bear'}")
+            items.append(web.result_dict(r))
             key = f"{a.mode}:{t}:{'bull' if r.bull else 'bear'}"
             if r.decision in allowed and notify.should_alert(key, a.mode, now):
                 notify.send_telegram(engine.format_message(r))
@@ -62,7 +70,14 @@ def main():
         except Exception as e:
             traceback.print_exc()
             errors.append(f"{t}: {e}")
+            items.append(web.error_dict(t, a.mode, e, now))
         time.sleep(1)  # تهدئة الطلبات على yfinance
+
+    try:
+        web.save_scan(a.mode, items, web.make_run("scan", a.mode, started, items, alerts=len(hits)))
+        web.add_signals(items, "scan")
+    except Exception:
+        traceback.print_exc()
 
     print(f"\nتنبيهات: {hits or 'لا شيء'}")
     if errors:

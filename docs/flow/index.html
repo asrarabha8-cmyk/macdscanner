@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ماسح السيولة</title>
+<meta name="theme-color" content="#12233F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F6; --surface:#FFFFFF; --ink:#12233F; --ink-2:#56627A; --line:#D6DCE7;
+  --green:#1F8A5B; --green-bg:#E3F3EA; --red:#B5402F; --red-bg:#F8E6E2;
+  --gold:#A87B1E; --gold-bg:#F6EDD9; --blue:#2D5F8A; --blue-bg:#E4EDF5;
+  --muted-bg:#E7EBF2; --head:#12233F; --head-ink:#EEF1F6;
+  --c1:#2D5F8A; --c2:#7A4FA3; --c3:#A87B1E; --c4:#1F8A5B;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A111D; --surface:#111B2C; --ink:#DCE4F0; --ink-2:#8E9BB2; --line:#22304A;
+    --green:#4CC48C; --green-bg:#123325; --red:#E37B69; --red-bg:#3A1C17;
+    --gold:#D9AE55; --gold-bg:#33290F; --blue:#7DAEDB; --blue-bg:#14283A;
+    --muted-bg:#18243A; --head:#0F1C31; --head-ink:#DCE4F0;
+    --c1:#7DAEDB; --c2:#B48BDB; --c3:#D9AE55; --c4:#4CC48C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A111D; --surface:#111B2C; --ink:#DCE4F0; --ink-2:#8E9BB2; --line:#22304A;
+  --green:#4CC48C; --green-bg:#123325; --red:#E37B69; --red-bg:#3A1C17;
+  --gold:#D9AE55; --gold-bg:#33290F; --blue:#7DAEDB; --blue-bg:#14283A;
+  --muted-bg:#18243A; --head:#0F1C31; --head-ink:#DCE4F0;
+  --c1:#7DAEDB; --c2:#B48BDB; --c3:#D9AE55; --c4:#4CC48C;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+a{color:var(--blue)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 48px}
+
+header.top{background:var(--head);color:var(--head-ink);padding:18px 0 22px}
+.top .row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+h1{font-family:"Reem Kufi",serif;font-weight:700;font-size:26px;line-height:1.2;margin:0}
+.sub{opacity:.75;font-size:13px;margin-top:4px}
+.clock{text-align:left;white-space:nowrap}
+.clock .t{font-size:24px;font-weight:600;line-height:1}
+.clock .ny{font-size:12px;opacity:.75;margin-top:4px}
+.pill{display:inline-block;white-space:nowrap;margin-top:6px;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.pill.open{background:#1F8A5B;color:#fff}
+.pill.pre{background:#A87B1E;color:#fff}
+.pill.closed{background:rgba(255,255,255,.16);color:inherit}
+.themebtn{background:none;border:1px solid rgba(255,255,255,.3);color:inherit;border-radius:8px;font:inherit;font-size:12px;padding:2px 8px;cursor:pointer;margin-top:6px}
+
+.timeline{margin-top:18px;direction:ltr;position:relative;height:58px}
+.tl-bar{position:absolute;left:0;right:0;top:22px;height:8px;border-radius:4px;background:rgba(255,255,255,.14)}
+.tl-seg{position:absolute;top:22px;height:8px;border-radius:4px}
+.tl-mark{position:absolute;top:0;transform:translateX(-50%);font-size:11px;white-space:nowrap;opacity:.85;text-align:center}
+.tl-mark.bottom{top:36px}
+.tl-mark.l{transform:translateX(-12%)}
+.tl-mark.r{transform:translateX(-88%)}
+.tl-tick{position:absolute;top:18px;width:2px;height:16px;background:currentColor;opacity:.5;transform:translateX(-1px)}
+.tl-dot{position:absolute;top:22px;width:8px;height:8px;border-radius:50%;background:#F2D27A;transform:translateX(-4px);opacity:.9}
+.tl-needle{position:absolute;top:14px;width:3px;height:24px;border-radius:2px;background:#fff;transform:translateX(-1px);box-shadow:0 0 0 3px rgba(255,255,255,.2)}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;margin-top:-14px;position:relative}
+.fact{background:var(--surface);padding:10px 12px;min-width:0}
+.fact .k{font-size:12px;color:var(--ink-2)}
+.fact .v{font-size:16px;font-weight:600}
+.fact .s{font-size:12px;color:var(--ink-2)}
+@media (max-width:640px){.facts{grid-template-columns:repeat(2,1fr)}}
+.warn{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--gold-bg);color:var(--ink);font-size:13px;border:1px solid var(--line)}
+.cta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;font-size:13px;color:var(--ink-2)}
+.btn{display:inline-block;background:var(--ink);color:var(--bg);text-decoration:none;border-radius:10px;padding:7px 14px;font-weight:600;font-size:14px}
+
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);margin:18px -16px 0;padding:10px 16px;
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line)}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;
+  padding:6px 14px;font:inherit;font-size:14px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab .c{font-size:12px;opacity:.7;margin-right:6px}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+section.panel{display:none;padding-top:16px}
+section.panel.on{display:block}
+h2{font-size:18px;margin:4px 0 4px;font-weight:700}
+.hint{color:var(--ink-2);font-size:13px;margin:0 0 14px}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--ink-2)}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 10px}
+.seg button{border:0;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:6px}
+.runline{font-size:12px;color:var(--ink-2);margin:0 2px 10px}
+
+/* بطاقة النتيجة */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.card.enter{border-color:var(--green);box-shadow:inset 3px 0 0 var(--green)}
+.c-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.c-tk{font-size:20px;font-weight:700;line-height:1.2}
+.c-sub{font-size:12px;color:var(--ink-2)}
+.c-score{text-align:left;min-width:92px}
+.c-score .v{font-size:22px;font-weight:700;line-height:1}
+.c-score .k{font-size:11px;color:var(--ink-2)}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip.enter,.chip.target{background:var(--green-bg);color:var(--green)}
+.chip.no,.chip.stop,.chip.error{background:var(--red-bg);color:var(--red)}
+.chip.wait,.chip.expired{background:var(--gold-bg);color:var(--gold)}
+.chip.open,.chip.bull,.chip.bear{background:var(--blue-bg);color:var(--blue)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--muted-bg);margin:10px 0 4px}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink-2)}
+.legend b{color:var(--ink);font-weight:600}
+.legend .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-inline-end:4px;vertical-align:middle}
+.veto{margin-top:8px;font-size:13px;color:var(--red)}
+.veto div::before{content:"⛔ "}
+.wrn{margin-top:4px;font-size:12px;color:var(--gold)}
+.ladder{direction:ltr;position:relative;height:74px;margin:12px 6px 2px}
+.ld-track{position:absolute;left:0;right:0;top:34px;height:6px;border-radius:3px;background:var(--muted-bg)}
+.ld-risk{position:absolute;top:34px;height:6px;background:var(--red);opacity:.85}
+.ld-reward{position:absolute;top:34px;height:6px;background:var(--gold)}
+.ld-pt{position:absolute;top:30px;width:2px;height:14px;transform:translateX(-1px)}
+.ld-lbl{position:absolute;transform:translateX(-50%);font-size:11px;white-space:nowrap;text-align:center;line-height:1.25}
+.ld-lbl.up{top:0}
+.ld-lbl.dn{top:50px}
+.ld-lbl b{font-size:12px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--ink-2);margin-top:6px}
+.meta strong{color:var(--ink);font-weight:600}
+details{margin-top:8px}
+summary{cursor:pointer;font-size:13px;color:var(--blue);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";display:inline-block}
+details[open] summary::before{content:"▾ "}
+.comps{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+@media (min-width:720px){.comps{grid-template-columns:1fr 1fr}}
+.comp{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.comp h4{margin:0 0 4px;font-size:13px;display:flex;justify-content:space-between}
+.comp ul{margin:0;padding:0;list-style:none;font-size:12px;color:var(--ink-2)}
+.comp li{padding:1px 0;overflow-wrap:anywhere}
+
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--ink-2);background:var(--surface);position:sticky;top:0;cursor:pointer;user-select:none}
+th.asc::after{content:"▲";font-size:9px;margin-inline-start:4px}
+th.desc::after{content:"▼";font-size:9px;margin-inline-start:4px}
+tr:last-child td{border-bottom:0}
+td.code{font-weight:700}
+.pos{color:var(--green)} .neg{color:var(--red)}
+.why{font-size:12px;color:var(--gold)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat .v{font-size:20px;font-weight:700}
+.stat .k{font-size:12px;color:var(--ink-2)}
+@media (min-width:720px){.stats{grid-template-columns:repeat(6,1fr)}}
+
+.settings{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:720px){.settings{grid-template-columns:1fr 1fr}}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.box h3{margin:0 0 8px;font-size:15px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--ink-2)}
+.kv span:last-child{text-align:left}
+.sub2{font-size:16px;font-weight:700;margin:22px 0 8px}
+.wl{display:flex;flex-wrap:wrap;gap:6px}
+.wl span{background:var(--muted-bg);border-radius:8px;padding:2px 8px;font-size:13px}
+footer{margin-top:28px;font-size:12px;color:var(--ink-2)}
+@media (prefers-reduced-motion:no-preference){.tl-needle{transition:left .6s ease}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap" style="padding-bottom:0">
+    <div class="row">
+      <div>
+        <h1>ماسح السيولة</h1>
+        <div class="sub">نظام التأكيد بالسيولة — السوق الأمريكي</div>
+        <button class="themebtn" id="themeBtn" type="button">تبديل المظهر</button>
+      </div>
+      <div class="clock">
+        <div class="t num" id="clock">--:--</div>
+        <div style="font-size:12px;opacity:.75">توقيت الرياض</div>
+        <div class="ny">نيويورك <span class="num" id="clockNy">--:--</span></div>
+        <span class="pill closed" id="mstatus">—</span>
+      </div>
+    </div>
+    <div class="timeline" id="timeline" aria-label="جلسة السوق الأمريكي بتوقيت الرياض"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="facts">
+    <div class="fact"><div class="k">آخر فحص للماسح</div><div class="v" id="fUpdated">—</div><div class="s" id="fUpdatedAgo"></div></div>
+    <div class="fact"><div class="k">الفحص القادم</div><div class="v" id="fNext">—</div><div class="s" id="fNextIn"></div></div>
+    <div class="fact"><div class="k">إشارات دخول الآن</div><div class="v num" id="fEnter">—</div><div class="s" id="fEnterS"></div></div>
+    <div class="fact"><div class="k">إشارات مفتوحة</div><div class="v num" id="fOpen">—</div><div class="s" id="fOpenS"></div></div>
+  </div>
+  <div id="warnings"></div>
+  <div class="cta">
+    <a class="btn" href="https://github.com/asrarabha8-cmyk/macdscanner/actions/workflows/flow_check.yml" target="_blank" rel="noopener">فحص سهم الآن</a>
+    <span>أو من اختصار «فحص الفلو» على الآيفون. النتيجة تصل تليجرام وتظهر هنا في «الفحص اليدوي».</span>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="now" aria-selected="true">نتائج الماسح<span class="c num" id="cNow"></span></button>
+    <button class="tab" role="tab" data-tab="checks" aria-selected="false">الفحص اليدوي<span class="c num" id="cChecks"></span></button>
+    <button class="tab" role="tab" data-tab="history" aria-selected="false">متابعة الإشارات<span class="c num" id="cHistory"></span></button>
+    <button class="tab" role="tab" data-tab="settings" aria-selected="false">الإعدادات والسجل</button>
+  </nav>
+
+  <section class="panel on" id="p-now">
+    <h2>آخر فحص للماسح</h2>
+    <p class="hint">كل سهم في قائمة المراقبة ودرجته من ١٠٠. الماسح يرسل لتليجرام «الدخول» فقط.</p>
+    <div class="toolbar">
+      <div class="seg" id="modeSeg">
+        <button type="button" data-v="intraday" aria-pressed="true">يومي / 0DTE</button>
+        <button type="button" data-v="swing" aria-pressed="false">سوينغ</button>
+      </div>
+      <div class="seg" id="decSeg">
+        <button type="button" data-v="" aria-pressed="true">الكل</button>
+        <button type="button" data-v="enter" aria-pressed="false">دخول</button>
+        <button type="button" data-v="wait" aria-pressed="false">انتظار</button>
+        <button type="button" data-v="no" aria-pressed="false">ممنوع</button>
+      </div>
+    </div>
+    <div class="runline" id="nowRun"></div>
+    <div id="now"></div>
+  </section>
+
+  <section class="panel" id="p-checks">
+    <h2>الفحوصات اليدوية</h2>
+    <p class="hint">آخر الأسهم التي فحصتها بنفسك، بالأحدث أولاً.</p>
+    <div id="checks"></div>
+  </section>
+
+  <section class="panel" id="p-history">
+    <h2>متابعة إشارات الدخول</h2>
+    <p class="hint">كل «دخول» يُتابع على سعر السهم: يُغلق عند لمس الهدف أو الوقف. الإشارة اليومية تنتهي مع إغلاق يومها، والسوينغ بعد <span id="swingDays">10</span> أيام تداول. العائد على السهم وليس على العقد.</p>
+    <div class="stats" id="stats"></div>
+    <div id="history"></div>
+  </section>
+
+  <section class="panel" id="p-settings">
+    <h2>الإعدادات والمواعيد</h2>
+    <p class="hint">القيم التي يستخدمها النظام الآن.</p>
+    <div class="settings">
+      <div class="box"><h3>القرار</h3><div id="setRules"></div></div>
+      <div class="box"><h3>المواعيد</h3><div id="setTimes"></div></div>
+      <div class="box"><h3>يومي / 0DTE</h3><div id="setIntraday"></div></div>
+      <div class="box"><h3>سوينغ</h3><div id="setSwing"></div></div>
+    </div>
+    <div class="sub2">قائمة المراقبة</div>
+    <div class="wl" id="wl"></div>
+    <div class="sub2">سجل التشغيل</div>
+    <div id="runs"></div>
+  </section>
+
+  <footer>للمتابعة والتحليل فقط، وليست توصية شراء أو بيع. جانب التنفيذ (Ask/Bid) مُقدَّر من آخر سعر، والبيانات متأخرة نحو ١٥ دقيقة. المصادر: Polygon للأسعار، وYahoo Finance لسلاسل الخيارات.</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const DAYS_AR = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const DEC_AR = {enter:"دخول",wait:"انتظار",no:"ممنوع",error:"تعذّر الفحص"};
+const ST_AR = {open:"مفتوحة",target:"حققت الهدف",stop:"ضربت الوقف",expired:"انتهت المدة"};
+const MODE_AR = {intraday:"يومي",swing:"سوينغ",both:"الإطاران"};
+const COMP_COLORS = ["var(--c1)","var(--c2)","var(--c3)","var(--c4)"];
+let D = {latest:null, checks:[], history:[], runs:[], settings:null};
+let MODE = "intraday", DEC = "";
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = (x, d=2) => (x === null || x === undefined || isNaN(x)) ? "—" : Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (x, d=1) => (x === null || x === undefined) ? "—" : `<span class="num ${x>0?"pos":x<0?"neg":""}">${x>0?"+":""}${fmt(x,d)}%</span>`;
+const usd = x => { if (x==null||isNaN(x)) return "—"; const a=Math.abs(x);
+  return "$"+(a>=1e9?fmt(a/1e9,1)+"B":a>=1e6?fmt(a/1e6,1)+"M":a>=1e3?fmt(a/1e3,0)+"K":fmt(a,0)); };
+const tv = t => `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(t)}`;
+
+/* ───── الوقت: نحسب أوقات الرياض ونيويورك من المتصفح ───── */
+function parts(date, tz){
+  const p = new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",weekday:"short"}).formatToParts(date);
+  const o = {}; p.forEach(x => o[x.type] = x.value);
+  const wd = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(o.weekday);
+  return {y:+o.year, mo:+o.month, d:+o.day, h:(+o.hour)%24, mi:+o.minute, wd, min:((+o.hour)%24)*60+(+o.minute)};
+}
+const p2 = n => String(n).padStart(2,"0");
+const hm = (h,m) => `${p2(h)}:${p2(m)}`;
+function ryStr(iso){ const t = parts(new Date(iso),"Asia/Riyadh"); return {date:`${t.y}-${p2(t.mo)}-${p2(t.d)}`, time:hm(t.h,t.mi), day:DAYS_AR[t.wd]}; }
+function ago(ms){ const m = Math.round(ms/60000); if (m<1) return "الآن"; if (m<60) return `قبل ${m} دقيقة`;
+  const h = Math.floor(m/60); if (h<24) return `قبل ${h} ساعة${m%60?" و"+(m%60)+" دقيقة":""}`; return `قبل ${Math.floor(h/24)} يوم`; }
+function until(ms){ const m = Math.max(0,Math.round(ms/60000)), h = Math.floor(m/60);
+  if (h>=24) return `بعد ${Math.floor(h/24)} يوم و${h%24} ساعة`; return h ? `بعد ${h} ساعة و${m%60} دقيقة` : `بعد ${m} دقيقة`; }
+// فرق الرياض عن نيويورك بالدقائق (٤٢٠ صيفاً، ٤٨٠ شتاءً)
+function nyLag(date){ const r = parts(date,"Asia/Riyadh"), n = parts(date,"America/New_York");
+  let d = (r.min - n.min); if (r.d !== n.d) d += 1440; return ((d % 1440) + 1440) % 1440; }
+
+function marketState(now){
+  const n = parts(now,"America/New_York");
+  if (n.wd===0 || n.wd===6) return ["closed","السوق الأمريكي مغلق — عطلة"];
+  if (n.min < 4*60) return ["closed","مغلق"];
+  if (n.min < 9*60+30) return ["pre","ما قبل الافتتاح"];
+  if (n.min < 16*60) return ["open","السوق مفتوح"];
+  if (n.min < 20*60) return ["pre","ما بعد الإغلاق"];
+  return ["closed","مغلق"];
+}
+// الفحص القادم: كل ساعة عند الدقيقة ٥٠ بتوقيت الرياض، ويعمل فعلياً فقط داخل نافذة نيويورك
+function nextScan(now){
+  const sc = (D.settings && D.settings.schedule) || {minute:50};
+  const t = new Date(now.getTime()); t.setUTCSeconds(0,0);
+  for (let i=0;i<24*8;i++){
+    const c = new Date(t.getTime() + i*60000*60);
+    const r = parts(c,"Asia/Riyadh");
+    const slot = new Date(c.getTime() + (sc.minute - r.mi)*60000);
+    if (slot <= now) continue;
+    const n = parts(slot,"America/New_York");
+    if (n.wd>=1 && n.wd<=5 && n.min >= 9*60+45 && n.min <= 15*60+50) {
+      const swing = n.min >= 15*60;
+      return {t:slot, swing};
+    }
+  }
+  return null;
+}
+function drawTimeline(){
+  const lag = nyLag(new Date());
+  const A = 9*60, B = 16*60+30;  // نافذة العرض بتوقيت نيويورك
+  const pos = m => ((m - A)/(B - A)*100).toFixed(2)+"%";
+  const ry = m => { const x = (m + lag) % 1440; return hm(Math.floor(x/60), x%60); };
+  let h = `<div class="tl-bar"></div>
+    <div class="tl-seg" style="left:${pos(9*60+30)};width:calc(${pos(16*60)} - ${pos(9*60+30)});background:#1F8A5B"></div>`;
+  const marks = [[9*60+30,`الافتتاح ${ry(9*60+30)}`,"l"],[16*60,`الإغلاق ${ry(16*60)}`,"r"]];
+  for (const [m,l,c] of marks) h += `<div class="tl-tick" style="left:${pos(m)}"></div><div class="tl-mark ${c}" style="left:${pos(m)}">${l}</div>`;
+  // نقاط الفحص: الدقيقة ٥٠ بتوقيت الرياض داخل النافذة
+  for (let r=0;r<1440;r+=60){ const rm = r + 50, nm = ((rm - lag) % 1440 + 1440) % 1440;
+    if (nm >= 9*60+45 && nm <= 15*60+50) h += `<div class="tl-dot" style="left:${pos(nm)}" title="فحص ${ry(nm)}"></div>`; }
+  h += `<div class="tl-mark bottom" style="left:${pos(12*60+45)}">● فحص كل ساعة</div>`;
+  h += `<div class="tl-needle" id="needle" title="الآن"></div>`;
+  $("timeline").innerHTML = h;
+}
+function tick(){
+  const now = new Date(), r = parts(now,"Asia/Riyadh"), n = parts(now,"America/New_York");
+  $("clock").textContent = hm(r.h,r.mi); $("clockNy").textContent = hm(n.h,n.mi);
+  const [cls,label] = marketState(now); const ms = $("mstatus"); ms.className = "pill "+cls; ms.textContent = `${DAYS_AR[r.wd]}، ${label}`;
+  const nd = $("needle"); if (nd){ const A=9*60,B=16*60+30; const show = n.wd>=1&&n.wd<=5&&n.min>=A&&n.min<=B;
+    nd.style.display = show?"block":"none"; nd.style.left = ((n.min-A)/(B-A)*100)+"%"; }
+  const nx = nextScan(now);
+  if (nx){ const s = ryStr(nx.t.toISOString()); $("fNext").innerHTML = `${s.day} <span class="num">${s.time}</span>`;
+    $("fNextIn").textContent = until(nx.t - now) + (nx.swing ? " · مع السوينغ" : ""); }
+  const lr = lastScanRun(); if (lr) $("fUpdatedAgo").textContent = ago(now - new Date(lr.finished_utc));
+}
+
+/* ───── البيانات ───── */
+async function getJSON(name){
+  try { const r = await fetch(`data/${name}?t=${Date.now()}`, {cache:"no-store"}); if (!r.ok) return null; return await r.json(); }
+  catch(e){ return null; }
+}
+function lastScanRun(){
+  const L = D.latest || {}; const rs = ["intraday","swing"].map(m => L[m] && L[m].run).filter(Boolean);
+  rs.sort((a,b) => new Date(b.finished_utc) - new Date(a.finished_utc)); return rs[0] || null;
+}
+
+/* ───── بطاقة النتيجة ───── */
+function ladder(x){
+  const s = x.stock; if (!s) return "";
+  const bull = x.direction === "bull";
+  const vals = [s.stop, s.entry, s.target]; const lo = Math.min(...vals), hi = Math.max(...vals), pad = (hi-lo)*0.14 || 1;
+  const a = lo - pad, b = hi + pad, X = v => ((v - a)/(b - a)*100);
+  const seg = (u,v,cls) => `<div class="${cls}" style="left:${Math.min(X(u),X(v))}%;width:${Math.abs(X(v)-X(u))}%"></div>`;
+  return `<div class="ladder" aria-label="الوقف ${fmt(s.stop)} الدخول ${fmt(s.entry)} الهدف ${fmt(s.target)}">
+    <div class="ld-track"></div>${seg(s.stop,s.entry,"ld-risk")}${seg(s.entry,s.target,"ld-reward")}
+    <div class="ld-pt" style="left:${X(s.stop)}%;background:var(--red)"></div>
+    <div class="ld-pt" style="left:${X(s.entry)}%;background:var(--ink);height:22px;top:26px"></div>
+    <div class="ld-pt" style="left:${X(s.target)}%;background:var(--gold)"></div>
+    <div class="ld-lbl up" style="left:${X(s.stop)}%;color:var(--red)">الوقف<br><b class="num">${fmt(s.stop)}</b></div>
+    <div class="ld-lbl up" style="left:${X(s.target)}%;color:var(--gold)">الهدف<br><b class="num">${fmt(s.target)}</b></div>
+    <div class="ld-lbl dn" style="left:${X(s.entry)}%"><b class="num">${fmt(s.entry)}</b> ${bull?"صعود ↑":"هبوط ↓"}</div>
+  </div>`;
+}
+function card(x, opts={}){
+  if (x.decision === "error") return `<article class="card"><div class="c-head"><div><div class="c-tk num">${esc(x.ticker)}</div>
+    <div class="c-sub">${MODE_AR[x.mode]||""}</div></div><span class="chip error">${DEC_AR.error}</span></div>
+    <div class="veto"><div>${esc(x.error)}</div></div></article>`;
+  const comps = x.components || [];
+  const bar = comps.map((c,i) => `<i style="width:${c.pts}%;background:${COMP_COLORS[i]}" title="${esc(c.name)} ${fmt(c.pts,0)}"></i>`).join("");
+  const legend = comps.map((c,i) => `<span><span class="sw" style="background:${COMP_COLORS[i]}"></span>${esc(c.name.replace(/^\S+\s/,""))} <b class="num">${fmt(c.pts,0)}/${c.max}</b></span>`).join("");
+  const o = x.option, g = x.gex || {}, f = x.flow || {};
+  const when = opts.showTime ? (() => { const s = ryStr(x.asof); return ` · ${s.day} <span class="num">${s.time}</span>`; })() : "";
+  const comp = comps.map(c => `<div class="comp"><h4><span>${esc(c.name)}</span><span class="num">${fmt(c.pts,0)}/${c.max}</span></h4>
+    <ul>${(c.lines||[]).map(l => `<li>${esc(l)}</li>`).join("")}</ul></div>`).join("");
+  const unu = (x.unusual||[]).length ? `<div class="comp" style="margin-top:8px"><h4><span>🐋 أكبر العقود غير الاعتيادية</span></h4><div class="tbl-wrap" style="border:0">
+    <table><thead><tr><th>العقد</th><th>الانتهاء</th><th>العقود</th><th>OI</th><th>البريميوم</th><th>التنفيذ</th></tr></thead><tbody>
+    ${x.unusual.map(u => `<tr><td class="${u.dir==="bull"?"pos":"neg"}"><span class="num">${esc(u.contract)}</span></td><td class="num">${esc(u.expiry.slice(5))}</td>
+      <td class="num">${fmt(u.volume,0)}</td><td class="num">${fmt(u.oi,0)}</td><td class="num">${usd(u.premium)}</td><td>${esc(u.side)}</td></tr>`).join("")}
+    </tbody></table></div></div>` : "";
+  return `<article class="card ${x.decision}">
+    <div class="c-head">
+      <div>
+        <div class="c-tk"><a class="num" href="${tv(x.ticker)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(x.ticker)}</a>
+          <span class="chip ${x.decision}">${DEC_AR[x.decision]}</span></div>
+        <div class="c-sub">${MODE_AR[x.mode]} · ${x.direction==="bull"?"صعود 📈":"هبوط 📉"} · السعر <span class="num">${fmt(x.spot)}</span>${x.ext_price?` · خارج الجلسة <span class="num">${fmt(x.ext_price)}</span>`:""}${when}</div>
+      </div>
+      <div class="c-score"><div class="v num">${fmt(x.score,0)}<span style="font-size:13px;opacity:.6">/100</span></div><div class="k">الدرجة</div></div>
+    </div>
+    <div class="bar">${bar}</div>
+    <div class="legend">${legend}</div>
+    ${(x.vetoes||[]).length ? `<div class="veto">${x.vetoes.map(v=>`<div>${esc(v)}</div>`).join("")}</div>` : ""}
+    ${(x.warnings||[]).map(w=>`<div class="wrn">${esc(w)}</div>`).join("")}
+    ${ladder(x)}
+    <div class="meta">
+      <span>العائد ÷ المخاطرة <strong class="num">${fmt(x.stock&&x.stock.rr,1)}</strong></span>
+      <span>صافي التدفق <strong class="num ${f.net>0?"pos":f.net<0?"neg":""}">${f.net>0?"+":""}${fmt(f.net,2)}</strong></span>
+      <span>الانقلاب <strong class="num">${fmt(g.flip)}</strong></span>
+      <span>جدار الكول <strong class="num">${g.call_wall??"—"}</strong></span>
+      <span>جدار البوت <strong class="num">${g.put_wall??"—"}</strong></span>
+    </div>
+    ${o ? `<div class="meta"><span>العقد <strong class="num">${esc(x.ticker)} ${esc(o.name)}</strong></span>
+      <span>دلتا <strong class="num">${fmt(o.delta,2)}</strong></span><span>المنتصف <strong class="num">${fmt(o.mid)}</strong></span>
+      <span>السبريد <strong class="num">${fmt(o.spread*100,0)}%</strong></span><span>عند الهدف ≈ <strong class="num">${fmt(o.est_target)}</strong></span></div>`
+      : `<div class="meta">لا يوجد عقد بسيولة كافية ضمن الشروط</div>`}
+    <details><summary>التفاصيل</summary><div class="comps">${comp}</div>${unu}</details>
+  </article>`;
+}
+const ORDER = {enter:0, wait:1, no:2, error:3};
+
+function renderNow(){
+  const blk = D.latest && D.latest[MODE];
+  if (!blk){ $("nowRun").textContent = ""; $("now").innerHTML = `<div class="empty">لم يُشغَّل ماسح ${MODE_AR[MODE]} بعد. أول فحص في الموعد القادم.</div>`; return; }
+  const r = blk.run, s = ryStr(r.finished_utc);
+  $("nowRun").innerHTML = `${s.day} <span class="num">${s.date} ${s.time}</span> · فُحص <span class="num">${r.scanned}</span> سهم · دخول <span class="num">${r.enter}</span> · انتظار <span class="num">${r.wait}</span>${r.errors?` · تعذّر <span class="num">${r.errors}</span>`:""}`;
+  let list = (blk.results||[]).slice().sort((a,b) => (ORDER[a.decision]-ORDER[b.decision]) || ((b.score||0)-(a.score||0)));
+  if (DEC) list = list.filter(x => x.decision === DEC);
+  $("now").innerHTML = list.length ? list.map(x => card(x)).join("") : `<div class="empty">لا توجد نتائج بهذا التصنيف.</div>`;
+}
+function renderChecks(){
+  const c = D.checks || [];
+  $("checks").innerHTML = c.length ? c.map(x => card(x,{showTime:true})).join("") : `<div class="empty">لم تفحص أي سهم بعد. استخدم اختصار «فحص الفلو» أو زر «فحص سهم الآن».</div>`;
+}
+
+/* جدول قابل للترتيب */
+function table(el, cols, rows, opts={}){
+  const st = el._sort || opts.sort || null; let data = rows.slice();
+  if (st){ const c = cols.find(c=>c.k===st.k); const get = c.v || (r=>r[c.k]);
+    data.sort((a,b)=>{ const x=get(a), y=get(b); if (x==null) return 1; if (y==null) return -1;
+      return (typeof x==="string" ? x.localeCompare(y,"ar") : x-y) * st.dir; }); }
+  if (!data.length){ el.innerHTML = `<div class="empty">${opts.empty || "لا يوجد شيء هنا."}</div>`; return; }
+  el.innerHTML = `<div class="tbl-wrap"><table><thead><tr>${cols.map(c=>`<th data-sort="${c.k}" class="${st&&st.k===c.k?(st.dir>0?"asc":"desc"):""}">${c.t}</th>`).join("")}</tr></thead>
+    <tbody>${data.map(r=>`<tr>${cols.map(c=>`<td${c.cls?` class="${c.cls}"`:""}>${c.f?c.f(r):esc(r[c.k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  el.querySelectorAll("th").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.sort, cur = el._sort || opts.sort; el._sort = {k, dir: cur && cur.k===k ? -cur.dir : -1}; table(el, cols, rows, opts); }));
+}
+function renderHistory(){
+  const h = D.history || [];
+  const wins = h.filter(x=>x.status==="target").length, losses = h.filter(x=>x.status==="stop").length;
+  const open = h.filter(x=>x.status==="open").length, closed = h.filter(x=>x.status!=="open");
+  const avg = closed.length ? closed.reduce((s,x)=>s+(x.return_pct||0),0)/closed.length : null;
+  const wr = (wins+losses) ? wins/(wins+losses)*100 : null;
+  $("stats").innerHTML = [["كل الإشارات",`<span class="num">${h.length}</span>`],["مفتوحة",`<span class="num">${open}</span>`],
+    ["حققت الهدف",`<span class="num pos">${wins}</span>`],["ضربت الوقف",`<span class="num neg">${losses}</span>`],
+    ["نسبة النجاح", wr==null?"—":`<span class="num">${fmt(wr,0)}%</span>`],["متوسط العائد", avg==null?"—":pct(avg)]]
+    .map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("");
+  table($("history"), [
+    {k:"ticker", t:"السهم", cls:"code", f:r=>`<a class="num" href="${tv(r.ticker)}" target="_blank" rel="noopener">${esc(r.ticker)}</a>`},
+    {k:"time_utc", t:"الوقت (الرياض)", f:r=>{const s=ryStr(r.time_utc); return `<span class="num">${s.date} ${s.time}</span>`}},
+    {k:"mode", t:"الإطار", f:r=>MODE_AR[r.mode]},
+    {k:"direction", t:"الاتجاه", f:r=>r.direction==="bull"?"صعود":"هبوط"},
+    {k:"status", t:"الحالة", f:r=>`<span class="chip ${r.status}">${ST_AR[r.status]||r.status}</span>`},
+    {k:"entry", t:"الدخول", f:r=>`<span class="num">${fmt(r.entry)}</span>`},
+    {k:"last_price", t:"آخر سعر", f:r=>`<span class="num">${fmt(r.exit_price ?? r.last_price)}</span>`},
+    {k:"return_pct", t:"العائد", f:r=>pct(r.return_pct,2)},
+    {k:"target", t:"الهدف", f:r=>`<span class="num">${fmt(r.target)}</span>`},
+    {k:"stop", t:"الوقف", f:r=>`<span class="num">${fmt(r.stop)}</span>`},
+    {k:"score", t:"الدرجة", f:r=>`<span class="num">${fmt(r.score,0)}</span>`},
+    {k:"contract", t:"العقد المقترح", f:r=>r.contract?`<span class="num">${esc(r.contract)}</span> <span class="num" style="color:var(--ink-2)">@${fmt(r.contract_mid)}</span>`:"—"},
+    {k:"source", t:"المصدر", f:r=>r.source==="check"?"يدوي":"الماسح"},
+  ], h, {sort:{k:"time_utc",dir:-1}, empty:"لم تظهر أي إشارة دخول بعد. تُضاف هنا تلقائياً من أول إشارة."});
+}
+function renderSettings(){
+  const s = D.settings; if (!s) return;
+  const kv = (k,v) => `<div class="kv"><span>${k}</span><span>${v}</span></div>`;
+  const n = v => `<span class="num">${v}</span>`;
+  $("swingDays").textContent = s.swing_max_days;
+  $("setRules").innerHTML = [
+    kv("دخول", `${n(s.enter_score)} درجة فأكثر بدون موانع`),
+    kv("انتظار", `من ${n(s.wait_score)} إلى ${n(s.enter_score-1)}`),
+    kv("ممنوع", `أقل من ${n(s.wait_score)} أو أي مانع`),
+    kv("تدفق محايد", `أقل من ${n("±"+s.neutral_flow)} — لا دخول`),
+    kv("حركة خارج الجلسة", `أكثر من ${n(s.gap_veto_pct+"%")} — ممنوع`),
+    kv("عدم تكرار التنبيه", `يومي ${n(s.cooldown_hours.intraday)} ساعات، سوينغ ${n(s.cooldown_hours.swing)} ساعة`),
+  ].join("");
+  const lag = nyLag(new Date()), ry = m => { const x=(m+lag)%1440; return n(hm(Math.floor(x/60),x%60)); };
+  $("setTimes").innerHTML = [
+    kv("الجلسة الأمريكية", `من ${ry(9*60+30)} إلى ${ry(16*60)} بتوقيت الرياض`),
+    kv("الماسح اليومي", `كل ساعة عند الدقيقة ${n(s.schedule.minute)}، من ${ry(9*60+45)} إلى ${ry(15*60+50)}`),
+    kv("ماسح السوينغ", `مرة قرب الإغلاق (بين ${ry(15*60)} و${ry(16*60+10)})`),
+    kv("الأيام", "الاثنين – الجمعة"),
+    kv("فرق التوقيت عن نيويورك", `${n(lag/60)} ساعات`),
+  ].join("");
+  const mk = m => [
+    kv("انتهاء العقود", `${n(m.dte[0])} – ${n(m.dte[1])} يوم`),
+    kv("عقد غير اعتيادي", `بريميوم ≥ ${n(usd(m.min_premium))} وحجم/OI ≥ ${n(m.min_vol_oi)}`),
+    kv("أقل مسافة للجدار المعاكس", n(m.min_wall_room_pct+"%")),
+    kv("دلتا العقد المقترح", n(m.target_delta.join(" – "))),
+    kv("أعلى سبريد / أقل OI", `${n(Math.round(m.max_spread_pct*100)+"%")} / ${n(m.min_oi)}`),
+    kv("حجم نسبي قوي", n("×"+m.rvol_good)),
+    kv("أقل عائد ÷ مخاطرة", n(m.min_rr)),
+  ].join("");
+  $("setIntraday").innerHTML = mk(s.modes.intraday); $("setSwing").innerHTML = mk(s.modes.swing);
+  $("wl").innerHTML = (s.watchlist||[]).map(t => `<span class="num">${esc(t)}</span>`).join("");
+  table($("runs"), [
+    {k:"run_utc", t:"الوقت (الرياض)", f:x=>{const s=ryStr(x.run_utc); return `<span class="num">${s.date} ${s.time}</span>`}},
+    {k:"kind", t:"النوع", f:x=>x.kind==="scan"?"الماسح":"فحص يدوي"},
+    {k:"mode", t:"الإطار", f:x=>MODE_AR[x.mode]||esc(x.mode)},
+    {k:"scanned", t:"فُحص", f:x=>x.kind==="check"?`<span class="num">${esc((x.tickers||[]).join("، "))}</span>`:`<span class="num">${x.scanned}</span>`},
+    {k:"enter", t:"دخول", f:x=>`<span class="num ${x.enter?"pos":""}">${x.enter}</span>`},
+    {k:"alerts", t:"تليجرام", f:x=>x.alerts?`<span class="num">${x.alerts}</span>`:"—"},
+    {k:"status", t:"النتيجة", f:x=>x.status==="ok"?`<span class="chip target">تم</span>${x.errors?` <span class="why">تعذّر ${x.errors}</span>`:""}`:`<span class="chip stop">خطأ</span>`},
+    {k:"event", t:"المُشغّل", f:x=>({repository_dispatch:"مجدول/اختصار",workflow_dispatch:"يدوي",local:"محلي"})[x.event]||esc(x.event)},
+    {k:"duration_s", t:"المدة", f:x=>`<span class="num">${x.duration_s}</span> ث`},
+  ], (D.runs||[]).slice(0,40), {empty:"لا يوجد سجل بعد."});
+}
+function renderTop(){
+  const lr = lastScanRun();
+  if (lr){ const s = ryStr(lr.finished_utc); $("fUpdated").innerHTML = `${s.day} <span class="num">${s.time}</span>`; }
+  const L = D.latest || {}; const all = ["intraday","swing"].flatMap(m => (L[m] && L[m].results) || []);
+  const ent = all.filter(x => x.decision==="enter");
+  $("fEnter").textContent = ent.length; $("fEnterS").textContent = ent.length ? ent.map(x=>x.ticker).join("، ") : "لا يوجد في آخر فحص";
+  const op = (D.history||[]).filter(x=>x.status==="open");
+  $("fOpen").textContent = op.length; $("fOpenS").textContent = op.length ? op.map(x=>x.ticker).join("، ") : "لا توجد";
+  const w = []; const last = (D.runs||[])[0];
+  if (last && last.status !== "ok") w.push("آخر تشغيل فشل. البيانات المعروضة من آخر تشغيل ناجح.");
+  if (lr && Date.now() - new Date(lr.finished_utc) > 4*24*3600*1000) w.push("آخر فحص للماسح أقدم من أربعة أيام. تأكد أن المهمة المجدولة تعمل.");
+  $("warnings").innerHTML = w.map(x=>`<div class="warn">${x}</div>`).join("");
+  $("cNow").textContent = ((L[MODE] && L[MODE].results) || []).length || "";
+  $("cChecks").textContent = (D.checks||[]).length || ""; $("cHistory").textContent = (D.history||[]).length || "";
+}
+async function load(){
+  const [latest, checks, history, runs, settings] = await Promise.all(["latest.json","checks.json","history.json","runs.json","settings.json"].map(getJSON));
+  D = {latest, checks:checks||[], history:history||[], runs:runs||[], settings};
+  renderTop(); renderNow(); renderChecks(); renderHistory(); renderSettings(); tick();
+}
+
+/* تحكم */
+function seg(id, cb){ const el = $(id); el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x===b?"true":"false")); cb(b.dataset.v); })); }
+seg("modeSeg", v => { MODE = v; try{localStorage.setItem("fl_mode",v)}catch(e){} renderTop(); renderNow(); });
+seg("decSeg", v => { DEC = v; renderNow(); });
+try { const m = localStorage.getItem("fl_mode"); const b = m && document.querySelector(`#modeSeg button[data-v="${m}"]`); if (b) b.click(); } catch(e){}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x===b ? "true" : "false"));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+b.dataset.tab));
+  try { localStorage.setItem("fl_tab", b.dataset.tab); } catch(e){}
+}));
+try { const t = localStorage.getItem("fl_tab"); const b = t && document.querySelector(`.tab[data-tab="${t}"]`); if (b) b.click(); } catch(e){}
+try { const th = localStorage.getItem("fl_theme"); if (th) document.documentElement.dataset.theme = th; } catch(e){}
+$("themeBtn").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = nx;
+  try { localStorage.setItem("fl_theme", nx); } catch(e){}
+});
+
+drawTimeline(); tick(); setInterval(tick, 30000);
+load(); setInterval(load, 5*60*1000);
+})();
+</script>
+</body>
+</html>

@@ -167,6 +167,24 @@ def fetch_bars(ticker: str, now: dt.datetime):
 
 
 
+def bars_since(ticker: str, start: dt.datetime) -> pd.DataFrame:
+    """شموع ٥ دقائق للجلسة الرسمية من وقت معيّن حتى الآن (لمتابعة الإشارات)."""
+    now = now_ny()
+    raw = pd.DataFrame()
+    if C.POLYGON_KEY and not ticker.startswith("^"):
+        try:
+            raw = _polygon_aggs(ticker, 5, "minute", start.astimezone(NY).date(), now.date())
+        except Exception as e:
+            print(f"[{ticker}] Polygon فشل في المتابعة: {e}")
+    if raw.empty:
+        days = (now.date() - start.astimezone(NY).date()).days
+        raw = _yf_hist(ticker, "5d" if days < 5 else "60d", "5m")
+    if raw.empty:
+        return raw
+    t = raw.index.time
+    return raw[(t >= dt.time(9, 30)) & (t < dt.time(16, 0))]
+
+
 def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
     try:
         cal = _yf().Ticker(ticker).calendar
