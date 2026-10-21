@@ -34,11 +34,11 @@
   "rr": 1.9402,
   "contract": "220C 23/10/2026",
   "contract_mid": 2.965,
-  "status": "open",
-  "last_price": 221.31,
-  "return_pct": 0.33,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "expired",
+  "last_price": 221.87,
+  "return_pct": 0.59,
+  "exit_price": 221.87,
+  "exit_utc": "2026-10-21T19:55:00Z",
   "days": 1
  }
 ]
