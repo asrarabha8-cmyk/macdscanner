@@ -99,7 +99,7 @@ def _polygon_aggs(ticker, mult, span, start, end) -> pd.DataFrame:
     if not res:
         return pd.DataFrame(columns=["open", "high", "low", "close", "volume"])
     df = pd.DataFrame(res)
-    df.index = pd.to_datetime(df["t"], unit="ms", utc=True).tz_convert(NY)
+    df.index = pd.DatetimeIndex(pd.to_datetime(df["t"], unit="ms", utc=True)).tz_convert(NY)
     df = df.rename(columns={"o": "open", "h": "high", "l": "low", "c": "close", "v": "volume"})
     return df[["open", "high", "low", "close", "volume"]].astype(float)
 
