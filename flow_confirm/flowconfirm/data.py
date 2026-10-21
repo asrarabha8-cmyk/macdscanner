@@ -25,6 +25,7 @@ class Snapshot:
     earnings: dt.date | None
     asof: dt.datetime
     ext_price: float | None = None   # آخر سعر خارج الجلسة (بعد/قبل) إن وُجد بعد آخر جلسة
+    src: str = ""                    # مصدر الشموع + عدد شموع ما بعد الجلسة (للتشخيص)
 
 
 def now_ny() -> dt.datetime:
@@ -127,10 +128,10 @@ def last_session(df: pd.DataFrame) -> pd.DataFrame:
 def extended_price(raw: pd.DataFrame, session: pd.DataFrame):
     """آخر سعر تداول بعد نهاية آخر جلسة رسمية (بعد الإغلاق أو قبل الافتتاح)."""
     if raw.empty or session.empty:
-        return None
+        return None, 0
     after = raw[raw.index > session.index[-1]]
     after = after[after["volume"] > 0]
-    return float(after["close"].iloc[-1]) if not after.empty else None
+    return (float(after["close"].iloc[-1]) if not after.empty else None), len(after)
 
 
 def fetch_bars(ticker: str, now: dt.datetime):
@@ -143,7 +144,9 @@ def fetch_bars(ticker: str, now: dt.datetime):
             if not daily.empty:
                 daily.index = daily.index.normalize()
                 sess = last_session(raw)
-                return sess, daily, extended_price(raw, sess)
+                ext, n = extended_price(raw, sess)
+                return sess, daily, ext, f"polygon:{n}"
+
         except Exception as e:  # نرجع لـ yfinance
             print(f"[{ticker}] Polygon فشل: {e} — استخدام yfinance")
     try:
@@ -155,7 +158,9 @@ def fetch_bars(ticker: str, now: dt.datetime):
     except Exception:
         raw = _yf_hist(ticker, "5d", "5m")
     sess = last_session(raw)
-    return sess, _yf_hist(ticker, "1y", "1d"), extended_price(raw, sess)
+    ext, n = extended_price(raw, sess)
+    return sess, _yf_hist(ticker, "1y", "1d"), ext, f"yf:{n}"
+
 
 
 def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
@@ -177,7 +182,7 @@ def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
 def get_snapshot(ticker: str, mode: str) -> Snapshot:
     cfg = C.MODES[mode]
     now = now_ny()
-    intra, daily, ext = fetch_bars(ticker, now)
+    intra, daily, ext, src = fetch_bars(ticker, now)
     if not intra.empty:
         spot = float(intra["close"].iloc[-1])
     elif not daily.empty:
@@ -186,4 +191,4 @@ def get_snapshot(ticker: str, mode: str) -> Snapshot:
         spot = float(_yf().Ticker(ticker).fast_info["last_price"])
     chain = fetch_chain(ticker, cfg, now)
     return Snapshot(ticker.upper(), spot, chain, intra, daily,
-                    fetch_earnings(ticker, now.date()), now, ext)
+                    fetch_earnings(ticker, now.date()), now, ext, src)

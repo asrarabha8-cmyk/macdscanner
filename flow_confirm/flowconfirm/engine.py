@@ -39,6 +39,8 @@ class Result:
     flow: dict
     gex: dict
     asof: dt.datetime
+    ext_price: float | None = None
+    src: str = ""
 
 
 def money(x: float) -> str:
@@ -233,7 +235,7 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto") -> Result:
         decision = "wait"
 
     return Result(snap.ticker, mode, bull, score, decision, snap.spot, comps, vetoes,
-                  warnings, plan, opt, fl, gx, snap.asof)
+                  warnings, plan, opt, fl, gx, snap.asof, snap.ext_price, snap.src)
 
 
 # ───────────────────────── الرسالة ─────────────────────────
@@ -282,4 +284,4 @@ def log_row(r: Result) -> dict:
             "flip": round(r.gex["flip"], 2) if r.gex["flip"] else None,
             "call_wall": r.gex["call_wall"], "put_wall": r.gex["put_wall"],
             "contract": o.get("name", ""), "contract_mid": round(o.get("mid", 0), 2),
-            "vetoes": " | ".join(r.vetoes)}
+            "vetoes": " | ".join(r.vetoes), "ext_price": r.ext_price, "src": r.src}

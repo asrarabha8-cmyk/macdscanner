@@ -35,12 +35,24 @@ def send_telegram(text: str) -> bool:
 def log_signal(row: dict):
     DATA.mkdir(exist_ok=True)
     path = DATA / "signals.csv"
-    new = not path.exists()
-    with path.open("a", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(row))
-        if new:
-            w.writeheader()
-        w.writerow(row)
+    rows, fields = [], list(row)
+    if path.exists():
+        with path.open(newline="", encoding="utf-8") as f:
+            rd = csv.DictReader(f)
+            old = rd.fieldnames or []
+            if set(fields) <= set(old):
+                fields = old  # نفس الأعمدة: إلحاق فقط
+            else:
+                rows = list(rd)  # أعمدة جديدة: نعيد كتابة الملف بالرأس الموسّع
+                fields = old + [k for k in fields if k not in old]
+        if not rows:
+            with path.open("a", newline="", encoding="utf-8") as f:
+                csv.DictWriter(f, fieldnames=fields, extrasaction="ignore").writerow(row)
+            return
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows + [row])
 
 
 def _state_path():
