@@ -1,0 +1,101 @@
+# SMC Breakout Scanner | repository_dispatch | success | 2026-10-21T08:05:54Z
+Hosted Compute Agent
+Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+Build Date: 2026-10-12T17:48:21Z
+Worker ID: {1cdf81eb-f2ef-41c8-9366-b904018a3805}
+Region: centralus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+Contents: read
+Metadata: read
+Packages: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         a7cf8aef77de899c5d65c2ab694cb99c8329add8 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+a7cf8aef77de899c5d65c2ab694cb99c8329add8
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2279) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install yfinance pandas requests lxml html5lib beautifulsoup4[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 20.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 52.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 80.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 124.2 MB/s  0:00:00
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+[36;1mpython smc_breakout_scanner.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+تحليل الجدول فشل: No tables found
+لم أجد نتائج في صفحة فينفيز (HTTP 200، 278011 حرف، العنوان: Stock Screener - Overview usa o500 u50 o1 o2 u5 nh، Total: —)
+scan 2026-10-21 08:06 UTC — فينفيز أعطى 0 مرشحاً · TradingView 3: ATNM BDTX HIPO
+فينفيز فاضي — أكمل بمرشحي TradingView (نفس الشروط)
+إشارات: 0 · مراقبة: 2 · مُستبعد: 1
+with:
+  name: alerts-log
+  path: alerts_log.csv
+  if-no-files-found: ignore
+  compression-level: 6
+  overwrite: false
+  include-hidden-files: false
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+(node:2365) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+No files were found with the provided path: alerts_log.csv. No artifacts will be uploaded.
+(node:2377) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
