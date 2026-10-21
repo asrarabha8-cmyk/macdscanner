@@ -3,9 +3,11 @@
 name: Flow Scan
 
 on:
-  schedule:
-    - cron: "*/30 13-20 * * 1-5"   # intraday
-    - cron: "35 19,20 * * 1-5"     # swing
+  # جدولة GitHub تُسقط التشغيلات، فصارت مهمة Claude مجدولة ترسل repository_dispatch
+  # (flow_scan) كل ٣٠ دقيقة وقت الجلسة، ومرة سوينغ قرب الإغلاق.
+  # schedule:
+  #   - cron: "*/30 13-20 * * 1-5"   # intraday
+  #   - cron: "35 19,20 * * 1-5"     # swing
   repository_dispatch:
     types: [flow_scan]   # client_payload: {mode: intraday|swing}
   workflow_dispatch:
