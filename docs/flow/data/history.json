@@ -1,5 +1,26 @@
 [
  {
+  "id": "TSLA-intraday-2026-10-21T17:51:20Z",
+  "ticker": "TSLA",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-21T17:51:20Z",
+  "score": 70,
+  "entry": 386.86,
+  "stop": 385.4275,
+  "target": 400.0,
+  "rr": 9.1729,
+  "contract": "387.5C 23/10/2026",
+  "contract_mid": 10.575,
+  "status": "open",
+  "last_price": 386.86,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NVDA-intraday-2026-10-21T15:51:48Z",
   "ticker": "NVDA",
   "mode": "intraday",
@@ -14,8 +35,8 @@
   "contract": "220C 23/10/2026",
   "contract_mid": 2.965,
   "status": "open",
-  "last_price": 220.15,
-  "return_pct": -0.19,
+  "last_price": 221.54,
+  "return_pct": 0.44,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
