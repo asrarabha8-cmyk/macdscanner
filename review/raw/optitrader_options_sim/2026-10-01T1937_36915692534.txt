@@ -1,0 +1,130 @@
+# OptiTrader Options Sim | workflow_dispatch | success | 2026-10-01T19:37:49Z
+Hosted Compute Agent
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {32f5e8a2-114a-4be8-84d8-43e6759787e3}
+Azure Region: westus2
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         b3a9219af7a6ae9ee767a588eb4eac6c81378409 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+b3a9219af7a6ae9ee767a588eb4eac6c81378409
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2286) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.16)
+[36;1mpip install yfinance pandas[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 48.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 127.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 119.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 266.3 MB/s  0:00:00
+[36;1mpython optitrader_sim.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  POLYGON_API_KEY: ***
+  FORCE_RUN: 1
+  BUDGET: 350
+  ASK_MIN: 2.00
+  ASK_MAX: 3.50
+  DELTA_MIN: 0.35
+  DELTA_MAX: 0.65
+  MAX_SPREAD: 0.10
+  MIN_DTE: 2
+  MAX_DTE: 9
+  SPREAD_MODE: auto
+  PROTECT_ARM_PCT: 0.25
+  PROTECT_LOCK_PCT: 0.50
+  EXIT_ET: 13:45
+data: Polygon/Massive (Yahoo as fallback)
+polygon: 'options snapshot' not in plan (403) → Yahoo
+GOOGL 2026-10-05: dropped 21 stale quotes
+GOOGL 2026-10-07: dropped 12 stale quotes
+🧭 قبل الافتتاح — أفضل 3 فرص
+1. CRM — CALL 📈
+   السعر 235.72 | إغلاق أمس 229.57 | فجوة +2.68%
+   ما قبل الافتتاح: أعلى 237.78 / أدنى 227.63 | حجم ما قبل الافتتاح ×0.9
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد CRM 240C 09/10 — Ask 3.75 • دلتا +0.38 • سبريد 0.30 ← Ask 3.75 أغلى من الحد، سبريد 0.30 أوسع من 0.10، التكلفة $375 فوق الميزانية
+2. GOOGL — CALL 📈
+   السعر 350.80 | إغلاق أمس 344.08 | فجوة +1.95%
+   ما قبل الافتتاح: أعلى 354.64 / أدنى 344.08 | حجم ما قبل الافتتاح ×1.7
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد GOOGL 385C 05/10 — Ask 0.05 • دلتا +0.03 • سبريد 0.04 ← Ask 0.05 أرخص من الحد
+3. PLTR — CALL 📈
+   السعر 190.20 | إغلاق أمس 187.05 | فجوة +1.68%
+   ما قبل الافتتاح: أعلى 190.50 / أدنى 186.20 | حجم ما قبل الافتتاح ×0.9
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   العقد المبدئي: PLTR 195/202.5C 09/10 (سبريد) — ينتهي 9 أكتوبر (8 أيام)
+   تكلفة $194 • أقصى ربح $556 • دلتا صافية +0.20
+⚙️ القواعد: Ask 2.00–3.50 • دلتا 0.35–0.65 • سبريد ≤ 0.10 • ميزانية $350 • انتهاء 2–9 أيام
+ℹ️ العقد النهائي يتحدد لحظة الإشارة (الأسعار تتغير بعد الافتتاح) • الافتتاح 16:30 الرياض 
+📒 ملخص المحاكاة 2026-10-01
+📡 مصدر البيانات — stock bars: Polygon • daily: Polygon • contracts: Polygon • options snapshot: Yahoo
+0 دخول — ما أجبرنا الدخول بدون شروط. 
+[36;1mgit config user.name "optitrader-bot"[0m
+[36;1mgit config user.email "optitrader-bot@users.noreply.github.com"[0m
+[36;1mgit add logs || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "sim logs $(date -u +%F)"[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+fatal: pathspec 'logs' did not match any files
+Everything up-to-date
+(node:2352) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

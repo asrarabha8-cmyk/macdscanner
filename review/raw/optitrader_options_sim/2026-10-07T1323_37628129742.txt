@@ -1,0 +1,156 @@
+# OptiTrader Options Sim | repository_dispatch | success | 2026-10-07T13:23:41Z
+Hosted Compute Agent
+Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Build Date: 2026-10-02T22:28:27Z
+Worker ID: {195f270c-b206-4dac-a8d9-414fcbdf6e50}
+Region: mexicocentral
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         5754cb69689cf1980b96ba73330ce6a74f329c5d -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+5754cb69689cf1980b96ba73330ce6a74f329c5d
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2061) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install yfinance pandas[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 130.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 110.9 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 138.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 145.4 MB/s  0:00:00
+[36;1mpython optitrader_sim.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  POLYGON_API_KEY: ***
+  FORCE_RUN: 0
+  BUDGET: 350
+  ASK_MIN: 2.00
+  ASK_MAX: 3.50
+  DELTA_MIN: 0.35
+  DELTA_MAX: 0.65
+  MAX_SPREAD: 0.10
+  MIN_DTE: 2
+  MAX_DTE: 7
+  SPREAD_STOP_PCT: 0.60
+  SPREAD_MODE: auto
+  PROTECT_ARM_PCT: 0.25
+  PROTECT_LOCK_PCT: 0.50
+  EXIT_ET: 13:45
+data: Polygon/Massive (Yahoo as fallback)
+polygon: 'options snapshot' not in plan (403) → Yahoo
+MSTR 2026-10-16: dropped 3 stale/broken quotes (ATM IV nan%)
+COIN 2026-10-16: dropped 2 stale/broken quotes (ATM IV nan%)
+🧭 قبل الافتتاح — أفضل 3 فرص
+1. MSTR — PUT 📉
+   السعر 158.00 | إغلاق أمس 164.55 | فجوة -3.98%
+   ما قبل الافتتاح: أعلى 161.10 / أدنى 157.68 | حجم ما قبل الافتتاح ×0.6
+   الدخول: إغلاق 5د تحت أدنى أول 15 دقيقة + تحت VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد MSTR 245P 16/10 — Ask 103.20 • دلتا -0.66 • سبريد 1.05 ← Ask 103.20 أغلى من الحد، سبريد 1.05 أوسع من 0.10، التكلفة $10320 فوق الميزانية
+2. COIN — PUT 📉
+   السعر 180.14 | إغلاق أمس 185.74 | فجوة -3.01%
+   ما قبل الافتتاح: أعلى 183.21 / أدنى 179.76 | حجم ما قبل الافتتاح ×0.6
+   الدخول: إغلاق 5د تحت أدنى أول 15 دقيقة + تحت VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد COIN 330P 16/10 — Ask 153.95 • دلتا -0.96 • سبريد 7.30 ← Ask 153.95 أغلى من الحد، سبريد 7.30 أوسع من 0.10، التكلفة $15395 فوق الميزانية
+3. HOOD — PUT 📉
+   السعر 108.85 | إغلاق أمس 112.00 | فجوة -2.81%
+   ما قبل الافتتاح: أعلى 111.02 / أدنى 108.51 | حجم ما قبل الافتتاح ×0.7
+   الدخول: إغلاق 5د تحت أدنى أول 15 دقيقة + تحت VWAP + QQQ معه
+   العقد المبدئي: أسعار الأوبشن ما تحدّثت قبل الافتتاح — يتحدد عند الإشارة
+⚙️ القواعد: Ask 2.00–3.50 • دلتا 0.35–0.65 • سبريد ≤ 0.10 • ميزانية $350 • انتهاء 2–7 أيام تداول
+ℹ️ العقد النهائي يتحدد لحظة الإشارة (الأسعار تتغير بعد الافتتاح) • الافتتاح 16:30 الرياض 
+COIN 2026-10-09: dropped 19 stale/broken quotes (ATM IV 71%)
+🎯 دخول (محاكاة): COIN 175/170P 09/10 (سبريد)
+النوع: سبريد شرائي PUT 📉
+   شراء 175P (دلتا -0.35) + بيع 170P
+الانتهاء: 9 أكتوبر (يومين تداول)
+صافي الدخول 1.53 • قيمة الخروج الحالية 1.35 • دلتا صافية -0.17
+💵 التكلفة $153 = أقصى خسارة • أقصى ربح $347 (لو السهم تحت 170 عند الانتهاء)
+التعادل عند الانتهاء 173.47
+📊 السهم 178.38
+   تريقر 178.42 | إبطال 181.2 | هدف 172.86
+🛑 الوقف الأساسي: إغلاق 5د بعد الإبطال 181.2 • وقف أخير عند قيمة $61 (−60%)
+🛡️ حماية الربح تشتغل عند $191 (+25%) وتثبت 50% من أفضل ربح
+⏰ خروج بالوقت 20:45 الرياض
+✅ تأكيد: QQQ تحت VWAP (753.08 / 753.27)
+🕒 17:05 الرياض • 🔒 SHA-256 da160f570058… 
+11:21 error: Failed to perform, curl: (16) . See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+12:38 error: Failed to perform, curl: (16) . See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+🏁 خروج: COIN 175/170P 09/10 (سبريد) — ⏰ وقت الخروج المحدد
+الدخول $153 → الخروج $117 = -36$ (-23.53%)
+أفضل ربح غير محقق كان -18$ • 20:45 الرياض 
+📒 ملخص المحاكاة 2026-10-07
+📡 مصدر البيانات — stock bars: Polygon • daily: Polygon • contracts: Polygon • options snapshot: Yahoo
+• COIN 175P: -36$ (-23.53%) — ⏰ وقت الخروج المحدد 
+[36;1mgit config user.name "optitrader-bot"[0m
+[36;1mgit config user.email "optitrader-bot@users.noreply.github.com"[0m
+[36;1mgit add logs || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "sim logs $(date -u +%F)"[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main 3d83911] sim logs 2026-10-07
+ 5 files changed, 239 insertions(+), 17 deletions(-)
+ create mode 100644 logs/done_2026-10-07
+ create mode 100644 logs/picks.csv
+ create mode 100644 logs/position_log_2026-10-07.csv
+To https://github.com/asrarabha8-cmyk/macdscanner
+   5754cb6..3d83911  main -> main
+(node:4417) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

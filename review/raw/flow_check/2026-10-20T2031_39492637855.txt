@@ -1,0 +1,144 @@
+# Flow Check | repository_dispatch | success | 2026-10-20T20:31:03Z
+Hosted Compute Agent
+Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+Build Date: 2026-10-12T17:48:21Z
+Worker ID: {4113276d-a493-4dd8-9f59-4a22e1def4fd}
+Region: centralus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         db2c03394efaa0f96b8aa9ccd5ab3d67194e161c -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+db2c03394efaa0f96b8aa9ccd5ab3d67194e161c
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2087) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install -r requirements.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 57.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 127.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 128.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 95.7 MB/s  0:00:00
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+[36;1mpython confirm.py "$TICKERS" --mode "$MODE" --side "$SIDE" --telegram[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  POLYGON_API_KEY: ***
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  TICKERS: SPY
+  MODE: intraday
+  SIDE: auto
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+[SPY] Polygon فشل: index is not a valid DatetimeIndex or PeriodIndex — استخدام yfinance
+🔴 SPY — ممنوع (39/100) | يومي / 0DTE
+الاتجاه: هبوط 📉 | السعر 769.02 | 20/10 16:31 NY
+━━━━━━━━━━
+💰 التدفق 3/30
+صافي التدفق -0.07 | صاعد 65.4M$ مقابل هابط 74.7M$
+بريميوم الكول 146.0M$ | البوت 82.1M$
+🐋 غير اعتيادي 11/20
+باتجاهك 93.7M$ | عكسك 79.3M$
+🔴 769C 21/10 | 67,239 عقد (OI 3,585) | 17.3M$ | Bid
+🔴 769P 21/10 | 59,859 عقد (OI 2,487) | 10.8M$ | Ask
+🔴 768C 21/10 | 31,706 عقد (OI 1,747) | 10.2M$ | Bid
+🟢 770P 21/10 | 43,657 عقد (OI 1,541) | 9.7M$ | Bid
+🧲 الغاما 0/20
+❌ نقطة الانقلاب 769.01 — الغاما موجبة (تهدئة)
+❌ جدار البوت 768 (-0.1٪)
+الدعم/المقاومة المقابلة: 773 | Max Pain 769
+📊 السعر 25/30
+✅ تحت VWAP 769.61
+✅ حجم نسبي 2.5x
+❌ كسر نطاق الافتتاح (764.32–766.18)
+✅ EMA 9/21 على ٥ دقائق
+━━━━━━━━━━
+السهم: دخول 769.02 | وقف 771.33 | هدف 768.00 | R:R 0.4
+العقد: SPY 769P 21/10/2026 | دلتا -0.49 | منتصف 1.79 | سبريد 1٪ | OI 2,487
+قيمة تقديرية عند الهدف ≈ 2.36 (بدون تآكل الوقت)
+الخروج: إذا كسر السهم 771.33 أو وصل 768.00
+━━━━━━━━━━
+⛔ موانع:
+• جدار البوت قريب جداً (768، 0.1٪)
+• العائد/المخاطرة ضعيف (0.4)
+━━━━━━━━━━
+التدفق محايد — لا توجد أفضلية واضحة للأموال 
+[36;1mgit config user.name  "flow-confirm-bot"[0m
+[36;1mgit config user.email "flow-confirm-bot@users.noreply.github.com"[0m
+[36;1mgit add data || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "flow check $(date -u +%F)"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main 95aa6d1] flow check 2026-10-20
+ 1 file changed, 2 insertions(+)
+ create mode 100644 flow_confirm/data/signals.csv
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      claude/tradingview-mcp-repo-3oppim -> origin/claude/tradingview-mcp-repo-3oppim
+ * [new branch]      harmonic-carney -> origin/harmonic-carney
+ * [new branch]      lab             -> origin/lab
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+ * [new branch]      pine-lab        -> origin/pine-lab
+ * [new branch]      trendscore-test -> origin/trendscore-test
+Current branch main is up to date.
+To https://github.com/asrarabha8-cmyk/macdscanner
+   db2c033..95aa6d1  main -> main
+(node:2170) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

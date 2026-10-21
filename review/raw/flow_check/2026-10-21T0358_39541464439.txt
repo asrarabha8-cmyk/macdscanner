@@ -1,0 +1,172 @@
+# Flow Check | repository_dispatch | success | 2026-10-21T03:58:17Z
+Hosted Compute Agent
+Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+Build Date: 2026-10-12T17:48:21Z
+Worker ID: {54801dce-3244-486d-b0b5-e5d497aea8a8}
+Region: westus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         9c991b5117db7db324b2a1606fdff57b29710c34 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+9c991b5117db7db324b2a1606fdff57b29710c34
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2309) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install -r requirements.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 41.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 246.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 323.5 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 362.5 MB/s  0:00:00
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+[36;1mpython confirm.py "$TICKERS" --mode "$MODE" --side "$SIDE" --telegram[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  POLYGON_API_KEY: ***
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  TICKERS: spy
+  MODE: both
+  SIDE: auto
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"No fundamentals data found for symbol: SPY"}}}
+[SPY] Polygon فشل: index is not a valid DatetimeIndex or PeriodIndex — استخدام yfinance
+🔴 SPY — ممنوع (35/100) | يومي / 0DTE
+الاتجاه: صعود 📈 | السعر 769.01 | 20/10 23:58 NY
+━━━━━━━━━━
+💰 التدفق 4/30
+صافي التدفق +0.07 | صاعد 68.9M$ مقابل هابط 59.5M$
+بريميوم الكول 146.0M$ | البوت 82.0M$
+🐋 غير اعتيادي 11/20
+باتجاهك 86.0M$ | عكسك 70.8M$
+🔴 770C 21/10 | 89,638 عقد (OI 3,580) | 18.0M$ | Bid
+🔴 769P 21/10 | 59,859 عقد (OI 2,487) | 10.8M$ | Ask
+🟢 768C 21/10 | 31,707 عقد (OI 1,747) | 10.2M$ | Ask
+🟢 770P 21/10 | 43,657 عقد (OI 1,541) | 9.7M$ | Bid
+🧲 الغاما 5/20
+❌ نقطة الانقلاب 769.19 — الغاما سالبة (تسارع)
+✅ جدار الكول 773 (+0.5٪)
+الدعم/المقاومة المقابلة: 768 | Max Pain 769
+📊 السعر 15/30
+✅ فوق VWAP 768.92
+❌ حجم نسبي 0.7x
+✅ كسر نطاق الافتتاح (764.32–766.18)
+❌ EMA 9/21 على ٥ دقائق
+━━━━━━━━━━
+السهم: دخول 769.01 | وقف 766.70 | هدف 773.00 | R:R 1.7
+العقد: SPY 769C 21/10/2026 | دلتا +0.51 | منتصف 2.58 | سبريد 1٪ | OI 3,585
+قيمة تقديرية عند الهدف ≈ 5.21 (بدون تآكل الوقت)
+الخروج: إذا كسر السهم 766.70 أو وصل 773.00
+━━━━━━━━━━
+التدفق محايد — لا توجد أفضلية واضحة للأموال 
+[SPY] Polygon فشل: index is not a valid DatetimeIndex or PeriodIndex — استخدام yfinance
+🔴 SPY — ممنوع (54/100) | سوينغ
+الاتجاه: هبوط 📉 | السعر 769.01 | 20/10 23:58 NY
+━━━━━━━━━━
+💰 التدفق 19/30
+صافي التدفق -0.38 | صاعد 20.8M$ مقابل هابط 46.1M$
+بريميوم الكول 53.8M$ | البوت 49.8M$
+🐋 غير اعتيادي 15/20
+باتجاهك 33.5M$ | عكسك 10.3M$
+🔴 769P 30/10 | 5,093 عقد (OI 4,904) | 3.2M$ | Ask
+🟢 775C 30/10 | 6,707 عقد (OI 9,091) | 3.2M$ | Ask
+🔴 765C 30/10 | 2,615 عقد (OI 3,081) | 2.7M$ | Bid
+🔴 771P 28/10 | 3,527 عقد (OI 248) | 2.2M$ | Ask
+🧲 الغاما 10/20
+✅ نقطة الانقلاب 777.86 — الغاما سالبة (تسارع)
+❌ جدار البوت 760 (-1.2٪)
+الدعم/المقاومة المقابلة: 780 | Max Pain 768
+📊 السعر 10/30
+❌ الاتجاه EMA20 770.08 / EMA50 765.87
+❌ حجم نسبي 0.8x
+❌ اختراق قمة/قاع ٢٠ يوماً (758.79–781.62)
+✅ RSI 50
+━━━━━━━━━━
+السهم: دخول 769.01 | وقف 779.65 | هدف 760.00 | R:R 0.8
+العقد: SPY 772P 30/10/2026 | دلتا -0.56 | منتصف 7.52 | سبريد 1٪ | OI 2,034
+قيمة تقديرية عند الهدف ≈ 13.62 (بدون تآكل الوقت)
+الخروج: إذا كسر السهم 779.65 أو وصل 760.00
+━━━━━━━━━━
+⛔ موانع:
+• جدار البوت قريب جداً (760، 1.2٪)
+• العائد/المخاطرة ضعيف (0.8) 
+[36;1mgit config user.name  "flow-confirm-bot"[0m
+[36;1mgit config user.email "flow-confirm-bot@users.noreply.github.com"[0m
+[36;1mgit add data || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "flow check $(date -u +%F)"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main 7d2939b] flow check 2026-10-21
+ 1 file changed, 2 insertions(+)
+From https://github.com/asrarabha8-cmyk/macdscanner
+   9c991b5..7707367  main            -> origin/main
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      claude/tradingview-mcp-repo-3oppim -> origin/claude/tradingview-mcp-repo-3oppim
+ * [new branch]      harmonic-carney -> origin/harmonic-carney
+ * [new branch]      lab             -> origin/lab
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+ * [new branch]      pine-lab        -> origin/pine-lab
+ * [new branch]      trendscore-test -> origin/trendscore-test
+warning: skipped previously applied commit 7d2939b
+Successfully rebased and updated refs/heads/main.
+Everything up-to-date
+(node:2388) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

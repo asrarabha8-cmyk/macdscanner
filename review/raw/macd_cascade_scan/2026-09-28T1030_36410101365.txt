@@ -1,0 +1,93 @@
+# MACD Cascade Scan | repository_dispatch | failure | 2026-09-28T10:30:21Z
+Hosted Compute Agent
+Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Build Date: 2026-08-28T16:44:25Z
+Worker ID: {5b6bc62b-9167-4210-8695-894694a1c562}
+Azure Region: northcentralus
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+Contents: read
+Metadata: read
+Packages: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         d9705fd7025ac4f1cbe4b374afdaa206bf2e9298 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+d9705fd7025ac4f1cbe4b374afdaa206bf2e9298
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2248) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.16)
+[36;1mpip install --quiet yfinance pandas numpy requests[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)")': /simple/python-dateutil/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)")': /simple/python-dateutil/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)")': /simple/python-dateutil/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)")': /simple/python-dateutil/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)")': /simple/python-dateutil/
+  error: subprocess-exited-with-error
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [21 lines of output]
+      Traceback (most recent call last):
+        File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 389, in <module>
+          main()
+        File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 143, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-0oczh_dq/overlay/lib/python3.11/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-0oczh_dq/overlay/lib/python3.11/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "/tmp/pip-build-env-0oczh_dq/overlay/lib/python3.11/site-packages/setuptools/build_meta.py", line 520, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/tmp/pip-build-env-0oczh_dq/overlay/lib/python3.11/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())  # noqa: S102 # exec is intentional here
+          ^^^^^^^^^^^^^^^^^^^^
+        File "<string>", line 19, in <module>
+      ModuleNotFoundError: No module named 'pkg_resources'
+      [end of output]
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed to build 'pandas' when getting requirements to build wheel
+##[error]Process completed with exit code 1.
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

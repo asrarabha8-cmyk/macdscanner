@@ -1,0 +1,125 @@
+# MA 100/200 Breakout Scan | schedule | success | 2026-10-06T02:16:35Z
+Hosted Compute Agent
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {6b2b94e4-b647-41fa-8a07-5d0b5ed29e2c}
+Azure Region: centralus
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Contents: read
+Metadata: read
+Packages: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         5c3cafc1e8a4acc1b68ac17f4a16cf4b157f0e11 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+5c3cafc1e8a4acc1b68ac17f4a16cf4b157f0e11
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2066) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.16)
+[36;1mpip install --quiet yfinance pandas numpy requests[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+[36;1mpython ma100_200_scanner.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+فحص 6961 رمز — 2026-10-06
+1 Failed download:
+['AEHR']: OperationalError('database is locked')
+  فُحص 150/6961 — إشارات حتى الآن: 0
+  فُحص 300/6961 — إشارات حتى الآن: 0
+  فُحص 450/6961 — إشارات حتى الآن: 0
+  فُحص 600/6961 — إشارات حتى الآن: 0
+  فُحص 750/6961 — إشارات حتى الآن: 0
+  فُحص 900/6961 — إشارات حتى الآن: 0
+  فُحص 1050/6961 — إشارات حتى الآن: 0
+  فُحص 1200/6961 — إشارات حتى الآن: 0
+  فُحص 1350/6961 — إشارات حتى الآن: 0
+  فُحص 1500/6961 — إشارات حتى الآن: 0
+  فُحص 1650/6961 — إشارات حتى الآن: 0
+  فُحص 1800/6961 — إشارات حتى الآن: 0
+  فُحص 1950/6961 — إشارات حتى الآن: 0
+  فُحص 2100/6961 — إشارات حتى الآن: 1
+  فُحص 2250/6961 — إشارات حتى الآن: 1
+$FBYDP: possibly delisted; no price data found  (period=2y)
+1 Failed download:
+['FBYDP']: possibly delisted; no price data found  (period=2y)
+  فُحص 2400/6961 — إشارات حتى الآن: 1
+  فُحص 2550/6961 — إشارات حتى الآن: 2
+  فُحص 2700/6961 — إشارات حتى الآن: 2
+  فُحص 2850/6961 — إشارات حتى الآن: 2
+  فُحص 3000/6961 — إشارات حتى الآن: 2
+  فُحص 3150/6961 — إشارات حتى الآن: 2
+  فُحص 3300/6961 — إشارات حتى الآن: 3
+  فُحص 3450/6961 — إشارات حتى الآن: 3
+  فُحص 3600/6961 — إشارات حتى الآن: 3
+  فُحص 3750/6961 — إشارات حتى الآن: 3
+  فُحص 3900/6961 — إشارات حتى الآن: 3
+  فُحص 4050/6961 — إشارات حتى الآن: 3
+  فُحص 4200/6961 — إشارات حتى الآن: 3
+  فُحص 4350/6961 — إشارات حتى الآن: 3
+  فُحص 4500/6961 — إشارات حتى الآن: 3
+  فُحص 4650/6961 — إشارات حتى الآن: 3
+  فُحص 4800/6961 — إشارات حتى الآن: 4
+  فُحص 4950/6961 — إشارات حتى الآن: 4
+  فُحص 5100/6961 — إشارات حتى الآن: 4
+  فُحص 5250/6961 — إشارات حتى الآن: 4
+  فُحص 5400/6961 — إشارات حتى الآن: 4
+  فُحص 5550/6961 — إشارات حتى الآن: 4
+  فُحص 5700/6961 — إشارات حتى الآن: 4
+  فُحص 5850/6961 — إشارات حتى الآن: 4
+  فُحص 6000/6961 — إشارات حتى الآن: 5
+  فُحص 6150/6961 — إشارات حتى الآن: 5
+  فُحص 6300/6961 — إشارات حتى الآن: 5
+  فُحص 6450/6961 — إشارات حتى الآن: 5
+  فُحص 6600/6961 — إشارات حتى الآن: 6
+  فُحص 6750/6961 — إشارات حتى الآن: 6
+  فُحص 6900/6961 — إشارات حتى الآن: 6
+  فُحص 6961/6961 — إشارات حتى الآن: 6
+(node:23097) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

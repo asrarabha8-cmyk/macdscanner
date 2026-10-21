@@ -1,0 +1,96 @@
+# SMC Breakout Scanner | repository_dispatch | success | 2026-10-08T22:21:20Z
+Hosted Compute Agent
+Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Build Date: 2026-10-02T22:28:27Z
+Worker ID: {daf0cc84-59eb-4c19-b531-0b91bcb5660b}
+Region: centralus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Contents: read
+Metadata: read
+Packages: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         f559e16200fd75dadfcdc2d536f6cf00b328dc7d -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+f559e16200fd75dadfcdc2d536f6cf00b328dc7d
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2295) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install yfinance pandas requests lxml[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 26.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 61.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 79.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 100.4 MB/s  0:00:00
+[36;1mpython smc_breakout_scanner.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+scan 2026-10-08 22:21 UTC — فينفيز أعطى 5 مرشحاً
+إشارات: 0 · مراقبة: 1 · مُستبعد: 4
+with:
+  name: alerts-log
+  path: alerts_log.csv
+  if-no-files-found: ignore
+  compression-level: 6
+  overwrite: false
+  include-hidden-files: false
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+(node:2352) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+No files were found with the provided path: alerts_log.csv. No artifacts will be uploaded.
+(node:2364) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

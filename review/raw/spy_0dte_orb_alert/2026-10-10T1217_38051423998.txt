@@ -1,0 +1,124 @@
+# SPY 0DTE ORB Alert | push | success | 2026-10-10T12:17:35Z
+Hosted Compute Agent
+Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Build Date: 2026-10-02T22:28:27Z
+Worker ID: {3f87c920-c14f-4a40-bb4f-c2e2dfc53e63}
+Region: centralus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         e998afc0937023ec1fe2f015da5faeaff3c573a5 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+e998afc0937023ec1fe2f015da5faeaff3c573a5
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install yfinance pandas[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 18.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 49.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 69.0 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 80.5 MB/s  0:00:00
+[36;1mRD=""[0m
+[36;1mif [ "push" = "push" ]; then RD=$(head -1 spy0dte/replay.txt | tr -d '[:space:]'); fi[0m
+[36;1mif [ -n "$RD" ]; then export REPLAY_DATE="$RD" LOG_DIR="logs/spy0dte_test"; fi[0m
+[36;1mpython spy0dte/spy_orb_0dte.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  POLYGON_API_KEY: ***
+  BUDGET: 200
+🧪 تجربة (يوم سابق)
+🟢 SPY 0DTE — 2026-10-08: اليوم مؤهل
+نطاق الافتتاح: 774.45 — 775.33 (0.11% = 0.56× المتوسط)
+📈 إغلاق شمعة 5د فوق 775.33 = Call
+📉 إغلاق تحت 774.45 = Put
+آخر وقت للإشارة: 07:00 م بتوقيتك. سأرسل لك لحظة الاختراق. 
+🧪 تجربة (يوم سابق)
+🚨 إشارة دخول — SPY 0DTE
+📈 CALL سترايك 775 انتهاء اليوم
+SPY أغلق 775.43 فوق النطاق (775.33 / 774.45)
+السعر التقريبي: 1.45 (≈145$ للعقد)
+🛑 الوقف: 0.94 (−35%)
+🎯 بدون هدف ثابت — اخرج قبل 08:00 م بتوقيتك
+الحجم المقترح: 200$ تقريبًا 
+🧪 تجربة (يوم سابق)
+⏰ وقت الخروج — SPY 775 Call
+إذا الصفقة لسا مفتوحة أغلقها الآن.
+(النتيجة الورقية الدقيقة توصلك بكرة) 
+🧪 تجربة (يوم سابق)
+❌ نتيجة الصفقة الورقية — 2026-10-08
+Call 775 | دخول 1.47 ← خروج 0.94 (وقف)
+العائد -36.4% | -55$ (1 عقد)
+📒 الاختبار الأمامي حتى الآن: 1 صفقة | فوز 0 (0%) | الصافي -55$ 
+[36;1mgit config user.name "spy-orb-bot"[0m
+[36;1mgit config user.email "spy-orb-bot@users.noreply.github.com"[0m
+[36;1mgit add logs || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "spy orb logs $(date -u +%F)"[0m
+[36;1mgit pull --rebase -q || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main f2144b9] spy orb logs 2026-10-10
+ 2 files changed, 18 insertions(+)
+ create mode 100644 logs/spy0dte_test/2026-10-08.json
+ create mode 100644 logs/spy0dte_test/forward.csv
+To https://github.com/asrarabha8-cmyk/macdscanner
+   e998afc..f2144b9  main -> main
+(node:2295) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,122 @@
+# Flow Scan | schedule | success | 2026-10-20T23:20:00Z
+Hosted Compute Agent
+Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+Build Date: 2026-10-12T17:48:21Z
+Worker ID: {bcc7364e-21c1-421f-b537-95f6fb58938c}
+Region: westus3
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         48a2970a2c3ff75a4ddbcbccc5bdaf60e281aac0 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+48a2970a2c3ff75a4ddbcbccc5bdaf60e281aac0
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2092) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install -r requirements.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 19.2 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 71.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 95.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 108.0 MB/s  0:00:00
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+[36;1mif [ "schedule" = "workflow_dispatch" ]; then[0m
+[36;1m  echo "mode=" >> $GITHUB_OUTPUT[0m
+[36;1m  if [ "" = "true" ]; then echo "force=--force" >> $GITHUB_OUTPUT; fi[0m
+[36;1melif [ "schedule" = "repository_dispatch" ]; then[0m
+[36;1m  echo "mode=intraday" >> $GITHUB_OUTPUT[0m
+[36;1melif [ "35 19,20 * * 1-5" = "35 19,20 * * 1-5" ]; then[0m
+[36;1m  echo "mode=swing" >> $GITHUB_OUTPUT[0m
+[36;1melse[0m
+[36;1m  echo "mode=intraday" >> $GITHUB_OUTPUT[0m
+[36;1mfi[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[36;1mpython scan.py --mode swing [0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  POLYGON_API_KEY: ***
+  TG_TOKEN: ***
+  TG_CHAT: ***
+خارج نافذة التشغيل (Tue 19:20 NY) — لا شيء
+[36;1mgit config user.name  "flow-confirm-bot"[0m
+[36;1mgit config user.email "flow-confirm-bot@users.noreply.github.com"[0m
+[36;1mgit add data || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "flow scan swing $(date -u +%F)"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      claude/tradingview-mcp-repo-3oppim -> origin/claude/tradingview-mcp-repo-3oppim
+ * [new branch]      harmonic-carney -> origin/harmonic-carney
+ * [new branch]      lab             -> origin/lab
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+ * [new branch]      pine-lab        -> origin/pine-lab
+ * [new branch]      trendscore-test -> origin/trendscore-test
+Already up to date.
+Everything up-to-date
+(node:2158) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

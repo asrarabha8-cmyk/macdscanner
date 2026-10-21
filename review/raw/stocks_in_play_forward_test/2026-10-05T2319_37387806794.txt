@@ -1,0 +1,116 @@
+# Stocks In Play Forward Test | push | success | 2026-10-05T23:19:20Z
+Hosted Compute Agent
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {ba89745e-46a5-4589-a068-c5fd8b48db14}
+Azure Region: centralus
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         94623692884e35569499293d302fbfa947717958 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+94623692884e35569499293d302fbfa947717958
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2072) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.16)
+[36;1mpip install pandas numpy[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 25.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 64.6 MB/s  0:00:00
+[36;1mpython sip_forward.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+  POLYGON_API_KEY: ***
+  TG_TOKEN: ***
+  TG_CHAT: ***
+2026-10-05: universe 100 stocks
+🎯 Stocks in Play ORB — اختبار ورقي | 2026-10-05
+• CBRS 🟢 شراء 10:50 @ 184.79 | وقف 174.50 | خروج 181.61 (إغلاق) → -1.72%
+• WDC 🟢 شراء 09:35 @ 445.62 | وقف 429.44 | خروج 441.55 (إغلاق) → -0.91%
+• MELI 🟢 شراء 09:35 @ 1819.90 | وقف 1769.76 | خروج 1861.50 (إغلاق) → +2.29%
+• STX 🟢 شراء 09:45 @ 899.99 | وقف 875.00 | خروج 886.89 (إغلاق) → -1.46%
+• BAC 🔴 بيع 09:35 @ 53.76 | وقف 54.17 | خروج 54.17 (وقف) → -0.76%
+• WFC 🔴 بيع 09:35 @ 81.17 | وقف 82.22 | خروج 81.45 (إغلاق) → -0.34%
+• MSFT 🟢 شراء 09:35 @ 528.71 | وقف 521.47 | خروج 525.50 (إغلاق) → -0.61%
+• UBER 🟢 شراء 10:05 @ 69.63 | وقف 68.38 | خروج 69.50 (إغلاق) → -0.19%
+• APP 🟢 شراء 09:40 @ 279.54 | وقف 270.00 | خروج 281.89 (إغلاق) → +0.84%
+• LITE 🔴 بيع 09:45 @ 1084.50 | وقف 1124.40 | خروج 1092.46 (إغلاق) → -0.73%
+📊 اليوم: -38.0 نقطة أساس (10 صفقات، بعد التكلفة)
+   مقارنة: شراء بسيط +4.3 | كل المئة -15.8
+📈 التراكمي (1 يوم): متوسط -38.0 نقطة أساس/يوم | مجموع -0.38%
+   أيام رابحة 0% | t = nan | المتوقع من الاختبار الرجعي +7.37
+   شراء بسيط تراكمي +4.3/يوم
+   (الحكم بعد ~40 يوماً — باقي 39)
+[36;1mgit config user.name  "sip-forward-bot"[0m
+[36;1mgit config user.email "sip-forward-bot@users.noreply.github.com"[0m
+[36;1mgit add forward || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "sip forward $(date -u +%F)"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+[main 60fec5d] sip forward 2026-10-05
+ 2 files changed, 103 insertions(+)
+ create mode 100644 momentum/forward/forward_daily.csv
+ create mode 100644 momentum/forward/forward_log.csv
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+Current branch main is up to date.
+To https://github.com/asrarabha8-cmyk/macdscanner
+   9462369..60fec5d  main -> main
+(node:2166) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,139 @@
+# Flow Check | repository_dispatch | success | 2026-10-21T04:12:55Z
+Hosted Compute Agent
+Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+Build Date: 2026-10-14T17:06:54Z
+Worker ID: {ad65e0bb-d7a9-4326-835e-1393b3690649}
+Region: westus2
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         897c93cfc30b9ac27208da6058fc23793a127597 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+897c93cfc30b9ac27208da6058fc23793a127597
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2520) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install -r requirements.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 45.1 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 140.6 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 206.8 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 283.0 MB/s  0:00:00
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+[36;1mpython confirm.py "$TICKERS" --mode "$MODE" --side "$SIDE" --telegram[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  POLYGON_API_KEY: ***
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  TICKERS: SMCI
+  MODE: intraday
+  SIDE: auto
+[SMCI] Polygon فشل: index is not a valid DatetimeIndex or PeriodIndex — استخدام yfinance
+🔴 SMCI — ممنوع (53/100) | يومي / 0DTE
+الاتجاه: صعود 📈 | السعر 32.46 | 21/10 00:13 NY
+━━━━━━━━━━
+💰 التدفق 8/30
+صافي التدفق +0.17 | صاعد 4.3M$ مقابل هابط 3.0M$
+بريميوم الكول 10.5M$ | البوت 3.2M$
+🐋 غير اعتيادي 4/20
+باتجاهك 1.2M$ | عكسك 4.3M$
+🔴 35C 23/10 | 27,333 عقد (OI 10,920) | 1.5M$ | Bid
+🔴 35.5C 23/10 | 26,319 عقد (OI 24,456) | 1.2M$ | Bid
+🟢 36C 23/10 | 21,782 عقد (OI 4,766) | 936.6K$ | Ask
+🔴 33C 23/10 | 8,102 عقد (OI 2,493) | 899.3K$ | Bid
+🧲 الغاما 20/20
+✅ نقطة الانقلاب 27.81 — الغاما موجبة (تهدئة)
+✅ جدار الكول 33.5 (+3.2٪)
+الدعم/المقاومة المقابلة: 32 | Max Pain 33.5
+📊 السعر 20/30
+✅ فوق VWAP 32.18
+❌ حجم نسبي 0.8x
+✅ كسر نطاق الافتتاح (30.92–31.59)
+✅ EMA 9/21 على ٥ دقائق
+━━━━━━━━━━
+السهم: دخول 32.46 | وقف 32.15 | هدف 33.50 | R:R 3.3
+العقد: SMCI 33C 23/10/2026 | دلتا +0.46 | منتصف 1.16 | سبريد 10٪ | OI 2,493
+قيمة تقديرية عند الهدف ≈ 1.69 (بدون تآكل الوقت)
+الخروج: إذا كسر السهم 32.15 أو وصل 33.50
+━━━━━━━━━━
+⛔ موانع:
+• السعر تحرك +15.6٪ خارج الجلسة (الآن 37.51 مقابل إغلاق 32.46) — الأرقام مبنية على الإغلاق، أعد الفحص بعد الافتتاح بـ ١٥ دقيقة 
+[36;1mgit config user.name  "flow-confirm-bot"[0m
+[36;1mgit config user.email "flow-confirm-bot@users.noreply.github.com"[0m
+[36;1mgit add data || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "flow check $(date -u +%F)"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main 27ec5e8] flow check 2026-10-21
+ 1 file changed, 1 insertion(+)
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      claude/tradingview-mcp-repo-3oppim -> origin/claude/tradingview-mcp-repo-3oppim
+ * [new branch]      harmonic-carney -> origin/harmonic-carney
+ * [new branch]      lab             -> origin/lab
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+ * [new branch]      pine-lab        -> origin/pine-lab
+ * [new branch]      trendscore-test -> origin/trendscore-test
+Current branch main is up to date.
+To https://github.com/asrarabha8-cmyk/macdscanner
+   897c93c..27ec5e8  main -> main
+(node:2602) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,172 @@
+# OptiTrader Options Sim | workflow_dispatch | success | 2026-10-02T13:44:21Z
+Hosted Compute Agent
+Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Build Date: 2026-09-01T19:56:44Z
+Worker ID: {fa4886c7-d5ee-4cdc-aaca-d73e246059f3}
+Azure Region: westus3
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         0b238464137be9a4a6b2220dbec211a1e5f70ac0 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+0b238464137be9a4a6b2220dbec211a1e5f70ac0
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2240) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.16)
+[36;1mpip install yfinance pandas[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 30.7 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 94.3 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 135.4 MB/s  0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 59.6 MB/s  0:00:00
+[36;1mpython optitrader_sim.py[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  POLYGON_API_KEY: ***
+  FORCE_RUN: 1
+  BUDGET: 350
+  ASK_MIN: 2.00
+  ASK_MAX: 3.50
+  DELTA_MIN: 0.35
+  DELTA_MAX: 0.65
+  MAX_SPREAD: 0.10
+  MIN_DTE: 2
+  MAX_DTE: 9
+  SPREAD_MODE: auto
+  PROTECT_ARM_PCT: 0.25
+  PROTECT_LOCK_PCT: 0.50
+  EXIT_ET: 13:45
+data: Polygon/Massive (Yahoo as fallback)
+polygon: 'options snapshot' not in plan (403) → Yahoo
+ARM 2026-10-09: dropped 1 stale/broken quotes (ATM IV 64%)
+AMD 2026-10-05: dropped 1 stale/broken quotes (ATM IV 38%)
+🧭 قبل الافتتاح — أفضل 3 فرص
+1. ARM — CALL 📈
+   السعر 306.93 | إغلاق أمس 292.34 | فجوة +4.99%
+   ⏱️ السوق مفتوح — السعر الآن 307.54 (+5.20%)
+   ما قبل الافتتاح: أعلى 308.45 / أدنى 295.00 | حجم ما قبل الافتتاح ×1.3
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد ARM 315C 09/10 — Ask 9.40 • دلتا +0.42 • سبريد 2.60 ← Ask 9.40 أغلى من الحد، سبريد 2.60 أوسع من 0.10، التكلفة $940 فوق الميزانية
+2. MSTR — CALL 📈
+   السعر 165.93 | إغلاق أمس 160.50 | فجوة +3.38%
+   ⏱️ السوق مفتوح — السعر الآن 165.93 (+3.38%)
+   ما قبل الافتتاح: أعلى 168.20 / أدنى 163.83 | حجم ما قبل الافتتاح ×1.7
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد MSTR 170C 09/10 — Ask 5.00 • دلتا +0.41 • سبريد 1.50 ← Ask 5.00 أغلى من الحد، سبريد 1.50 أوسع من 0.10، التكلفة $500 فوق الميزانية
+3. AMD — CALL 📈
+   السعر 636.32 | إغلاق أمس 615.73 | فجوة +3.34%
+   ⏱️ السوق مفتوح — السعر الآن 636.32 (+3.34%)
+   ما قبل الافتتاح: أعلى 637.50 / أدنى 622.25 | حجم ما قبل الافتتاح ×1.3
+   الدخول: إغلاق 5د فوق أعلى أول 15 دقيقة + فوق VWAP + QQQ معه
+   ⚠️ ما فيه عقد يطابق القواعد الحين: أقرب عقد AMD 642.5C 05/10 — Ask 7.60 • دلتا +0.40 • سبريد 2.35 ← Ask 7.60 أغلى من الحد، سبريد 2.35 أوسع من 0.10، التكلفة $760 فوق الميزانية
+⚙️ القواعد: Ask 2.00–3.50 • دلتا 0.35–0.65 • سبريد ≤ 0.10 • ميزانية $350 • انتهاء 2–9 أيام
+ℹ️ العقد النهائي يتحدد لحظة الإشارة (الأسعار تتغير بعد الافتتاح) • الافتتاح 16:30 الرياض 
+ARM 2026-10-09: dropped 10 stale/broken quotes (ATM IV 69%)
+⚠️ إشارة ARM CALL تحققت لكن ما فيه عقد يطابق القواعد
+أقرب عقد ARM 320C 09/10 — Ask 8.25 • دلتا +0.40 • سبريد 0.25 ← Ask 8.25 أغلى من الحد، سبريد 0.25 أوسع من 0.10، التكلفة $825 فوق الميزانية 
+ARM 2026-10-09: dropped 14 stale/broken quotes (ATM IV 70%)
+AMD 2026-10-05: dropped 16 stale/broken quotes (ATM IV 39%)
+⚠️ إشارة AMD CALL تحققت لكن ما فيه عقد يطابق القواعد
+أقرب عقد AMD 647.5C 05/10 — Ask 6.05 • دلتا +0.38 • سبريد 0.30 ← Ask 6.05 أغلى من الحد، سبريد 0.30 أوسع من 0.10، التكلفة $605 فوق الميزانية 
+ARM 2026-10-09: dropped 6 stale/broken quotes (ATM IV 70%)
+AMD 2026-10-05: dropped 39 stale/broken quotes (ATM IV 35%)
+🎯 دخول (محاكاة): AMD 647.5/660C 05/10 (سبريد)
+النوع: سبريد شرائي CALL 📈
+   شراء 647.5C (دلتا +0.40) + بيع 660C
+الانتهاء: 5 أكتوبر (3 أيام)
+صافي الدخول 3.39 • قيمة الخروج الحالية 3.25 • دلتا صافية +0.19
+💵 التكلفة $339 = أقصى خسارة • أقصى ربح $911 (لو السهم فوق 660 عند الانتهاء)
+التعادل عند الانتهاء 650.89
+📊 السهم 641.62
+   تريقر 639.92 | إبطال 630.76 | هدف 658.24
+🛑 وقف عند قيمة $186 (−45%)
+🛡️ حماية الربح تشتغل عند $424 (+25%) وتثبت 50% من أفضل ربح
+⏰ خروج بالوقت 20:45 الرياض
+✅ تأكيد: QQQ فوق VWAP (753.98 / 751.83)
+🕒 17:35 الرياض • 🔒 SHA-256 4f564cd76dca… 
+🏁 خروج: AMD 647.5/660C 05/10 (سبريد) — 🛑 وقف العقد −45%
+الدخول $339 → الخروج $182 = -157$ (-46.31%)
+أفضل ربح غير محقق كان +51$ • 18:37 الرياض 
+📒 ملخص المحاكاة 2026-10-02
+📡 مصدر البيانات — stock bars: Polygon • daily: Polygon • contracts: Polygon • options snapshot: Yahoo
+• AMD 647.5C: -157$ (-46.31%) — 🛑 وقف العقد −45%
+إشارات مرفوضة: 6
+  17:15 ARM CALL — لا يوجد عقد يطابق الشروط
+  17:20 ARM CALL — لا يوجد عقد يطابق الشروط
+  17:20 AMD CALL — لا يوجد عقد يطابق الشروط
+  17:25 ARM CALL — لا يوجد عقد يطابق الشروط
+  17:30 ARM CALL — السعر ابتعد عن التريقر — ما نلاحق
+  17:35 ARM CALL — السعر ابتعد عن التريقر — ما نلاحق 
+[36;1mgit config user.name "optitrader-bot"[0m
+[36;1mgit config user.email "optitrader-bot@users.noreply.github.com"[0m
+[36;1mgit add logs || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "sim logs $(date -u +%F)"[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+[main 9ddb390] sim logs 2026-10-02
+ 5 files changed, 91 insertions(+)
+ create mode 100644 logs/SIM_POSITION.json
+ create mode 100644 logs/done_2026-10-02
+ create mode 100644 logs/position_log_2026-10-02.csv
+ create mode 100644 logs/rejected.csv
+ create mode 100644 logs/trades.csv
+To https://github.com/asrarabha8-cmyk/macdscanner
+   0b23846..9ddb390  main -> main
+(node:3117) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

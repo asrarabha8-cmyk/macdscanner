@@ -1,0 +1,228 @@
+# Harmonic Scan (Carney) | workflow_dispatch | success | 2026-10-13T23:19:39Z
+Hosted Compute Agent
+Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+Build Date: 2026-10-02T22:28:27Z
+Worker ID: {0cfab246-6c6b-4648-8131-8370956c85f2}
+Region: eastus
+Cloud: Azure
+Ubuntu
+24.04.5
+LTS
+Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+Contents: write
+Metadata: read
+Cache mode: write
+Prepare all required actions
+with:
+  repository: asrarabha8-cmyk/macdscanner
+  token: ***
+  ssh-strict: true
+  ssh-user: git
+  persist-credentials: true
+  clean: true
+  sparse-checkout-cone-mode: true
+  fetch-depth: 1
+  fetch-tags: false
+  show-progress: true
+  lfs: false
+  submodules: false
+  set-safe-directory: true
+  allow-unsafe-pr-checkout: false
+Working directory is '/home/runner/work/macdscanner/macdscanner'
+Deleting the contents of '/home/runner/work/macdscanner/macdscanner'
+Initialized empty Git repository in /home/runner/work/macdscanner/macdscanner/.git/
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new ref]         3705e1afd8d6643e55f6345c45b8a2a5917112e7 -> origin/main
+Switched to a new branch 'main'
+branch 'main' set up to track 'origin/main'.
+3705e1afd8d6643e55f6345c45b8a2a5917112e7
+with:
+  python-version: 3.11
+  check-latest: false
+  token: ***
+  update-environment: true
+  allow-prereleases: false
+  freethreaded: false
+(node:2325) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Successfully set up CPython (3.11.17)
+[36;1mpip install --quiet yfinance pandas numpy requests[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[36;1mSTAGE="WATCH"[0m
+[36;1mcase "$STAGE" in[0m
+[36;1m  SIGNAL) FILTER="--stage SIGNAL" ;;[0m
+[36;1m  TBAR)   FILTER="--stage SIGNAL --stage TBAR" ;;[0m
+[36;1m  *)      FILTER="--stage SIGNAL --stage TBAR --stage WATCH" ;;[0m
+[36;1mesac[0m
+[36;1mcase "universe" in[0m
+[36;1m  universe) LIST="--tickers universe.txt" ;;[0m
+[36;1m  forex)    LIST="--tickers forex.txt" ;;[0m
+[36;1m  *)        LIST="--tickers ../watchlist.txt" ;;[0m
+[36;1mesac[0m
+[36;1mecho "القائمة: $LIST"[0m
+[36;1mpython harmonic_scan.py \[0m
+[36;1m  $LIST \[0m
+[36;1m  --tf "1d" \[0m
+[36;1m  --pivot-method "zigzag_atr" \[0m
+[36;1m  --pivot "5" \[0m
+[36;1m  --period 2y \[0m
+[36;1m  $FILTER \[0m
+[36;1m  --notify \[0m
+[36;1m  --json harmonic_hits.json \[0m
+[36;1m  | tee harmonic_report.txt[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+  TG_TOKEN: ***
+  TG_CHAT: ***
+  HARMONIC_TG_TOKEN: 
+  HARMONIC_TG_CHAT: 
+القائمة: --tickers universe.txt
+جلب 299 رمزاً · 2y · 1d
+$HAYN: No data found, symbol may be delisted
+$MMC: No data found, symbol may be delisted
+$SKX: No data found, symbol may be delisted
+$SQ: No data found, symbol may be delisted
+$MRO: No data found, symbol may be delisted
+$GPS: No data found, symbol may be delisted
+$TMST: No data found, symbol may be delisted
+$HES: No data found, symbol may be delisted
+$X: No data found, symbol may be delisted
+$PXD: No data found, symbol may be delisted
+$SAVE: No data found, symbol may be delisted
+11 Failed downloads:
+['HAYN', 'MMC', 'SKX', 'SQ', 'MRO', 'GPS', 'TMST', 'HES', 'X', 'PXD', 'SAVE']: No data found, symbol may be delisted
+نجح 284 رمزاً
+الرمز  النموذج        المرحلة الاتجاه       دخول      وقف      TP1      TP2       B   PRZ%  شمعات
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+TRV    Butterfly      SIGNAL  هابط        280.70   284.29   268.66   261.23   0.767   0.0%     52
+UDR    Deep Crab      SIGNAL  صاعد         37.40    36.28    39.24    40.38   0.889   0.0%     54
+ESS    Butterfly      SIGNAL  صاعد        238.46   235.58   249.17   255.78   0.779   0.0%     41
+JBLU   Bat            SIGNAL  هابط          6.16     6.80     5.29     4.74   0.432   0.0%     41
+NVDA   Gartley        SIGNAL  هابط        193.63   199.94   184.43   178.75   0.607   1.0%     37
+MA     Gartley        SIGNAL  صاعد        562.51   553.86   577.51   586.77   0.642   3.3%     36
+ATI    Deep Crab      SIGNAL  هابط         66.80    69.03    61.67    58.50   0.907   4.4%     46
+VICI   Gartley        SIGNAL  صاعد         27.01    26.55    27.97    28.56   0.645   4.5%     47
+VLRS   Butterfly      TBAR    صاعد          6.78     6.53     7.63     8.15   0.783   3.7%     36
+AMZN   Alternate Bat  WATCH   هابط        287.20   298.78        —        —   0.354   0.0%     39
+WMT    Gartley        WATCH   هابط        113.72   116.87        —        —   0.617   0.0%     32
+PM     Deep Crab      WATCH   هابط        206.33   212.31        —        —   0.925   0.0%     27
+AMGN   Butterfly      WATCH   صاعد        328.82   315.41        —        —   0.780   0.0%     54
+DE     Crab           WATCH   صاعد        491.61   437.40        —        —   0.544   0.0%     33
+MO     Crab           WATCH   هابط         85.18    90.20        —        —   0.543   0.0%     48
+SCHW   Crab           WATCH   صاعد         71.01    60.73        —        —   0.566   0.0%     60
+PNC    Gartley        WATCH   صاعد        220.24   209.70        —        —   0.631   0.0%     86
+USB    Bat            WATCH   صاعد         53.90    50.54        —        —   0.384   0.0%     76
+F      Deep Crab      WATCH   صاعد          9.59     7.66        —        —   0.901   0.0%     48
+WELL   Bat            WATCH   صاعد        201.57   186.80        —        —   0.499   0.0%     59
+FOXA   Alternate Bat  WATCH   صاعد         48.34    42.24        —        —   0.355   0.0%     55
+CPA    Gartley        WATCH   هابط        146.65   152.67        —        —   0.597   0.0%     35
+DLTR   Deep Crab      WATCH   صاعد        104.29    96.55        —        —   0.936   0.1%     29
+GOOGL  Gartley        WATCH   هابط        371.94   384.48        —        —   0.642   0.7%     40
+MRK    Bat            WATCH   صاعد        129.72   122.23        —        —   0.476   0.7%     34
+EXPE   Deep Crab      WATCH   صاعد        192.52   160.24        —        —   0.887   2.7%     37
+ESS    Butterfly      WATCH   صاعد        263.10   258.54        —        —   0.758   3.5%     44
+IBM    Bat            WATCH   هابط        298.96   326.44        —        —   0.467   3.5%     66
+MMM    Butterfly      WATCH   صاعد        145.10   140.59        —        —   0.786   4.0%     58
+SNPS   Butterfly      WATCH   هابط        488.51   507.39        —        —   0.814   4.0%     22
+TCOM   Deep Crab      WATCH   صاعد         32.21    28.60        —        —   0.933   4.5%     61
+PG     Gartley        WATCH   هابط        150.13   153.68        —        —   0.605   5.0%     31
+GOOG   Gartley        WATCH   هابط        367.00   381.81        —        —   0.611   5.0%     40
+SIGNAL: 8 · TBAR: 1 · WATCH: 24
+كُتبت النتائج في harmonic_hits.json
+[36;1mmkdir -p docs/harmonic[0m
+[36;1mSTAMP=$(TZ=Asia/Riyadh date +'%Y-%m-%d_%H%M')[0m
+[36;1m{[0m
+[36;1m  echo "# فحص كارني التوافقي — $STAMP (الرياض)"[0m
+[36;1m  echo ""[0m
+[36;1m  echo "القائمة \`universe\` ·"[0m
+[36;1m  echo "الفاصل \`1d\` ·"[0m
+[36;1m  echo "المحاور \`zigzag_atr\` ·"[0m
+[36;1m  echo "أدنى مرحلة \`WATCH\`"[0m
+[36;1m  echo ""[0m
+[36;1m  echo '```'[0m
+[36;1m  cat harmonic/harmonic_report.txt 2>/dev/null || echo "لم يكتمل"[0m
+[36;1m  echo '```'[0m
+[36;1m} > docs/harmonic/scan_latest.md[0m
+[36;1mgit config user.name  "harmonic-bot"[0m
+[36;1mgit config user.email "harmonic-bot@users.noreply.github.com"[0m
+[36;1mgit add docs/harmonic || true[0m
+[36;1mgit diff --cached --quiet || git commit -m "harmonic scan $STAMP"[0m
+[36;1mgit pull --rebase --autostash || true[0m
+[36;1mgit push || true[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+[main c1e37a9] harmonic scan 2026-10-14_0220
+ 1 file changed, 47 insertions(+)
+ create mode 100644 docs/harmonic/scan_latest.md
+From https://github.com/asrarabha8-cmyk/macdscanner
+ * [new branch]      claude/mcp-abyan-capital-erzea5 -> origin/claude/mcp-abyan-capital-erzea5
+ * [new branch]      claude/tradingview-mcp-repo-3oppim -> origin/claude/tradingview-mcp-repo-3oppim
+ * [new branch]      harmonic-carney -> origin/harmonic-carney
+ * [new branch]      lab             -> origin/lab
+ * [new branch]      optitrader-reliable-schedule -> origin/optitrader-reliable-schedule
+ * [new branch]      pine-lab        -> origin/pine-lab
+ * [new branch]      trendscore-test -> origin/trendscore-test
+Current branch main is up to date.
+To https://github.com/asrarabha8-cmyk/macdscanner
+   3705e1a..c1e37a9  main -> main
+with:
+  name: harmonic-scan
+  path: harmonic/harmonic_report.txt
+harmonic/harmonic_hits.json
+  retention-days: 14
+  if-no-files-found: warn
+  compression-level: 6
+  overwrite: false
+  include-hidden-files: false
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+(node:3323) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Multiple search paths detected. Calculating the least common ancestor of all paths
+The least common ancestor is /home/runner/work/macdscanner/macdscanner/harmonic. This will be the root directory of the artifact
+Root directory input is valid!
+(node:3323) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+SHA256 digest of uploaded artifact zip is b865462114c52ab719079058329329b59f495c117c308b95c192a7c0aba4e9b8
+Finalizing artifact upload
+[36;1m{[0m
+[36;1m  echo "## ماسح كارني التوافقي"[0m
+[36;1m  echo '```'[0m
+[36;1m  cat harmonic_report.txt 2>/dev/null || echo "لم يكتمل"[0m
+[36;1m  echo '```'[0m
+[36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+shell: /usr/bin/bash -e {0}
+env:
+  pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+(node:3337) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+http.https://github.com/.extraheader
+##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
