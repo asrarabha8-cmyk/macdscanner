@@ -1,5 +1,22 @@
 [
  {
+  "kind": "check",
+  "mode": "intraday",
+  "run_utc": "2026-10-22T17:43:08Z",
+  "finished_utc": "2026-10-22T17:43:10Z",
+  "duration_s": 1,
+  "event": "workflow_dispatch",
+  "tickers": [
+   "SPY"
+  ],
+  "scanned": 1,
+  "errors": 0,
+  "enter": 0,
+  "wait": 0,
+  "alerts": 1,
+  "status": "ok"
+ },
+ {
   "kind": "scan",
   "mode": "intraday",
   "run_utc": "2026-10-22T15:51:47Z",
