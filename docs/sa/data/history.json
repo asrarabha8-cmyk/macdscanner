@@ -9,10 +9,14 @@
   "target": 24.76,
   "rr": 0.44,
   "vol_ratio": 2.07,
-  "status": "open",
-  "days": 0,
-  "last_close": 24.36,
-  "return_pct": 0.0
+  "status": "stop",
+  "days": 1,
+  "last_close": 23.0,
+  "return_pct": -3.78,
+  "max_high": 24.3,
+  "min_low": 22.61,
+  "exit_date": "2026-10-22",
+  "exit_price": 23.44
  },
  {
   "code": "1830",
