@@ -1,5 +1,26 @@
 [
  {
+  "id": "TSLA-intraday-2026-10-22T14:51:47Z",
+  "ticker": "TSLA",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-22T14:51:47Z",
+  "score": 88,
+  "entry": 386.41,
+  "stop": 382.8184,
+  "target": 400.0,
+  "rr": 3.7838,
+  "contract": "387.5C 23/10/2026",
+  "contract_mid": 4.975,
+  "status": "open",
+  "last_price": 386.41,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NFLX-intraday-2026-10-22T13:52:11Z",
   "ticker": "NFLX",
   "mode": "intraday",
@@ -13,12 +34,12 @@
   "rr": 2.7548,
   "contract": null,
   "contract_mid": null,
-  "status": "open",
-  "last_price": 66.55,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 66.0,
+  "return_pct": 0.83,
+  "exit_price": 66.0,
+  "exit_utc": "2026-10-22T14:00:00Z",
+  "days": 1
  },
  {
   "id": "MSFT-intraday-2026-10-22T13:51:52Z",
@@ -34,12 +55,12 @@
   "rr": 2.8877,
   "contract": "530C 23/10/2026",
   "contract_mid": 4.3,
-  "status": "open",
-  "last_price": 530.405,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 528.8138,
+  "return_pct": -0.3,
+  "exit_price": 528.8138,
+  "exit_utc": "2026-10-22T13:55:00Z",
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-10-22T13:51:45Z",
@@ -55,12 +76,12 @@
   "rr": 2.719,
   "contract": "217.5C 23/10/2026",
   "contract_mid": 2.425,
-  "status": "open",
-  "last_price": 218.22,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 217.5653,
+  "return_pct": -0.3,
+  "exit_price": 217.5653,
+  "exit_utc": "2026-10-22T13:55:00Z",
+  "days": 1
  },
  {
   "id": "TSLA-intraday-2026-10-21T17:51:20Z",
