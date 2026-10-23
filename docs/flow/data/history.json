@@ -1,5 +1,26 @@
 [
  {
+  "id": "GOOGL-intraday-2026-10-23T14:51:41Z",
+  "ticker": "GOOGL",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-23T14:51:41Z",
+  "score": 72,
+  "entry": 323.03,
+  "stop": 322.0609,
+  "target": 325.0,
+  "rr": 2.0328,
+  "contract": "322.5C 23/10/2026",
+  "contract_mid": 1.485,
+  "status": "open",
+  "last_price": 323.03,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "CRWV-intraday-2026-10-22T15:52:15Z",
   "ticker": "CRWV",
   "mode": "intraday",
@@ -13,12 +34,12 @@
   "rr": 1.6025,
   "contract": "57P 23/10/2026",
   "contract_mid": 1.605,
-  "status": "open",
-  "last_price": 57.015,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 55.0,
+  "return_pct": 3.53,
+  "exit_price": 55.0,
+  "exit_utc": "2026-10-22T18:00:00Z",
+  "days": 1
  },
  {
   "id": "AAPL-intraday-2026-10-22T15:51:58Z",
@@ -34,12 +55,12 @@
   "rr": 4.7721,
   "contract": "345C 23/10/2026",
   "contract_mid": 2.37,
-  "status": "open",
-  "last_price": 345.06,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "expired",
+  "last_price": 348.32,
+  "return_pct": 0.94,
+  "exit_price": 348.32,
+  "exit_utc": "2026-10-22T19:55:00Z",
+  "days": 1
  },
  {
   "id": "QQQ-intraday-2026-10-22T15:51:49Z",
@@ -55,12 +76,12 @@
   "rr": 1.2217,
   "contract": "708P 23/10/2026",
   "contract_mid": 4.825,
-  "status": "open",
-  "last_price": 708.348,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 705.0,
+  "return_pct": 0.47,
+  "exit_price": 705.0,
+  "exit_utc": "2026-10-22T16:50:00Z",
+  "days": 1
  },
  {
   "id": "TSLA-intraday-2026-10-22T14:51:47Z",
