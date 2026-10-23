@@ -14,8 +14,8 @@
   "contract": "322.5C 23/10/2026",
   "contract_mid": 1.485,
   "status": "open",
-  "last_price": 323.74,
-  "return_pct": 0.22,
+  "last_price": 323.125,
+  "return_pct": 0.03,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
