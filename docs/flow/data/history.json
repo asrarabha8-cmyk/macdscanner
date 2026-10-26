@@ -14,8 +14,8 @@
   "contract": "320C 26/10/2026",
   "contract_mid": 0.905,
   "status": "open",
-  "last_price": 320.445,
-  "return_pct": 0.21,
+  "last_price": 319.21,
+  "return_pct": -0.18,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
