@@ -1,5 +1,26 @@
 [
  {
+  "id": "GOOGL-intraday-2026-10-26T14:51:52Z",
+  "ticker": "GOOGL",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-26T14:51:52Z",
+  "score": 75,
+  "entry": 319.775,
+  "stop": 318.8157,
+  "target": 345.0,
+  "rr": 26.2945,
+  "contract": "320C 26/10/2026",
+  "contract_mid": 0.905,
+  "status": "open",
+  "last_price": 319.775,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "GOOGL-intraday-2026-10-23T14:51:41Z",
   "ticker": "GOOGL",
   "mode": "intraday",
