@@ -1,0 +1,21 @@
+# تجربة مؤقتة لفلاتر Flow Confirm على الإشارات المسجلة (تعمل فقط على فرع التجربة)
+name: Flow Filter Backtest
+on:
+  push:
+    branches: [claude/flow-filter-backtest]
+jobs:
+  bt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: flow_confirm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+        run: python backtest_filters.py | tee bt.txt; echo '```' >> $GITHUB_STEP_SUMMARY; cat bt.txt >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY
