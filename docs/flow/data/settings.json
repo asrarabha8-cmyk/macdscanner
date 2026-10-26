@@ -3,6 +3,8 @@
  "wait_score": 50,
  "neutral_flow": 0.15,
  "gap_veto_pct": 2.0,
+ "market_filter": true,
+ "market_ticker": "SPY",
  "swing_max_days": 10,
  "cooldown_hours": {
   "intraday": 3,

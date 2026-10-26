@@ -14,11 +14,11 @@
   "contract": "320C 26/10/2026",
   "contract_mid": 0.905,
   "status": "open",
-  "last_price": 319.775,
-  "return_pct": 0.0,
+  "last_price": 320.71,
+  "return_pct": 0.29,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "GOOGL-intraday-2026-10-23T14:51:41Z",
