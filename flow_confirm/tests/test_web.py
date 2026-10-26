@@ -63,6 +63,19 @@ if __name__ == "__main__":
     assert H["NVDA"]["status"] == "target" and H["NVDA"]["return_pct"] > 0
     assert H["TSLA"]["status"] == "stop" and H["TSLA"]["return_pct"] < 0
     assert H["META"]["status"] == "open"
-    for f in ("latest.json", "checks.json", "runs.json", "history.json", "settings.json"):
+    # الإشارات الممنوعة بفلتر السوق تذهب لملف منفصل ولا تدخل history.json
+    with contextlib.redirect_stdout(io.StringIO()):
+        rb = T.run("blocked", True, True, market={"ticker": "SPY", "last": 760.0, "vwap": 762.0, "up": False})
+    xb = dict(web.result_dict(rb), ticker="AMZN")
+    n_hist = len(web.load("history.json", []))
+    assert web.add_signals([xb], "scan") == 0
+    assert web.add_signals([xb], "scan", blocked=True) == 1
+    assert web.add_signals(items, "scan", blocked=True) == 0
+    B = web.load("blocked.json", [])
+    assert len(B) == 1 and B[0]["ticker"] == "AMZN" and B[0]["market"]["up"] is False
+    assert len(web.load("history.json", [])) == n_hist
+    web.update_history(lambda tk, start: bars("2026-10-20 11:05", np.full(5, B[0]["entry"])))
+
+    for f in ("latest.json", "blocked.json", "checks.json", "runs.json", "history.json", "settings.json"):
         assert (Path(out) / f).exists(), f
     print("✅ بيانات الواجهة سليمة →", out)

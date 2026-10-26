@@ -10,7 +10,7 @@ import datetime as dt
 import traceback
 
 from flowconfirm import engine, notify, web
-from flowconfirm.data import get_snapshot, now_ny
+from flowconfirm.data import market_state, get_snapshot, now_ny
 
 
 def main():
@@ -26,10 +26,16 @@ def main():
     modes = ["intraday", "swing"] if a.mode == "both" else [a.mode]
     started = dt.datetime.now(dt.timezone.utc)
     items = []
+    market = None
+    if "intraday" in modes:
+        try:
+            market = market_state(now_ny())
+        except Exception:
+            traceback.print_exc()
     for t in [x.strip().upper() for x in a.tickers.replace(" ", ",").split(",") if x.strip()]:
         for m in modes:
             try:
-                r = engine.evaluate(get_snapshot(t, m), m, a.side)
+                r = engine.evaluate(get_snapshot(t, m), m, a.side, market)
                 msg = engine.format_message(r)
                 print(notify.plain(msg), "\n")
                 items.append(web.result_dict(r) | {"side_req": a.side})
@@ -50,6 +56,7 @@ def main():
             web.save_checks(items, web.make_run("check", a.mode, started, items,
                                                 alerts=len(items) if a.telegram else 0))
             web.add_signals(items, "check")
+            web.add_signals(items, "check", blocked=True)
         except Exception:
             traceback.print_exc()
 

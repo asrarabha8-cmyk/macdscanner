@@ -4,6 +4,7 @@
   checks.json    آخر الفحوصات اليدوية (من الاختصار أو Actions)
   history.json   كل إشارات "دخول" ومتابعتها (هدف/وقف/مفتوحة/منتهية) — على سعر السهم
   runs.json      سجل مرات التشغيل
+  blocked.json   إشارات منعها فلتر السوق فقط، تُتابع بنفس الطريقة لدراسة الفلتر (لا تظهر في الإحصائيات)
   settings.json  العتبات والمواعيد المستخدمة
 """
 import datetime as dt
@@ -79,6 +80,7 @@ def result_dict(r) -> dict:
         "flow": {k: r.flow.get(k) for k in ("net", "call_prem", "put_prem", "bull", "bear", "u_bull", "u_bear")},
         "unusual": unusual,
         "gex": r.gex,
+        "market": r.market, "mkt_blocked": r.mkt_blocked,
     }
 
 
@@ -90,7 +92,8 @@ def error_dict(ticker, mode, err, now) -> dict:
 def write_settings():
     save("settings.json", {
         "enter_score": C.ENTER_SCORE, "wait_score": C.WAIT_SCORE, "neutral_flow": C.NEUTRAL_FLOW,
-        "gap_veto_pct": C.GAP_VETO_PCT, "swing_max_days": C.SWING_MAX_DAYS,
+        "gap_veto_pct": C.GAP_VETO_PCT,
+        "market_filter": C.MARKET_FILTER, "market_ticker": C.MARKET_TICKER, "swing_max_days": C.SWING_MAX_DAYS,
         "cooldown_hours": C.ALERT_COOLDOWN_HOURS,
         "modes": {k: {"label": m.label, "dte": [m.dte_min, m.dte_max], "min_premium": m.min_premium,
                       "min_vol_oi": m.min_vol_oi, "min_wall_room_pct": m.min_wall_room_pct,
@@ -147,13 +150,15 @@ def make_run(kind, mode, started, items, alerts=0):
 
 
 # ───────────────────────── متابعة إشارات الدخول ─────────────────────────
-def add_signals(items, source):
-    """يضيف إشارات الدخول الجديدة لمتابعتها (بدون تكرار نفس السهم/الاتجاه/الإطار وهو مفتوح)."""
-    hist = load("history.json", [])
+def add_signals(items, source, blocked=False):
+    """يضيف إشارات الدخول الجديدة لمتابعتها (بدون تكرار نفس السهم/الاتجاه/الإطار وهو مفتوح).
+    blocked=True: يضيف بدلها الإشارات التي منعها فلتر السوق فقط إلى blocked.json."""
+    fname = "blocked.json" if blocked else "history.json"
+    hist = load(fname, [])
     open_keys = {(h["ticker"], h["mode"], h["direction"]) for h in hist if h["status"] == "open"}
     added = 0
     for x in items:
-        if x.get("decision") != "enter":
+        if (not x.get("mkt_blocked")) if blocked else x.get("decision") != "enter":
             continue
         k = (x["ticker"], x["mode"], x["direction"])
         if k in open_keys:
@@ -166,11 +171,12 @@ def add_signals(items, source):
                         "contract": (x.get("option") or {}).get("name"),
                         "contract_mid": (x.get("option") or {}).get("mid"),
                         "status": "open", "last_price": s["entry"], "return_pct": 0.0,
-                        "exit_price": None, "exit_utc": None, "days": 0})
+                        "exit_price": None, "exit_utc": None, "days": 0}
+                       | ({"market": x.get("market")} if blocked else {}))
         open_keys.add(k)
         added += 1
     if added:
-        save("history.json", hist)
+        save(fname, hist)
     return added
 
 
@@ -213,7 +219,12 @@ def _evaluate(h, bars: pd.DataFrame, now: dt.datetime):
 
 def update_history(fetch_bars):
     """fetch_bars(ticker, start_utc) → شموع ٥ دقائق (بتوقيت مع منطقة زمنية) من وقت البداية حتى الآن."""
-    hist = load("history.json", [])
+    for fname in ("history.json", "blocked.json"):
+        _update_file(fname, fetch_bars)
+
+
+def _update_file(fname, fetch_bars):
+    hist = load(fname, [])
     now = dt.datetime.now(UTC)
     changed = False
     for h in hist:
@@ -227,4 +238,4 @@ def update_history(fetch_bars):
         except Exception as e:
             print(f"متابعة {h['ticker']}: {e}")
     if changed:
-        save("history.json", hist)
+        save(fname, hist)

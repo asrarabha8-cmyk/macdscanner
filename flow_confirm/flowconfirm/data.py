@@ -185,6 +185,18 @@ def bars_since(ticker: str, start: dt.datetime) -> pd.DataFrame:
     return raw[(t >= dt.time(9, 30)) & (t < dt.time(16, 0))]
 
 
+def market_state(now: dt.datetime) -> dict | None:
+    """اتجاه السوق داخل اليوم: آخر سعر SPY مقابل VWAP الجلسة."""
+    bars = fetch_bars(C.MARKET_TICKER, now)[0]
+    if bars.empty or bars["volume"].sum() <= 0:
+        return None
+    tp = (bars["high"] + bars["low"] + bars["close"]) / 3
+    vwap = float((tp * bars["volume"]).sum() / bars["volume"].sum())
+    last = float(bars["close"].iloc[-1])
+    return {"ticker": C.MARKET_TICKER, "last": last, "vwap": vwap, "up": last > vwap,
+            "bar": bars.index[-1].isoformat()}
+
+
 def fetch_earnings(ticker: str, today: dt.date) -> dt.date | None:
     try:
         cal = _yf().Ticker(ticker).calendar

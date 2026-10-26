@@ -49,12 +49,12 @@ def make_bars(now, up=True):
     return bars, daily
 
 
-def run(name, bullish, up, side="auto", mode="intraday", ext=None):
+def run(name, bullish, up, side="auto", mode="intraday", ext=None, market=None):
     now = dt.datetime(2026, 10, 20, 12, 30, tzinfo=NY)
     bars, daily = make_bars(now, up)
     spot = float(bars["close"].iloc[-1])
     snap = Snapshot("TEST", spot, make_chain(now, spot, bullish), bars, daily, None, now, ext)
-    r = engine.evaluate(snap, mode, side)
+    r = engine.evaluate(snap, mode, side, market)
     print(f"===== {name} =====")
     print(notify.plain(engine.format_message(r)), "\n")
     return r
@@ -75,4 +75,15 @@ if __name__ == "__main__":
     assert not r4.bull and r4.decision in ("enter", "wait")
     r5 = run("قفزة ١٥٪ بعد الإغلاق (مثل SMCI)", True, True, ext=115.0)
     assert r5.decision == "no" and any("خارج الجلسة" in v for v in r5.vetoes)
+
+    spy_dn = {"ticker": "SPY", "last": 760.0, "vwap": 762.0, "up": False}
+    spy_up = dict(spy_dn, last=764.0, up=True)
+    r6 = run("صعود والسوق نازل (SPY تحت VWAP)", True, True, market=spy_dn)
+    assert r6.decision == "no" and r6.mkt_blocked and any("السوق عكس" in v for v in r6.vetoes)
+    r7 = run("صعود والسوق طالع", True, True, market=spy_up)
+    assert r7.decision == "enter" and not r7.mkt_blocked
+    r8 = run("صعود ممنوع أصلاً والسوق نازل", True, False, market=spy_dn)
+    assert r8.decision == "no" and not r8.mkt_blocked  # ممنوعة بغير الفلتر → لا تُسجل كممنوعة بسببه
+    r9 = run("سوينغ لا يتأثر بالفلتر", True, True, mode="swing", market=spy_dn)
+    assert not r9.mkt_blocked and not any("السوق عكس" in v for v in r9.vetoes)
     print("✅ كل الاختبارات نجحت")

@@ -11,7 +11,7 @@ import traceback
 from pathlib import Path
 
 from flowconfirm import engine, notify, web
-from flowconfirm.data import bars_since, get_snapshot, now_ny
+from flowconfirm.data import market_state, bars_since, get_snapshot, now_ny
 
 WATCHLIST = Path(__file__).resolve().parent / "watchlist.txt"
 
@@ -54,11 +54,21 @@ def main():
     started = dt.datetime.now(dt.timezone.utc)
     items = []
 
+    market = None
+    if a.mode == "intraday":
+        try:
+            market = market_state(now)
+            if market:
+                print(f"السوق: {market['ticker']} {market['last']:.2f} مقابل VWAP {market['vwap']:.2f} "
+                      f"→ {'فوق' if market['up'] else 'تحت'}")
+        except Exception:
+            traceback.print_exc()
+
     allowed = {"enter"} if a.min_decision == "enter" else {"enter", "wait"}
     hits, errors = [], []
     for t in load_watchlist():
         try:
-            r = engine.evaluate(get_snapshot(t, a.mode), a.mode)
+            r = engine.evaluate(get_snapshot(t, a.mode), a.mode, market=market)
             notify.log_signal(engine.log_row(r) | {"source": "scan"})
             print(f"{t:6} {r.decision:5} {r.score:3.0f} {'bull' if r.bull else 'bear'}")
             items.append(web.result_dict(r))
@@ -76,6 +86,7 @@ def main():
     try:
         web.save_scan(a.mode, items, web.make_run("scan", a.mode, started, items, alerts=len(hits)))
         web.add_signals(items, "scan")
+        web.add_signals(items, "scan", blocked=True)
     except Exception:
         traceback.print_exc()
 

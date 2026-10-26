@@ -41,6 +41,8 @@ class Result:
     asof: dt.datetime
     ext_price: float | None = None
     src: str = ""
+    market: dict | None = None
+    mkt_blocked: bool = False   # كانت ستكون "دخول" لولا فلتر السوق
 
 
 def money(x: float) -> str:
@@ -175,7 +177,7 @@ def pick_contract(chain, spot, bull, cfg, mode, now, plan):
 
 
 # ───────────────────────── التقييم ─────────────────────────
-def evaluate(snap: Snapshot, mode: str, side: str = "auto") -> Result:
+def evaluate(snap: Snapshot, mode: str, side: str = "auto", market: dict | None = None) -> Result:
     cfg = C.MODES[mode]
     vetoes, warnings = [], []
     fl = F.summarize(snap.chain, cfg)
@@ -227,6 +229,11 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto") -> Result:
 
     score = round(sum(c.pts for c in comps))
     neutral = abs(fl["net"]) < C.NEUTRAL_FLOW
+    mkt_blocked = False
+    if C.MARKET_FILTER and mode == "intraday" and market and market["up"] != bull:
+        mkt_blocked = not vetoes and score >= C.ENTER_SCORE and not neutral
+        vetoes.append(f"السوق عكس اتجاهك: {market['ticker']} {'فوق' if market['up'] else 'تحت'} VWAP "
+                      f"({market['last']:.2f} مقابل {market['vwap']:.2f})")
     if vetoes or score < C.WAIT_SCORE:
         decision = "no"
     elif score >= C.ENTER_SCORE and not neutral:
@@ -235,7 +242,7 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto") -> Result:
         decision = "wait"
 
     return Result(snap.ticker, mode, bull, score, decision, snap.spot, comps, vetoes,
-                  warnings, plan, opt, fl, gx, snap.asof, snap.ext_price, snap.src)
+                  warnings, plan, opt, fl, gx, snap.asof, snap.ext_price, snap.src, market, mkt_blocked)
 
 
 # ───────────────────────── الرسالة ─────────────────────────
@@ -284,4 +291,5 @@ def log_row(r: Result) -> dict:
             "flip": round(r.gex["flip"], 2) if r.gex["flip"] else None,
             "call_wall": r.gex["call_wall"], "put_wall": r.gex["put_wall"],
             "contract": o.get("name", ""), "contract_mid": round(o.get("mid", 0), 2),
-            "vetoes": " | ".join(r.vetoes), "ext_price": r.ext_price, "src": r.src}
+            "vetoes": " | ".join(r.vetoes), "ext_price": r.ext_price, "src": r.src,
+            "mkt_up": None if not r.market else r.market["up"], "mkt_blocked": r.mkt_blocked}
