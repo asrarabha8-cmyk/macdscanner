@@ -14,11 +14,11 @@
   "contract": "215C 28/10/2026",
   "contract_mid": 3.225,
   "status": "open",
-  "last_price": 216.008,
-  "return_pct": 0.0,
+  "last_price": 216.1463,
+  "return_pct": 0.06,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "GOOGL-intraday-2026-10-26T14:51:52Z",
