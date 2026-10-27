@@ -1,5 +1,20 @@
 [
  {
+  "code": "1182",
+  "name": "Amlak International for Real Estate Finance Company",
+  "sector": "Finance",
+  "date": "2026-10-27",
+  "entry": 8.62,
+  "stop": 7.77,
+  "target": 9.03,
+  "rr": 0.48,
+  "vol_ratio": 3.71,
+  "status": "open",
+  "days": 0,
+  "last_close": 8.62,
+  "return_pct": 0.0
+ },
+ {
   "code": "2330",
   "name": "Advanced Petrochemical Co.",
   "sector": "Process Industries",
