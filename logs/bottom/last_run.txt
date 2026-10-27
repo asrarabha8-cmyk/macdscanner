@@ -1,1 +1,1 @@
-2026-10-24 00:44 UTC • universe 548 • loaded 545 • signals 7 • perp ok (448)
+2026-10-27 01:30 UTC • universe 548 • loaded 545 • signals 1 • perp ok (453)
