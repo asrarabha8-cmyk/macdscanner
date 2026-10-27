@@ -3,6 +3,164 @@
   "ticker": "SPY",
   "mode": "intraday",
   "direction": "bear",
+  "score": 61,
+  "decision": "no",
+  "spot": 765.29,
+  "ext_price": 766.3971,
+  "asof": "2026-10-27T02:00:42Z",
+  "src": "polygon:48",
+  "components": [
+   {
+    "name": "💰 التدفق",
+    "pts": 24.3696,
+    "max": 30,
+    "lines": [
+     "صافي التدفق -0.49 | صاعد 26.6M$ مقابل هابط 77.2M$",
+     "بريميوم الكول 149.6M$ | البوت 93.6M$"
+    ]
+   },
+   {
+    "name": "🐋 غير اعتيادي",
+    "pts": 16.1665,
+    "max": 20,
+    "lines": [
+     "باتجاهك 113.6M$ | عكسك 26.9M$",
+     "🔴 765C 27/10 | 69,590 عقد (OI 2,551) | 14.3M$ | Bid",
+     "🔴 766C 27/10 | 77,716 عقد (OI 2,106) | 12.0M$ | Bid",
+     "🔴 767P 27/10 | 36,537 عقد (OI 22,028) | 10.5M$ | Ask",
+     "🔴 765P 28/10 | 26,180 عقد (OI 1,980) | 8.9M$ | Ask"
+    ]
+   },
+   {
+    "name": "🧲 الغاما",
+    "pts": 15.0,
+    "max": 20,
+    "lines": [
+     "✅ نقطة الانقلاب 769.49 — الغاما سالبة (تسارع)",
+     "✅ جدار البوت 762 (-0.4٪)",
+     "الدعم/المقاومة المقابلة: 766 | Max Pain 767"
+    ]
+   },
+   {
+    "name": "📊 السعر",
+    "pts": 5,
+    "max": 30,
+    "lines": [
+     "❌ فوق VWAP 765.24",
+     "❌ حجم نسبي 0.6x",
+     "❌ كسر نطاق الافتتاح (761.63–764.02)",
+     "✅ EMA 9/21 على ٥ دقائق"
+    ]
+   }
+  ],
+  "vetoes": [
+   "السعر في الجهة الخطأ من VWAP",
+   "السوق عكس اتجاهك: SPY فوق VWAP (765.29 مقابل 765.24)"
+  ],
+  "warnings": [],
+  "stock": {
+   "entry": 765.29,
+   "stop": 767.5859,
+   "target": 762.0,
+   "rr": 1.433
+  },
+  "option": {
+   "name": "765P 27/10/2026",
+   "dte": 1,
+   "mid": 1.81,
+   "delta": -0.4665,
+   "spread": 0.011,
+   "oi": 1042,
+   "volume": 106730,
+   "est_target": 3.8405,
+   "relaxed": false
+  },
+  "flow": {
+   "net": -0.4874,
+   "call_prem": 149585114.0,
+   "put_prem": 93598615.0,
+   "bull": 26590756.5,
+   "bear": 77156156.5,
+   "u_bull": 26926095.0,
+   "u_bear": 113552825.0
+  },
+  "unusual": [
+   {
+    "contract": "765C",
+    "expiry": "2026-10-27",
+    "volume": 69590,
+    "oi": 2551,
+    "premium": 14265950.0,
+    "side": "Bid",
+    "dir": "bear"
+   },
+   {
+    "contract": "766C",
+    "expiry": "2026-10-27",
+    "volume": 77716,
+    "oi": 2106,
+    "premium": 11968264.0,
+    "side": "Bid",
+    "dir": "bear"
+   },
+   {
+    "contract": "767P",
+    "expiry": "2026-10-27",
+    "volume": 36537,
+    "oi": 22028,
+    "premium": 10486119.0,
+    "side": "Ask",
+    "dir": "bear"
+   },
+   {
+    "contract": "765P",
+    "expiry": "2026-10-28",
+    "volume": 26180,
+    "oi": 1980,
+    "premium": 8875020.0,
+    "side": "Ask",
+    "dir": "bear"
+   },
+   {
+    "contract": "763C",
+    "expiry": "2026-10-27",
+    "volume": 24212,
+    "oi": 1225,
+    "premium": 7941536.0,
+    "side": "Bid",
+    "dir": "bear"
+   },
+   {
+    "contract": "764P",
+    "expiry": "2026-10-27",
+    "volume": 55774,
+    "oi": 1417,
+    "premium": 7808360.0,
+    "side": "Bid",
+    "dir": "bull"
+   }
+  ],
+  "gex": {
+   "total": -1145680472.6251,
+   "flip": 769.4889,
+   "call_wall": 766.0,
+   "put_wall": 762.0,
+   "max_pain": 767.0
+  },
+  "market": {
+   "ticker": "SPY",
+   "last": 765.29,
+   "vwap": 765.2402,
+   "up": true,
+   "bar": "2026-10-26T15:55:00-04:00"
+  },
+  "mkt_blocked": false,
+  "side_req": "auto"
+ },
+ {
+  "ticker": "SPY",
+  "mode": "intraday",
+  "direction": "bear",
   "score": 57,
   "decision": "no",
   "spot": 763.24,
