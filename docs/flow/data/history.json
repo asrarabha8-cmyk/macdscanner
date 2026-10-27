@@ -14,11 +14,11 @@
   "contract": "405C 28/10/2026",
   "contract_mid": 3.975,
   "status": "open",
-  "last_price": 405.395,
-  "return_pct": 0.0,
+  "last_price": 406.59,
+  "return_pct": 0.29,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "GOOGL-intraday-2026-10-27T15:52:26Z",
@@ -35,8 +35,8 @@
   "contract": "320C 30/10/2026",
   "contract_mid": 9.4,
   "status": "open",
-  "last_price": 321.7279,
-  "return_pct": 0.45,
+  "last_price": 321.48,
+  "return_pct": 0.37,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -56,8 +56,8 @@
   "contract": "252.5C 28/10/2026",
   "contract_mid": 1.6,
   "status": "open",
-  "last_price": 253.545,
-  "return_pct": 0.67,
+  "last_price": 253.475,
+  "return_pct": 0.65,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -77,8 +77,8 @@
   "contract": "347.5C 28/10/2026",
   "contract_mid": 1.895,
   "status": "open",
-  "last_price": 346.66,
-  "return_pct": -0.17,
+  "last_price": 346.15,
+  "return_pct": -0.32,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -98,8 +98,8 @@
   "contract": "217.5C 28/10/2026",
   "contract_mid": 1.745,
   "status": "open",
-  "last_price": 218.0347,
-  "return_pct": 0.14,
+  "last_price": 217.82,
+  "return_pct": 0.04,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -119,8 +119,8 @@
   "contract": "58C 30/10/2026",
   "contract_mid": 2.715,
   "status": "open",
-  "last_price": 58.99,
-  "return_pct": 2.08,
+  "last_price": 59.55,
+  "return_pct": 3.05,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -139,11 +139,11 @@
   "rr": 13.7332,
   "contract": "625C 28/10/2026",
   "contract_mid": 6.55,
-  "status": "open",
-  "last_price": 625.06,
-  "return_pct": 0.12,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "stop",
+  "last_price": 622.4072,
+  "return_pct": -0.3,
+  "exit_price": 622.4072,
+  "exit_utc": "2026-10-27T17:30:00Z",
   "days": 1
  },
  {
