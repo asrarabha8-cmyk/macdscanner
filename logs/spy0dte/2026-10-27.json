@@ -1,0 +1,16 @@
+{
+ "date": "2026-10-27",
+ "hi": 768.35,
+ "lo": 767.11,
+ "range_pct": 0.162,
+ "avg_pct": 0.21,
+ "ratio": 0.77,
+ "status": "signal",
+ "cp": "P",
+ "strike": 766,
+ "signal_bar": "2026-10-27 09:45:00-04:00",
+ "entry_bar": "2026-10-27 09:50:00-04:00",
+ "spy_px": 766.36,
+ "est_entry": 0.8,
+ "final": true
+}
