@@ -2,6 +2,93 @@
  {
   "ticker": "SPY",
   "mode": "intraday",
+  "direction": "bull",
+  "score": 28,
+  "decision": "no",
+  "spot": 765.29,
+  "ext_price": 764.75,
+  "asof": "2026-10-27T09:10:39Z",
+  "src": "polygon:60",
+  "components": [
+   {
+    "name": "💰 التدفق",
+    "pts": 0.0,
+    "max": 30,
+    "lines": [
+     "صافي التدفق +0.00 | صاعد 0$ مقابل هابط 0$",
+     "بريميوم الكول 149.6M$ | البوت 93.6M$"
+    ]
+   },
+   {
+    "name": "🐋 غير اعتيادي",
+    "pts": 0,
+    "max": 20,
+    "lines": [
+     "لا توجد عقود غير اعتيادية"
+    ]
+   },
+   {
+    "name": "🧲 الغاما",
+    "pts": 13.0,
+    "max": 20,
+    "lines": [
+     "لا توجد نقطة انقلاب قريبة — إجمالي GEX 0$",
+     "✅ لا يوجد جدار الكول يعيق الحركة"
+    ]
+   },
+   {
+    "name": "📊 السعر",
+    "pts": 15,
+    "max": 30,
+    "lines": [
+     "✅ فوق VWAP 765.24",
+     "❌ حجم نسبي 0.6x",
+     "✅ كسر نطاق الافتتاح (761.63–764.02)",
+     "❌ EMA 9/21 على ٥ دقائق"
+    ]
+   }
+  ],
+  "vetoes": [],
+  "warnings": [
+   "التدفق محايد — لا توجد أفضلية واضحة للأموال"
+  ],
+  "stock": {
+   "entry": 765.29,
+   "stop": 762.9941,
+   "target": 769.8817,
+   "rr": 2.0
+  },
+  "option": null,
+  "flow": {
+   "net": 0.0,
+   "call_prem": 149585114.0,
+   "put_prem": 93598615.0,
+   "bull": 0.0,
+   "bear": 0.0,
+   "u_bull": 0.0,
+   "u_bear": 0.0
+  },
+  "unusual": [],
+  "gex": {
+   "total": 0.0,
+   "flip": null,
+   "call_wall": null,
+   "put_wall": null,
+   "max_pain": null
+  },
+  "market": {
+   "ticker": "SPY",
+   "last": 765.29,
+   "vwap": 765.2403,
+   "up": true,
+   "bar": "2026-10-26T15:55:00-04:00"
+  },
+  "mkt_blocked": false,
+  "side_req": "auto"
+ },
+ {
+  "ticker": "SPY",
+  "mode": "intraday",
   "direction": "bear",
   "score": 61,
   "decision": "no",
