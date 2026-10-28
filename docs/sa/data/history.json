@@ -9,10 +9,14 @@
   "target": 9.03,
   "rr": 0.48,
   "vol_ratio": 3.71,
-  "status": "open",
-  "days": 0,
-  "last_close": 8.62,
-  "return_pct": 0.0
+  "status": "target",
+  "days": 1,
+  "last_close": 8.65,
+  "return_pct": 4.76,
+  "max_high": 9.09,
+  "min_low": 8.51,
+  "exit_date": "2026-10-28",
+  "exit_price": 9.03
  },
  {
   "code": "2330",
