@@ -1,5 +1,26 @@
 [
  {
+  "id": "CRWV-intraday-2026-10-28T18:53:13Z",
+  "ticker": "CRWV",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-28T18:53:13Z",
+  "score": 72,
+  "entry": 63.43,
+  "stop": 60.6405,
+  "target": 70.0,
+  "rr": 2.3553,
+  "contract": "63.5C 30/10/2026",
+  "contract_mid": 2.49,
+  "status": "open",
+  "last_price": 63.43,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "AMD-intraday-2026-10-28T13:59:50Z",
   "ticker": "AMD",
   "mode": "intraday",
