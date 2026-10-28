@@ -9,6 +9,7 @@ import pandas as pd
 from . import config as C
 from . import flow as F
 from . import gex as G
+from . import oitrack as OT
 from . import price as P
 from .data import Snapshot
 
@@ -70,10 +71,25 @@ def _flow_component(fl, bull, cfg, vetoes):
     return c
 
 
-def _unusual_component(fl, bull, cfg):
+def _oi_lines(ft, bull):
+    """سطور متابعة الـOI (معلومات فقط — لا تغيّر الدرجة حتى نقيّمها بالسجل)."""
+    if not ft or not ft["items"]:
+        return []
+    w, a = ("bull", "bear") if bull else ("bear", "bull")
+    lines = [f"📌 متابعة OI لعقود الأيام السابقة: محتفظ بها باتجاهك {money(ft['held_' + w])}$ "
+             f"| عكسك {money(ft['held_' + a])}$ | لم تُحفظ {money(ft['faded_bull'] + ft['faded_bear'])}$"]
+    for x in ft["items"][:3]:
+        icon = "🟢" if x["dir"] == "bull" else "🔴"
+        tag = "✅ محتفظ" if x["held"] else "↩️ لم تُحفظ"
+        lines.append(f"{icon} {x['contract'].replace('@', ' ')} ({x['day'][5:]}) | حجم {x['vol']:,} "
+                     f"→ ΔOI {x['d_oi']:+,} | {tag}")
+    return lines
+
+
+def _unusual_component(fl, bull, cfg, ft=None):
     al, op = (fl["u_bull"], fl["u_bear"]) if bull else (fl["u_bear"], fl["u_bull"])
     if al + op == 0:
-        return Component("🐋 غير اعتيادي", 0, 20, ["لا توجد عقود غير اعتيادية"])
+        return Component("🐋 غير اعتيادي", 0, 20, ["لا توجد عقود غير اعتيادية"] + _oi_lines(ft, bull))
     share = al / (al + op)
     size = min(1.0, al / (3 * cfg.min_premium))
     pts = 20 * share * size
@@ -83,7 +99,7 @@ def _unusual_component(fl, bull, cfg):
         side = {"A": "Ask", "B": "Bid"}.get(r["side"], r["side"])
         lines.append(f"{icon} {r['strike']:g}{r['type']} {r['expiry']:%d/%m} | "
                      f"{int(r['volume']):,} عقد (OI {int(r['oi']):,}) | {money(r['premium'])}$ | {side}")
-    return Component("🐋 غير اعتيادي", pts, 20, lines)
+    return Component("🐋 غير اعتيادي", pts, 20, lines + _oi_lines(ft, bull))
 
 
 def _gamma_component(gx, spot, bull, cfg, vetoes):
@@ -182,6 +198,10 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto", market: dict | None 
     vetoes, warnings = [], []
     fl = F.summarize(snap.chain, cfg)
     gx = G.analyze(snap.chain, snap.spot)
+    try:
+        fl["oi_follow"] = OT.follow_through(snap.ticker, snap.chain, snap.asof)
+    except Exception:
+        fl["oi_follow"] = None
 
     if side in ("call", "bull", "long"):
         bull = True
@@ -195,7 +215,7 @@ def evaluate(snap: Snapshot, mode: str, side: str = "auto", market: dict | None 
         warnings.append("لم تتوفر سلسلة خيارات للفترة المختارة")
 
     comps = [_flow_component(fl, bull, cfg, vetoes),
-             _unusual_component(fl, bull, cfg),
+             _unusual_component(fl, bull, cfg, fl["oi_follow"]),
              _gamma_component(gx, snap.spot, bull, cfg, vetoes)]
 
     if mode == "intraday":
@@ -292,4 +312,13 @@ def log_row(r: Result) -> dict:
             "call_wall": r.gex["call_wall"], "put_wall": r.gex["put_wall"],
             "contract": o.get("name", ""), "contract_mid": round(o.get("mid", 0), 2),
             "vetoes": " | ".join(r.vetoes), "ext_price": r.ext_price, "src": r.src,
-            "mkt_up": None if not r.market else r.market["up"], "mkt_blocked": r.mkt_blocked}
+            "mkt_up": None if not r.market else r.market["up"], "mkt_blocked": r.mkt_blocked,
+            **_oi_cols(r)}
+
+
+def _oi_cols(r: Result) -> dict:
+    ft = r.flow.get("oi_follow") if isinstance(r.flow, dict) else None
+    if not ft or not ft["items"]:
+        return {"oi_held_with": None, "oi_held_against": None}
+    w, a = ("bull", "bear") if r.bull else ("bear", "bull")
+    return {"oi_held_with": round(ft["held_" + w]), "oi_held_against": round(ft["held_" + a])}
