@@ -1,5 +1,33 @@
 [
  {
+  "id": "GOOGL-intraday-2026-10-28T15:51:39Z",
+  "ticker": "GOOGL",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-10-28T15:51:39Z",
+  "score": 73,
+  "entry": 323.76,
+  "stop": 324.7313,
+  "target": 315.0,
+  "rr": 9.019,
+  "contract": "325P 30/10/2026",
+  "contract_mid": 10.225,
+  "status": "open",
+  "last_price": 323.76,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 771.08,
+   "vwap": 770.6607,
+   "up": true,
+   "bar": "2026-10-28T11:35:00-04:00"
+  }
+ },
+ {
   "id": "NFLX-intraday-2026-10-26T15:52:29Z",
   "ticker": "NFLX",
   "mode": "intraday",
