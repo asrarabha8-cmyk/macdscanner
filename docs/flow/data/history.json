@@ -14,11 +14,11 @@
   "contract": "567.5P 30/10/2026",
   "contract_mid": 12.95,
   "status": "open",
-  "last_price": 567.72,
-  "return_pct": 0.0,
+  "last_price": 563.325,
+  "return_pct": 0.77,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "GOOGL-intraday-2026-10-28T13:59:48Z",
@@ -34,12 +34,12 @@
   "rr": 9.3093,
   "contract": "325P 30/10/2026",
   "contract_mid": 9.675,
-  "status": "open",
-  "last_price": 324.05,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 325.0221,
+  "return_pct": -0.3,
+  "exit_price": 325.0221,
+  "exit_utc": "2026-10-28T14:00:00Z",
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-10-28T13:59:34Z",
@@ -55,12 +55,12 @@
   "rr": 2.268,
   "contract": "220P 28/10/2026",
   "contract_mid": 1.785,
-  "status": "open",
-  "last_price": 218.99,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 217.5,
+  "return_pct": 0.68,
+  "exit_price": 217.5,
+  "exit_utc": "2026-10-28T14:10:00Z",
+  "days": 1
  },
  {
   "id": "TSLA-intraday-2026-10-27T16:51:48Z",
