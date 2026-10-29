@@ -14,11 +14,11 @@
   "contract": "250C 30/10/2026",
   "contract_mid": 9.2,
   "status": "open",
-  "last_price": 248.07,
-  "return_pct": 0.0,
+  "last_price": 246.44,
+  "return_pct": -0.66,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "CRWV-intraday-2026-10-28T18:53:13Z",
