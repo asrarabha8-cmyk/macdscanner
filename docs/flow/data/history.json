@@ -14,11 +14,11 @@
   "contract": "285P 30/10/2026",
   "contract_mid": 3.85,
   "status": "open",
-  "last_price": 283.775,
-  "return_pct": 0.0,
+  "last_price": 281.575,
+  "return_pct": 0.78,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "AMZN-intraday-2026-10-29T16:00:31Z",
@@ -34,11 +34,11 @@
   "rr": 6.0236,
   "contract": "250C 30/10/2026",
   "contract_mid": 9.2,
-  "status": "open",
-  "last_price": 246.2,
-  "return_pct": -0.75,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "stop",
+  "last_price": 245.2594,
+  "return_pct": -1.13,
+  "exit_price": 245.2594,
+  "exit_utc": "2026-10-29T17:50:00Z",
   "days": 1
  },
  {
