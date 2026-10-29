@@ -1,5 +1,35 @@
 [
  {
+  "code": "2250",
+  "name": "Saudi Industrial Investment Group",
+  "sector": "Process Industries",
+  "date": "2026-10-29",
+  "entry": 12.67,
+  "stop": 12.4,
+  "target": 12.89,
+  "rr": 0.8,
+  "vol_ratio": 2.46,
+  "status": "open",
+  "days": 0,
+  "last_close": 12.67,
+  "return_pct": 0.0
+ },
+ {
+  "code": "4164",
+  "name": "Nahdi Medical Company",
+  "sector": "Distribution Services",
+  "date": "2026-10-29",
+  "entry": 91.2,
+  "stop": 89.75,
+  "target": 93.63,
+  "rr": 1.68,
+  "vol_ratio": 2.03,
+  "status": "open",
+  "days": 0,
+  "last_close": 91.2,
+  "return_pct": 0.0
+ },
+ {
   "code": "1182",
   "name": "Amlak International for Real Estate Finance Company",
   "sector": "Finance",
