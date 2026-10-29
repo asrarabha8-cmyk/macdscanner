@@ -1,5 +1,26 @@
 [
  {
+  "id": "GOOGL-intraday-2026-10-29T17:52:07Z",
+  "ticker": "GOOGL",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-10-29T17:52:07Z",
+  "score": 85,
+  "entry": 283.775,
+  "stop": 285.0137,
+  "target": 280.0,
+  "rr": 3.0474,
+  "contract": "285P 30/10/2026",
+  "contract_mid": 3.85,
+  "status": "open",
+  "last_price": 283.775,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "AMZN-intraday-2026-10-29T16:00:31Z",
   "ticker": "AMZN",
   "mode": "intraday",
@@ -14,8 +35,8 @@
   "contract": "250C 30/10/2026",
   "contract_mid": 9.2,
   "status": "open",
-  "last_price": 246.44,
-  "return_pct": -0.66,
+  "last_price": 246.2,
+  "return_pct": -0.75,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
