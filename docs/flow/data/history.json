@@ -1,5 +1,26 @@
 [
  {
+  "id": "AMZN-intraday-2026-10-29T16:00:31Z",
+  "ticker": "AMZN",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-29T16:00:31Z",
+  "score": 83,
+  "entry": 248.07,
+  "stop": 245.2594,
+  "target": 265.0,
+  "rr": 6.0236,
+  "contract": "250C 30/10/2026",
+  "contract_mid": 9.2,
+  "status": "open",
+  "last_price": 248.07,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "CRWV-intraday-2026-10-28T18:53:13Z",
   "ticker": "CRWV",
   "mode": "intraday",
