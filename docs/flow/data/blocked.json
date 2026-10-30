@@ -1,5 +1,33 @@
 [
  {
+  "id": "AMZN-intraday-2026-10-30T18:51:04Z",
+  "ticker": "AMZN",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-10-30T18:51:04Z",
+  "score": 76,
+  "entry": 238.0602,
+  "stop": 237.346,
+  "target": 240.0,
+  "rr": 2.7161,
+  "contract": "237.5C 02/11/2026",
+  "contract_mid": 3.85,
+  "status": "open",
+  "last_price": 238.0602,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 750.8,
+   "vwap": 757.0164,
+   "up": false,
+   "bar": "2026-10-30T14:35:00-04:00"
+  }
+ },
+ {
   "id": "MSFT-intraday-2026-10-30T15:51:26Z",
   "ticker": "MSFT",
   "mode": "intraday",
