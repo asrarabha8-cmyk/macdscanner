@@ -9,10 +9,14 @@
   "target": 12.89,
   "rr": 0.8,
   "vol_ratio": 2.46,
-  "status": "open",
-  "days": 0,
-  "last_close": 12.67,
-  "return_pct": 0.0
+  "status": "stop",
+  "days": 1,
+  "last_close": 12.25,
+  "return_pct": -2.13,
+  "max_high": 12.65,
+  "min_low": 12.2,
+  "exit_date": "2026-11-01",
+  "exit_price": 12.4
  },
  {
   "code": "4164",
@@ -24,10 +28,14 @@
   "target": 93.63,
   "rr": 1.68,
   "vol_ratio": 2.03,
-  "status": "open",
-  "days": 0,
-  "last_close": 91.2,
-  "return_pct": 0.0
+  "status": "stop",
+  "days": 1,
+  "last_close": 90.9,
+  "return_pct": -1.59,
+  "max_high": 91.2,
+  "min_low": 89.4,
+  "exit_date": "2026-11-01",
+  "exit_price": 89.75
  },
  {
   "code": "1182",
