@@ -1,0 +1,47 @@
+name: Failed ORB Log
+
+on:
+  schedule:
+    # Runs after the close. Two times to cover daylight saving.
+    - cron: "25 20 * * 1-5"
+    - cron: "25 21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      backfill_from:
+        description: "Historical test start (YYYY-MM-DD). Leave empty for the daily log."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: failed-orb-data
+  cancel-in-progress: false
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas
+      - name: Run
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          BACKFILL_FROM: ${{ github.event.inputs.backfill_from }}
+        run: python failed_orb/failed_orb.py
+      - name: Save data
+        if: always()
+        run: |
+          git config user.name "failed-orb-bot"
+          git config user.email "failed-orb-bot@users.noreply.github.com"
+          git add docs/failed_orb/data || true
+          git diff --cached --quiet || git commit -m "failed orb log $(date -u +%F)"
+          git pull --rebase -q || true
+          git push || true
