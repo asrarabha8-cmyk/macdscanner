@@ -14,8 +14,8 @@
   "contract": "622.5C 04/11/2026",
   "contract_mid": 7.95,
   "status": "open",
-  "last_price": 621.14,
-  "return_pct": -0.27,
+  "last_price": 619.4,
+  "return_pct": -0.55,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -35,8 +35,8 @@
   "contract": "250C 04/11/2026",
   "contract_mid": 3.175,
   "status": "open",
-  "last_price": 251.283,
-  "return_pct": 0.11,
+  "last_price": 252.065,
+  "return_pct": 0.42,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -77,8 +77,8 @@
   "contract": "515C 04/11/2026",
   "contract_mid": 5.525,
   "status": "open",
-  "last_price": 521.23,
-  "return_pct": 1.04,
+  "last_price": 521.5788,
+  "return_pct": 1.11,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
