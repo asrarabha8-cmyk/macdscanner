@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كلاود العظيم</title>
+<style>
+:root{--bg:#EEF1F6;--card:#fff;--ink:#12233F;--ink2:#56627A;--line:#D6DCE7;--up:#0B7A5F;--down:#C0392B;--accent:#2563EB}
+@media (prefers-color-scheme:dark){:root{--bg:#0A111D;--card:#111B2C;--ink:#DCE4F0;--ink2:#8E9BB2;--line:#22304A;--up:#35C29A;--down:#EF6B5E;--accent:#6EA0FF}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+a{color:var(--accent)}
+h1{font-size:24px;margin:8px 0 4px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media (min-width:600px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.s,.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.s span{display:block;color:var(--ink2);font-size:13px}
+.s b{font-size:21px;display:block;font-variant-numeric:tabular-nums}
+.panel{margin-bottom:14px}
+.panel h2{font-size:15px;margin:0 0 8px}
+svg{display:block;width:100%;height:170px}
+.note{color:var(--ink2);font-size:13px;line-height:1.7}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--ink2);font-weight:600}
+td.n{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr;text-align:right}
+.up{color:var(--up)}.down{color:var(--down)}
+</style></head>
+<body><div class="w">
+<a href="../">ماسحات يحيى</a>
+<h1>كلاود العظيم</h1>
+<p class="sub">سجل صفقات ورقية على SPY: فشل كسر نطاق أول 30 دقيقة، فريم 5 دقايق. <bdi id="updated" dir="ltr"></bdi></p>
+<div class="tabs" role="group" aria-label="نوع السجل">
+<button data-kind="forward" aria-pressed="true">المتابعة الورقية</button>
+<button data-kind="backfill" aria-pressed="false">الاختبار التاريخي</button>
+</div>
+<div class="stats" id="stats"></div>
+<div class="panel"><h2>منحنى النتيجة التراكمية (R)</h2><div id="curve"></div></div>
+<div class="panel"><h2>الصفقات</h2><div class="scroll"><table><thead><tr><th>التاريخ</th><th>الاتجاه</th><th>الدخول</th><th>الخروج</th><th>السبب</th><th>النتيجة</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<p class="note">النتائج على سعر SPY بعد تكلفة تقديرية، وليست على عقود الأوبشن. القواعد ثابتة ولا تُعدل أثناء المتابعة، وهذا سجل بحثي وليس توصية تداول.</p>
+</div>
+<script>
+const reasons={stop:"الوقف",target:"الهدف",session:"نهاية الجلسة"};
+let store={trades:[],days:{}},kind="forward";
+const fmt=(v,d=2)=>(v>0?"+":"")+v.toFixed(d);
+function render(){
+  const trades=store.trades.filter(t=>t.kind===kind);
+  const total=trades.reduce((s,t)=>s+t.r,0),wins=trades.filter(t=>t.r>0).length;
+  const gains=trades.filter(t=>t.r>0).reduce((s,t)=>s+t.r,0),losses=-trades.filter(t=>t.r<0).reduce((s,t)=>s+t.r,0);
+  const cards=[["الصفقات",String(trades.length)],["نسبة النجاح",trades.length?(100*wins/trades.length).toFixed(1)+"%":"-"],["متوسط الصفقة",trades.length?fmt(total/trades.length)+"R":"-"],["الإجمالي",trades.length?fmt(total,1)+"R":"-"]];
+  document.getElementById("stats").innerHTML=cards.map(c=>`<div class="s"><span>${c[0]}</span><b><bdi dir="ltr">${c[1]}</bdi></b></div>`).join("");
+  drawCurve(trades);
+  document.getElementById("rows").innerHTML=trades.length?[...trades].reverse().slice(0,200).map(t=>`<tr><td class="n">${t.date}</td><td>${t.side==="buy"?"شراء":"بيع"}</td><td class="n">${t.entry}</td><td class="n">${t.exit}</td><td>${reasons[t.reason]}</td><td class="n ${t.r>0?"up":"down"}">${fmt(t.r)}R</td></tr>`).join(""):`<tr><td colspan="6" class="note">لا توجد صفقات مسجلة هنا بعد.</td></tr>`;
+}
+function drawCurve(trades){
+  const box=document.getElementById("curve");
+  if(trades.length<2){box.innerHTML='<p class="note">يظهر المنحنى بعد صفقتين على الأقل.</p>';return;}
+  let run=0;const pts=[0,...trades.map(t=>run+=t.r)];
+  const min=Math.min(...pts),max=Math.max(...pts),span=(max-min)||1,w=720,h=170,p=8;
+  const x=i=>p+i*(w-2*p)/(pts.length-1),y=v=>h-p-(v-min)*(h-2*p)/span;
+  const line=pts.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  box.innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="منحنى النتيجة التراكمية"><line x1="0" x2="${w}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/><polyline fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" points="${line}"/></svg>`;
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.kind;document.querySelectorAll(".tabs button").forEach(o=>o.setAttribute("aria-pressed",String(o===b)));render();}));
+(async()=>{
+  try{const r=await fetch(`data/trades.json?t=${Date.now()}`,{cache:"no-store"});if(r.ok)store=await r.json();}catch(e){}
+  if(store.updated)document.getElementById("updated").textContent=store.updated;
+  render();
+})();
+</script></body></html>
