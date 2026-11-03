@@ -1,5 +1,33 @@
 [
  {
+  "id": "CRWV-intraday-2026-11-03T14:51:35Z",
+  "ticker": "CRWV",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-03T14:51:35Z",
+  "score": 70,
+  "entry": 51.585,
+  "stop": 51.7398,
+  "target": 50.0,
+  "rr": 10.242,
+  "contract": "52P 06/11/2026",
+  "contract_mid": 3.15,
+  "status": "open",
+  "last_price": 51.585,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 753.65,
+   "vwap": 753.2212,
+   "up": true,
+   "bar": "2026-11-03T09:35:00-05:00"
+  }
+ },
+ {
   "id": "AMZN-intraday-2026-10-30T18:51:04Z",
   "ticker": "AMZN",
   "mode": "intraday",
