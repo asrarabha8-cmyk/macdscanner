@@ -1,0 +1,186 @@
+[
+ {
+  "name": "SPY",
+  "build": {
+   "trades": 197,
+   "win_pct": 78.2,
+   "avg_pct": 0.6273,
+   "t_stat": 5.03,
+   "total_pct": 232.4,
+   "max_dd_pct": -16.1
+  },
+  "holdout": {
+   "trades": 71,
+   "win_pct": 74.6,
+   "avg_pct": 0.6929,
+   "t_stat": 4.3,
+   "total_pct": 62.2,
+   "max_dd_pct": -4.1
+  },
+  "days_in_market": 898,
+  "hold_total_pct": 238.2,
+  "first_date": "1993-01-29",
+  "verdict": "PASS"
+ },
+ {
+  "name": "QQQ",
+  "build": {
+   "trades": 148,
+   "win_pct": 70.9,
+   "avg_pct": 0.5396,
+   "t_stat": 3.09,
+   "total_pct": 114.6,
+   "max_dd_pct": -9.9
+  },
+  "holdout": {
+   "trades": 67,
+   "win_pct": 70.1,
+   "avg_pct": 0.6942,
+   "t_stat": 3.61,
+   "total_pct": 57.7,
+   "max_dd_pct": -4.6
+  },
+  "days_in_market": 790,
+  "hold_total_pct": 365.8,
+  "first_date": "1999-03-10",
+  "verdict": "PASS"
+ },
+ {
+  "name": "IWM",
+  "build": {
+   "trades": 138,
+   "win_pct": 76.8,
+   "avg_pct": 0.4658,
+   "t_stat": 2.42,
+   "total_pct": 83.0,
+   "max_dd_pct": -21.3
+  },
+  "holdout": {
+   "trades": 56,
+   "win_pct": 66.1,
+   "avg_pct": 0.1819,
+   "t_stat": 0.57,
+   "total_pct": 9.0,
+   "max_dd_pct": -17.9
+  },
+  "days_in_market": 716,
+  "hold_total_pct": 129.9,
+  "first_date": "2000-05-26",
+  "verdict": "weak"
+ },
+ {
+  "name": "DIA",
+  "build": {
+   "trades": 156,
+   "win_pct": 73.7,
+   "avg_pct": 0.262,
+   "t_stat": 1.81,
+   "total_pct": 46.5,
+   "max_dd_pct": -14.6
+  },
+  "holdout": {
+   "trades": 73,
+   "win_pct": 67.1,
+   "avg_pct": 0.3219,
+   "t_stat": 1.66,
+   "total_pct": 25.2,
+   "max_dd_pct": -9.1
+  },
+  "days_in_market": 804,
+  "hold_total_pct": 155.9,
+  "first_date": "1998-01-20",
+  "verdict": "weak"
+ },
+ {
+  "name": "XLK",
+  "build": {
+   "trades": 134,
+   "win_pct": 73.1,
+   "avg_pct": 0.3652,
+   "t_stat": 2.13,
+   "total_pct": 58.7,
+   "max_dd_pct": -9.6
+  },
+  "holdout": {
+   "trades": 60,
+   "win_pct": 73.3,
+   "avg_pct": 0.7798,
+   "t_stat": 3.12,
+   "total_pct": 57.6,
+   "max_dd_pct": -6.5
+  },
+  "days_in_market": 691,
+  "hold_total_pct": 509.8,
+  "first_date": "1998-12-22",
+  "verdict": "PASS"
+ },
+ {
+  "name": "XLF",
+  "build": {
+   "trades": 137,
+   "win_pct": 69.3,
+   "avg_pct": 0.4824,
+   "t_stat": 2.94,
+   "total_pct": 88.5,
+   "max_dd_pct": -15.2
+  },
+  "holdout": {
+   "trades": 59,
+   "win_pct": 71.2,
+   "avg_pct": 0.3486,
+   "t_stat": 1.37,
+   "total_pct": 21.4,
+   "max_dd_pct": -6.2
+  },
+  "days_in_market": 725,
+  "hold_total_pct": 177.4,
+  "first_date": "1998-12-22",
+  "verdict": "PASS"
+ },
+ {
+  "name": "XLV",
+  "build": {
+   "trades": 156,
+   "win_pct": 72.4,
+   "avg_pct": 0.2963,
+   "t_stat": 2.07,
+   "total_pct": 54.6,
+   "max_dd_pct": -12.9
+  },
+  "holdout": {
+   "trades": 62,
+   "win_pct": 75.8,
+   "avg_pct": 0.3497,
+   "t_stat": 2.1,
+   "total_pct": 23.5,
+   "max_dd_pct": -6.2
+  },
+  "days_in_market": 788,
+  "hold_total_pct": 142.8,
+  "first_date": "1998-12-22",
+  "verdict": "PASS"
+ },
+ {
+  "name": "XLE",
+  "build": {
+   "trades": 136,
+   "win_pct": 72.8,
+   "avg_pct": 0.4675,
+   "t_stat": 2.12,
+   "total_pct": 79.9,
+   "max_dd_pct": -18.5
+  },
+  "holdout": {
+   "trades": 56,
+   "win_pct": 69.6,
+   "avg_pct": 0.3661,
+   "t_stat": 0.84,
+   "total_pct": 19.1,
+   "max_dd_pct": -11.4
+  },
+  "days_in_market": 730,
+  "hold_total_pct": 226.1,
+  "first_date": "1998-12-22",
+  "verdict": "weak"
+ }
+]
