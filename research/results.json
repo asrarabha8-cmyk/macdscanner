@@ -1,0 +1,254 @@
+[
+ {
+  "name": "Overnight: every day",
+  "build": {
+   "trades": 6528,
+   "win_pct": 55.0,
+   "avg_pct": 0.0328,
+   "t_stat": 4.26,
+   "total_pct": 650.8,
+   "max_dd_pct": -35.0
+  },
+  "holdout": {
+   "trades": 1970,
+   "win_pct": 56.3,
+   "avg_pct": 0.0341,
+   "t_stat": 1.91,
+   "total_pct": 83.8,
+   "max_dd_pct": -29.5
+  },
+  "days_in_market": null,
+  "verdict": "PASS"
+ },
+ {
+  "name": "Overnight: uptrend only",
+  "build": {
+   "trades": 4815,
+   "win_pct": 56.0,
+   "avg_pct": 0.0429,
+   "t_stat": 6.55,
+   "total_pct": 650.5,
+   "max_dd_pct": -13.4
+  },
+  "holdout": {
+   "trades": 1610,
+   "win_pct": 57.8,
+   "avg_pct": 0.0449,
+   "t_stat": 3.32,
+   "total_pct": 101.3,
+   "max_dd_pct": -17.3
+  },
+  "days_in_market": null,
+  "verdict": "PASS"
+ },
+ {
+  "name": "Open to close: every day",
+  "build": {
+   "trades": 6528,
+   "win_pct": 51.6,
+   "avg_pct": -0.0063,
+   "t_stat": -0.52,
+   "total_pct": -51.3,
+   "max_dd_pct": -74.3
+  },
+  "holdout": {
+   "trades": 1971,
+   "win_pct": 53.7,
+   "avg_pct": 0.0217,
+   "t_stat": 1.08,
+   "total_pct": 41.9,
+   "max_dd_pct": -15.8
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ },
+ {
+  "name": "Dip buy: RSI2 under 10 in uptrend",
+  "build": {
+   "trades": 197,
+   "win_pct": 78.2,
+   "avg_pct": 0.6273,
+   "t_stat": 5.03,
+   "total_pct": 232.4,
+   "max_dd_pct": -16.1
+  },
+  "holdout": {
+   "trades": 71,
+   "win_pct": 74.6,
+   "avg_pct": 0.6929,
+   "t_stat": 4.3,
+   "total_pct": 62.2,
+   "max_dd_pct": -4.1
+  },
+  "days_in_market": 898,
+  "verdict": "PASS"
+ },
+ {
+  "name": "VIX spike in uptrend: hold 5 days",
+  "build": {
+   "trades": 62,
+   "win_pct": 67.7,
+   "avg_pct": 0.7306,
+   "t_stat": 2.62,
+   "total_pct": 54.8,
+   "max_dd_pct": -9.6
+  },
+  "holdout": {
+   "trades": 37,
+   "win_pct": 56.8,
+   "avg_pct": 0.0764,
+   "t_stat": 0.16,
+   "total_pct": 1.2,
+   "max_dd_pct": -15.5
+  },
+  "days_in_market": 495,
+  "verdict": "weak"
+ },
+ {
+  "name": "Turn of month: 2nd last day to 3rd day",
+  "build": {
+   "trades": 310,
+   "win_pct": 57.1,
+   "avg_pct": 0.2847,
+   "t_stat": 2.35,
+   "total_pct": 125.0,
+   "max_dd_pct": -16.8
+  },
+  "holdout": {
+   "trades": 95,
+   "win_pct": 58.9,
+   "avg_pct": 0.3503,
+   "t_stat": 1.67,
+   "total_pct": 36.7,
+   "max_dd_pct": -8.4
+  },
+  "days_in_market": 1619,
+  "verdict": "PASS"
+ },
+ {
+  "name": "Benchmark: buy and hold, daily",
+  "build": {
+   "trades": 6527,
+   "win_pct": 53.6,
+   "avg_pct": 0.0408,
+   "t_stat": 2.86,
+   "total_pct": 827.2,
+   "max_dd_pct": -55.2
+  },
+  "holdout": {
+   "trades": 1971,
+   "win_pct": 55.3,
+   "avg_pct": 0.0691,
+   "t_stat": 2.54,
+   "total_pct": 238.2,
+   "max_dd_pct": -33.7
+  },
+  "days_in_market": 8498,
+  "verdict": "PASS"
+ },
+ {
+  "name": "Last 30 min follows first 30 min",
+  "build": {
+   "trades": 658,
+   "win_pct": 48.0,
+   "avg_pct": -0.0069,
+   "t_stat": -0.61,
+   "total_pct": -4.7,
+   "max_dd_pct": -8.1
+  },
+  "holdout": {
+   "trades": 583,
+   "win_pct": 47.2,
+   "avg_pct": -0.0105,
+   "t_stat": -1.17,
+   "total_pct": -6.1,
+   "max_dd_pct": -7.9
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ },
+ {
+  "name": "Last 30 min when first and 15:00 agree",
+  "build": {
+   "trades": 355,
+   "win_pct": 48.7,
+   "avg_pct": 0.0071,
+   "t_stat": 0.49,
+   "total_pct": 2.4,
+   "max_dd_pct": -4.7
+  },
+  "holdout": {
+   "trades": 312,
+   "win_pct": 46.5,
+   "avg_pct": -0.0141,
+   "t_stat": -1.28,
+   "total_pct": -4.4,
+   "max_dd_pct": -4.6
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ },
+ {
+  "name": "ORB 30 to close: every day",
+  "build": {
+   "trades": 650,
+   "win_pct": 30.3,
+   "avg_pct": 0.0016,
+   "t_stat": 0.07,
+   "total_pct": 0.0,
+   "max_dd_pct": -10.2
+  },
+  "holdout": {
+   "trades": 580,
+   "win_pct": 36.0,
+   "avg_pct": -0.0089,
+   "t_stat": -0.52,
+   "total_pct": -5.5,
+   "max_dd_pct": -14.5
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ },
+ {
+  "name": "ORB 30 to close: VIX under 20",
+  "build": {
+   "trades": 372,
+   "win_pct": 29.0,
+   "avg_pct": -0.0023,
+   "t_stat": -0.11,
+   "total_pct": -1.1,
+   "max_dd_pct": -9.8
+  },
+  "holdout": {
+   "trades": 453,
+   "win_pct": 35.8,
+   "avg_pct": 0.0009,
+   "t_stat": 0.05,
+   "total_pct": 0.1,
+   "max_dd_pct": -8.7
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ },
+ {
+  "name": "ORB 30 to close: VIX 20 or more",
+  "build": {
+   "trades": 278,
+   "win_pct": 32.0,
+   "avg_pct": 0.0068,
+   "t_stat": 0.15,
+   "total_pct": 1.2,
+   "max_dd_pct": -6.5
+  },
+  "holdout": {
+   "trades": 127,
+   "win_pct": 37.0,
+   "avg_pct": -0.0439,
+   "t_stat": -0.89,
+   "total_pct": -5.6,
+   "max_dd_pct": -10.5
+  },
+  "days_in_market": null,
+  "verdict": "fail"
+ }
+]
