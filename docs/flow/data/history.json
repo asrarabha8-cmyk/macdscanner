@@ -1,5 +1,26 @@
 [
  {
+  "id": "AMD-intraday-2026-11-03T17:52:28Z",
+  "ticker": "AMD",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-03T17:52:28Z",
+  "score": 86,
+  "entry": 490.93,
+  "stop": 488.4845,
+  "target": 540.0,
+  "rr": 20.0653,
+  "contract": "492.5C 04/11/2026",
+  "contract_mid": 19.3,
+  "status": "open",
+  "last_price": 490.93,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "MSFT-intraday-2026-11-03T16:51:08Z",
   "ticker": "MSFT",
   "mode": "intraday",
@@ -14,11 +35,11 @@
   "contract": "515C 04/11/2026",
   "contract_mid": 5.525,
   "status": "open",
-  "last_price": 515.86,
-  "return_pct": 0.0,
+  "last_price": 516.995,
+  "return_pct": 0.22,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "CRWV-intraday-2026-11-02T16:04:57Z",
