@@ -1,0 +1,300 @@
+[
+ {
+  "name": "Aramco",
+  "build": {
+   "trades": 0
+  },
+  "holdout": {
+   "trades": 54,
+   "win_pct": 51.9,
+   "avg_pct": 0.0943,
+   "t_stat": 0.39,
+   "total_pct": 4.3,
+   "max_dd_pct": -9.5
+  },
+  "days_in_market": 212,
+  "symbol": "2222.SR",
+  "first_date": "2019-12-11",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 86.3,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "little data"
+ },
+ {
+  "name": "Al Rajhi",
+  "build": {
+   "trades": 48,
+   "win_pct": 60.4,
+   "avg_pct": -0.1421,
+   "t_stat": -0.45,
+   "total_pct": -7.6,
+   "max_dd_pct": -23.9
+  },
+  "holdout": {
+   "trades": 53,
+   "win_pct": 62.3,
+   "avg_pct": 0.0032,
+   "t_stat": 0.01,
+   "total_pct": -2.0,
+   "max_dd_pct": -22.6
+  },
+  "days_in_market": 392,
+  "symbol": "1120.SR",
+  "first_date": "2010-03-03",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 67.7,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "SNB",
+  "build": {
+   "trades": 24,
+   "win_pct": 54.2,
+   "avg_pct": 0.0042,
+   "t_stat": 0.01,
+   "total_pct": -0.8,
+   "max_dd_pct": -13.7
+  },
+  "holdout": {
+   "trades": 48,
+   "win_pct": 43.8,
+   "avg_pct": -0.9783,
+   "t_stat": -2.31,
+   "total_pct": -38.9,
+   "max_dd_pct": -40.0
+  },
+  "days_in_market": 340,
+  "symbol": "1180.SR",
+  "first_date": "2014-11-12",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 76.5,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "SABIC",
+  "build": {
+   "trades": 71,
+   "win_pct": 64.8,
+   "avg_pct": -0.1309,
+   "t_stat": -0.34,
+   "total_pct": -12.4,
+   "max_dd_pct": -21.2
+  },
+  "holdout": {
+   "trades": 27,
+   "win_pct": 44.4,
+   "avg_pct": -1.1897,
+   "t_stat": -2.39,
+   "total_pct": -28.3,
+   "max_dd_pct": -29.7
+  },
+  "days_in_market": 404,
+  "symbol": "2010.SR",
+  "first_date": "2010-03-03",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 64.4,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "stc",
+  "build": {
+   "trades": 70,
+   "win_pct": 50.0,
+   "avg_pct": -0.6042,
+   "t_stat": -1.53,
+   "total_pct": -37.1,
+   "max_dd_pct": -40.6
+  },
+  "holdout": {
+   "trades": 55,
+   "win_pct": 54.5,
+   "avg_pct": -0.1844,
+   "t_stat": -0.71,
+   "total_pct": -10.6,
+   "max_dd_pct": -12.2
+  },
+  "days_in_market": 551,
+  "symbol": "7010.SR",
+  "first_date": "2010-03-04",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 76.3,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "Maaden",
+  "build": {
+   "trades": 72,
+   "win_pct": 58.3,
+   "avg_pct": 0.1531,
+   "t_stat": 0.48,
+   "total_pct": 8.8,
+   "max_dd_pct": -14.5
+  },
+  "holdout": {
+   "trades": 63,
+   "win_pct": 57.1,
+   "avg_pct": -0.0229,
+   "t_stat": -0.05,
+   "total_pct": -5.2,
+   "max_dd_pct": -25.2
+  },
+  "days_in_market": 576,
+  "symbol": "1211.SR",
+  "first_date": "2010-03-03",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 45.3,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "Alinma",
+  "build": {
+   "trades": 58,
+   "win_pct": 60.3,
+   "avg_pct": -0.1608,
+   "t_stat": -0.44,
+   "total_pct": -11.0,
+   "max_dd_pct": -15.9
+  },
+  "holdout": {
+   "trades": 57,
+   "win_pct": 52.6,
+   "avg_pct": -0.3518,
+   "t_stat": -0.85,
+   "total_pct": -20.5,
+   "max_dd_pct": -28.3
+  },
+  "days_in_market": 489,
+  "symbol": "1150.SR",
+  "first_date": "2010-03-03",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 34.3,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "Riyad Bank",
+  "build": {
+   "trades": 39,
+   "win_pct": 53.8,
+   "avg_pct": -0.4516,
+   "t_stat": -1.4,
+   "total_pct": -16.8,
+   "max_dd_pct": -19.9
+  },
+  "holdout": {
+   "trades": 49,
+   "win_pct": 46.9,
+   "avg_pct": -0.6606,
+   "t_stat": -1.16,
+   "total_pct": -30.5,
+   "max_dd_pct": -35.3
+  },
+  "days_in_market": 390,
+  "symbol": "1010.SR",
+  "first_date": "2012-04-01",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 73.0,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "Almarai",
+  "build": {
+   "trades": 49,
+   "win_pct": 57.1,
+   "avg_pct": -0.3039,
+   "t_stat": -0.72,
+   "total_pct": -15.7,
+   "max_dd_pct": -22.5
+  },
+  "holdout": {
+   "trades": 35,
+   "win_pct": 54.3,
+   "avg_pct": -0.7768,
+   "t_stat": -1.35,
+   "total_pct": -25.4,
+   "max_dd_pct": -29.8
+  },
+  "days_in_market": 376,
+  "symbol": "2280.SR",
+  "first_date": "2010-03-04",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 23.2,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "Saudi Electricity",
+  "build": {
+   "trades": 61,
+   "win_pct": 49.2,
+   "avg_pct": -1.0959,
+   "t_stat": -2.96,
+   "total_pct": -50.3,
+   "max_dd_pct": -51.2
+  },
+  "holdout": {
+   "trades": 29,
+   "win_pct": 41.4,
+   "avg_pct": 0.2443,
+   "t_stat": 0.64,
+   "total_pct": 6.7,
+   "max_dd_pct": -6.8
+  },
+  "days_in_market": 418,
+  "symbol": "5110.SR",
+  "first_date": "2010-03-03",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 18.8,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "fail"
+ },
+ {
+  "name": "ACWA Power",
+  "build": {
+   "trades": 0
+  },
+  "holdout": {
+   "trades": 22,
+   "win_pct": 54.5,
+   "avg_pct": -1.637,
+   "t_stat": -1.11,
+   "total_pct": -34.3,
+   "max_dd_pct": -36.0
+  },
+  "days_in_market": 109,
+  "symbol": "2082.SR",
+  "first_date": "2021-12-19",
+  "last_date": "2026-11-03",
+  "last_close": NaN,
+  "rsi2": 36.3,
+  "above_200": false,
+  "signal_now": false,
+  "verdict": "little data"
+ }
+]
