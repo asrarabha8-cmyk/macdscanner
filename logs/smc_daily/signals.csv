@@ -1,0 +1,6 @@
+ticker,signal_date,close,stop,target,rr,risk_pct,status,entry_date,entry,exit_date,exit,reason,r,days,opt_exp,opt_strike,opt_entry,opt_last,opt_exit,opt_pnl
+HSIC,2026-11-04,88.24,83.75,97.9237,2.16,5.09,pending,,,,,,,,,,,,,
+W,2026-11-04,123.56,110.47,148.2503,1.89,10.59,pending,,,,,,,,,,,,,
+BDX,2026-11-04,209.19,193.8,234.6869,1.66,7.36,pending,,,,,,,,,,,,,
+ADSK,2026-11-04,270.09,234.34,326.5498,1.58,13.24,pending,,,,,,,,,,,,,
+CDW,2026-11-04,168.75,144.34,206.4388,1.54,14.47,pending,,,,,,,,,,,,,
