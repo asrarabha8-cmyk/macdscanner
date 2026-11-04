@@ -1,6 +1,7 @@
 {
  "forward_start": "2026-11-04",
- "updated": "2026-11-03T23:47Z",
+ "contracts": {},
+ "updated": "2026-11-04T05:30Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -390,7 +391,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.14,
+   "entry": 402.15,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
