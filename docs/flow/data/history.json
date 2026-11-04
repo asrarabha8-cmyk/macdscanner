@@ -13,12 +13,12 @@
   "rr": 1.45,
   "contract": "767C 04/11/2026",
   "contract_mid": 1.385,
-  "status": "open",
-  "last_price": 766.665,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 764.365,
+  "return_pct": -0.3,
+  "exit_price": 764.365,
+  "exit_utc": "2026-11-04T16:05:00Z",
+  "days": 1
  },
  {
   "id": "META-intraday-2026-11-03T18:52:05Z",

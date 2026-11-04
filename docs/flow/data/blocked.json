@@ -1,5 +1,33 @@
 [
  {
+  "id": "NFLX-intraday-2026-11-04T16:51:45Z",
+  "ticker": "NFLX",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-04T16:51:45Z",
+  "score": 75,
+  "entry": 66.09,
+  "stop": 65.6843,
+  "target": 67.0,
+  "rr": 2.2428,
+  "contract": "66C 06/11/2026",
+  "contract_mid": 0.93,
+  "status": "open",
+  "last_price": 66.09,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 765.14,
+   "vwap": 766.1789,
+   "up": false,
+   "bar": "2026-11-04T11:35:00-05:00"
+  }
+ },
+ {
   "id": "PLTR-intraday-2026-11-03T15:51:25Z",
   "ticker": "PLTR",
   "mode": "intraday",
