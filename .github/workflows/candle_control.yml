@@ -21,7 +21,7 @@ jobs:
           python-version: "3.11"
       - run: pip install yfinance pandas numpy
       - name: Run
-        run: python research/candle_control_bt.py --tf 1wk
+        run: python research/candle_control_bt.py --tf 1wk --market sa
       - name: Save results
         if: always()
         run: |

@@ -11,6 +11,9 @@ SYMBOLS = ["SPY","QQQ","IWM","DIA","XLK","SMH","AAPL","MSFT","NVDA","AMZN",
            "GOOGL","META","TSLA","AMD","JPM","XOM"]
 COSTS_BPS = [0, 5, 10]          # per side
 MAIN_COST = 5
+SA_SYMBOLS = ["^TASI.SR","2222.SR","1120.SR","1180.SR","2010.SR","7010.SR","1211.SR",
+              "1150.SR","1010.SR","2280.SR","5110.SR","2082.SR"]
+SA_COST = 15                    # 0.3% round trip, same estimate as research/dip_sa.py
 SPLIT = 0.7                     # first 70% = in-sample, last 30% = out-of-sample
 OUT = os.path.dirname(os.path.abspath(__file__))
 
@@ -91,10 +94,15 @@ def verdict(rows):
                 passed=bool(tr>=100 and gw>=1.3 and beat>=0.6 and pos>=0.7))
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--csv-dir"); ap.add_argument("--out",default=OUT); ap.add_argument("--tf",default="")
+    ap=argparse.ArgumentParser(); ap.add_argument("--csv-dir"); ap.add_argument("--out",default=OUT); ap.add_argument("--tf",default=""); ap.add_argument("--market",default="us")
     a=ap.parse_args()
+    global SYMBOLS, COSTS_BPS, MAIN_COST
+    minbars=300; tag=""
+    if a.market=="sa":
+        SYMBOLS=SA_SYMBOLS; MAIN_COST=SA_COST; COSTS_BPS=[0,5,SA_COST]; minbars=200; tag="_sa"
+    tag+= "_"+a.tf if a.tf else ""
     res={}; md=["# Candle Control Backtest","",
-      "Next-open fills. PASS (out-of-sample, 5 bps per side): >=100 trades, median PF>=1.3, Sharpe beats buy&hold on >=60% of symbols, PF>1 on >=70%.",""]
+      f"Next-open fills. Market {a.market}, main cost {MAIN_COST} bps per side. PASS (out-of-sample, main cost): >=100 trades, median PF>=1.3, Sharpe beats buy&hold on >=60% of symbols, PF>1 on >=70%.",""]
     for tf,py in (("1d",252),("1h",252*7),("1wk",52)):
         if a.tf and tf!=a.tf: continue
         for mode in ("long","ls"):
@@ -102,7 +110,7 @@ def main():
             for s in SYMBOLS:
                 try: df=load(s,tf,a.csv_dir)
                 except Exception as e: print(s,tf,e,file=sys.stderr); df=None
-                if df is None or len(df)<300: continue
+                if df is None or len(df)<minbars: continue
                 sig=signals(df); cut=int(len(df)*SPLIT); row=dict(sym=s,bars=len(df),start=str(df.index[0])[:10],end=str(df.index[-1])[:10])
                 for b in COSTS_BPS:
                     ret,pos,tr=run(df,sig,mode,b)
@@ -118,8 +126,8 @@ def main():
                 x=r[f"all_{MAIN_COST}"]; b=r["all_bh"]; o=r["oos"]; ob=r["oos_bh"]
                 md.append(f"|{r['sym']}|{x['trades']}|{x['win']:.0%}|{x['pf']:.2f}|{x['cagr']:.1%}|{x['maxdd']:.0%}|{x['sharpe']:.2f}|{b['cagr']:.1%}|{b['maxdd']:.0%}|{b['sharpe']:.2f}|{o['pf']:.2f}|{o['sharpe']:.2f}|{ob['sharpe']:.2f}|")
             md.append("")
-    open(os.path.join(a.out,f"candle_control_results{'_'+a.tf if a.tf else ''}.md"),"w").write("\n".join(md))
-    json.dump(res,open(os.path.join(a.out,f"candle_control_results{'_'+a.tf if a.tf else ''}.json"),"w"),indent=1)
+    open(os.path.join(a.out,f"candle_control_results{tag}.md"),"w").write("\n".join(md))
+    json.dump(res,open(os.path.join(a.out,f"candle_control_results{tag}.json"),"w"),indent=1)
     print("\n".join(md))
 
 if __name__=="__main__": main()
