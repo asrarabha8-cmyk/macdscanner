@@ -13,12 +13,12 @@
   "rr": 1.6376,
   "contract": "270C 06/11/2026",
   "contract_mid": 2.87,
-  "status": "open",
-  "last_price": 268.68,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 267.874,
+  "return_pct": -0.3,
+  "exit_price": 267.874,
+  "exit_utc": "2026-11-04T18:55:00Z",
+  "days": 1
  },
  {
   "id": "AAPL-intraday-2026-11-04T17:52:24Z",
@@ -35,8 +35,8 @@
   "contract": "352.5C 04/11/2026",
   "contract_mid": 1.055,
   "status": "open",
-  "last_price": 352.58,
-  "return_pct": -0.07,
+  "last_price": 353.1298,
+  "return_pct": 0.09,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
