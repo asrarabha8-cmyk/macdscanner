@@ -1,5 +1,20 @@
 [
  {
+  "code": "4165",
+  "name": "Al Majed for Oud Company",
+  "sector": "Retail Trade",
+  "date": "2026-11-04",
+  "entry": 126.6,
+  "stop": 120.9,
+  "target": 134.74,
+  "rr": 1.43,
+  "vol_ratio": 2.53,
+  "status": "open",
+  "days": 0,
+  "last_close": 126.6,
+  "return_pct": 0.0
+ },
+ {
   "code": "2250",
   "name": "Saudi Industrial Investment Group",
   "sector": "Process Industries",
