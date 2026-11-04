@@ -40,6 +40,7 @@ td.n{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr;text-a
 <div class="stats" id="stats"></div>
 <div class="panel"><h2>منحنى النتيجة التراكمية (%)</h2><div id="curve"></div></div>
 <div class="panel"><h2>الصفقات</h2><div class="scroll"><table><thead><tr><th>الرمز</th><th>الدخول</th><th>سعر الدخول</th><th>الخروج</th><th>سعر الخروج</th><th>النتيجة</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<div class="panel"><h2>العقود الورقية (Call)</h2><div class="scroll"><table><thead><tr><th>الرمز</th><th>الدخول</th><th>السترايك</th><th>الانتهاء</th><th>الشراء</th><th>البيع</th><th>النتيجة</th></tr></thead><tbody id="contracts"></tbody></table></div></div>
 <p class="note">الصفقات المفتوحة تظهر بنتيجتها الحالية ولا تدخل في الإحصاءات. النتائج على سعر الصندوق بعد تكلفة تقديرية، وليست على عقود الأوبشن، والأسعار التاريخية معدلة للتوزيعات. القواعد ثابتة، وهذا سجل بحثي وليس توصية تداول.</p>
 </div>
 <script>
@@ -51,6 +52,8 @@ function render(){
   const cards=[["الصفقات المغلقة",String(trades.length)],["نسبة النجاح",trades.length?(100*wins/trades.length).toFixed(1)+"%":"-"],["متوسط الصفقة",trades.length?fmt(total/trades.length)+"%":"-"],["صفقات مفتوحة",String(all.length-trades.length)]];
   document.getElementById("stats").innerHTML=cards.map(c=>`<div class="s"><span>${c[0]}</span><b><bdi dir="ltr">${c[1]}</bdi></b></div>`).join("");
   drawCurve(trades);
+  const list=Object.values(store.contracts||{}).reverse();
+  document.getElementById("contracts").innerHTML=list.length?list.map(c=>`<tr><td>${c.symbol}</td><td class="n">${c.entry_date}</td><td class="n">${c.strike}</td><td class="n">${c.expiry}</td><td class="n">${c.buy}</td><td class="n">${c.sell??"مفتوح"}</td><td class="n ${(c.pct||0)>0?"up":"down"}">${c.pct==null?"-":fmt(c.pct,1)+"%"}</td></tr>`).join(""):`<tr><td colspan="7" class="note">تظهر العقود مع أول إشارة جديدة.</td></tr>`;
   document.getElementById("rows").innerHTML=all.length?[...all].reverse().slice(0,200).map(t=>`<tr><td>${t.symbol}</td><td class="n">${t.entry_date}</td><td class="n">${t.entry}</td><td class="n">${t.exit_date||"مفتوحة"}</td><td class="n">${t.exit??"-"}</td><td class="n ${t.pct>0?"up":"down"}">${fmt(t.pct)}%</td></tr>`).join(""):`<tr><td colspan="6" class="note">لا توجد صفقات مسجلة هنا بعد.</td></tr>`;
 }
 function drawCurve(trades){
