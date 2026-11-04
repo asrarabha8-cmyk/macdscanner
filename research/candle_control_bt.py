@@ -72,12 +72,12 @@ def load(sym, tf, csv_dir):
         if not os.path.exists(p): return None
         return pd.read_csv(p,parse_dates=["date"],index_col="date")[["open","high","low","close"]].dropna()
     import yfinance as yf
-    kw=dict(period="max",interval="1d") if tf=="1d" else dict(period="729d",interval="1h")
+    kw=dict(period="max",interval=tf) if tf in("1d","1wk") else dict(period="729d",interval="1h")
     d=yf.download(sym,auto_adjust=True,progress=False,**kw)
     if d is None or d.empty: return None
     if isinstance(d.columns,pd.MultiIndex): d.columns=d.columns.get_level_values(0)
     d=d.rename(columns=str.lower)[["open","high","low","close"]].dropna()
-    return d[d.index>="2005-01-01"] if tf=="1d" else d
+    return d[d.index>="2005-01-01"] if tf in("1d","1wk") else d
 
 def verdict(rows):
     """Fixed before seeing results. Judged on OOS, main cost, per timeframe+mode."""
@@ -91,11 +91,12 @@ def verdict(rows):
                 passed=bool(tr>=100 and gw>=1.3 and beat>=0.6 and pos>=0.7))
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--csv-dir"); ap.add_argument("--out",default=OUT)
+    ap=argparse.ArgumentParser(); ap.add_argument("--csv-dir"); ap.add_argument("--out",default=OUT); ap.add_argument("--tf",default="")
     a=ap.parse_args()
     res={}; md=["# Candle Control Backtest","",
       "Next-open fills. PASS (out-of-sample, 5 bps per side): >=100 trades, median PF>=1.3, Sharpe beats buy&hold on >=60% of symbols, PF>1 on >=70%.",""]
-    for tf,py in (("1d",252),("1h",252*7)):
+    for tf,py in (("1d",252),("1h",252*7),("1wk",52)):
+        if a.tf and tf!=a.tf: continue
         for mode in ("long","ls"):
             rows=[]
             for s in SYMBOLS:
@@ -117,8 +118,8 @@ def main():
                 x=r[f"all_{MAIN_COST}"]; b=r["all_bh"]; o=r["oos"]; ob=r["oos_bh"]
                 md.append(f"|{r['sym']}|{x['trades']}|{x['win']:.0%}|{x['pf']:.2f}|{x['cagr']:.1%}|{x['maxdd']:.0%}|{x['sharpe']:.2f}|{b['cagr']:.1%}|{b['maxdd']:.0%}|{b['sharpe']:.2f}|{o['pf']:.2f}|{o['sharpe']:.2f}|{ob['sharpe']:.2f}|")
             md.append("")
-    open(os.path.join(a.out,"candle_control_results.md"),"w").write("\n".join(md))
-    json.dump(res,open(os.path.join(a.out,"candle_control_results.json"),"w"),indent=1)
+    open(os.path.join(a.out,f"candle_control_results{'_'+a.tf if a.tf else ''}.md"),"w").write("\n".join(md))
+    json.dump(res,open(os.path.join(a.out,f"candle_control_results{'_'+a.tf if a.tf else ''}.json"),"w"),indent=1)
     print("\n".join(md))
 
 if __name__=="__main__": main()
