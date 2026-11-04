@@ -1,5 +1,26 @@
 [
  {
+  "id": "SPY-intraday-2026-11-04T15:51:10Z",
+  "ticker": "SPY",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-04T15:51:10Z",
+  "score": 71,
+  "entry": 766.665,
+  "stop": 764.365,
+  "target": 770.0,
+  "rr": 1.45,
+  "contract": "767C 04/11/2026",
+  "contract_mid": 1.385,
+  "status": "open",
+  "last_price": 766.665,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "META-intraday-2026-11-03T18:52:05Z",
   "ticker": "META",
   "mode": "intraday",
