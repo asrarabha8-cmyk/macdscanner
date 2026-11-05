@@ -13,12 +13,12 @@
   "rr": 15.541,
   "contract": "43.5P 06/11/2026",
   "contract_mid": 2.15,
-  "status": "open",
-  "last_price": 43.08,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 43.2782,
+  "return_pct": -0.46,
+  "exit_price": 43.2782,
+  "exit_utc": "2026-11-05T19:55:00Z",
+  "days": 1
  },
  {
   "id": "AMZN-intraday-2026-11-05T19:52:15Z",
@@ -34,12 +34,12 @@
   "rr": 8.5054,
   "contract": "260P 06/11/2026",
   "contract_mid": 3.625,
-  "status": "open",
-  "last_price": 259.89,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 261.0528,
+  "return_pct": -0.45,
+  "exit_price": 261.0528,
+  "exit_utc": "2026-11-05T19:55:00Z",
+  "days": 1
  },
  {
   "id": "TSLA-intraday-2026-11-05T17:50:57Z",
@@ -56,8 +56,8 @@
   "contract": "342.5P 06/11/2026",
   "contract_mid": 5.725,
   "status": "open",
-  "last_price": 341.965,
-  "return_pct": -0.04,
+  "last_price": 343.08,
+  "return_pct": -0.36,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
