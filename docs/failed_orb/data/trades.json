@@ -707,7 +707,8 @@
   "2026-10-29": "trade",
   "2026-10-30": "trade",
   "2026-11-02": "trade",
-  "2026-11-03": "trade"
+  "2026-11-03": "trade",
+  "2026-11-04": "trade"
  },
  "trades": [
   {
@@ -10159,8 +10160,24 @@
    "reason": "stop",
    "r": -1.08,
    "kind": "backfill"
+  },
+  {
+   "date": "2026-11-04",
+   "side": "sell",
+   "signal_time": "10:00",
+   "exit_time": "15:55",
+   "range_high": 768.11,
+   "range_low": 762.64,
+   "entry": 768.04,
+   "stop": 776.13,
+   "target": 762.64,
+   "exit": 766.73,
+   "reason": "session",
+   "r": 0.155,
+   "kind": "forward"
   }
  ],
  "forward_start": "2026-11-04",
- "updated": "2026-11-03T23:14Z"
+ "updated": "2026-11-05T00:57Z",
+ "source": "Polygon"
 }
