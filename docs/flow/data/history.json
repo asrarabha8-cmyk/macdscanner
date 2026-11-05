@@ -1,5 +1,26 @@
 [
  {
+  "id": "TSLA-intraday-2026-11-05T17:50:57Z",
+  "ticker": "TSLA",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-05T17:50:57Z",
+  "score": 96,
+  "entry": 341.84,
+  "stop": 350.6686,
+  "target": 330.0,
+  "rr": 1.3411,
+  "contract": "342.5P 06/11/2026",
+  "contract_mid": 5.725,
+  "status": "open",
+  "last_price": 341.84,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NFLX-intraday-2026-11-05T16:51:46Z",
   "ticker": "NFLX",
   "mode": "intraday",
@@ -14,11 +35,11 @@
   "contract": null,
   "contract_mid": null,
   "status": "open",
-  "last_price": 65.66,
-  "return_pct": 0.0,
+  "last_price": 65.365,
+  "return_pct": 0.45,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-11-05T16:51:26Z",
@@ -34,12 +55,12 @@
   "rr": 2.5013,
   "contract": "187.5P 06/11/2026",
   "contract_mid": 3.9,
-  "status": "open",
-  "last_price": 187.12,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 185.0,
+  "return_pct": 1.13,
+  "exit_price": 185.0,
+  "exit_utc": "2026-11-05T17:00:00Z",
+  "days": 1
  },
  {
   "id": "AAPL-intraday-2026-11-05T15:52:01Z",
@@ -55,11 +76,11 @@
   "rr": 1.4583,
   "contract": "352.5P 06/11/2026",
   "contract_mid": 5.1,
-  "status": "open",
-  "last_price": 346.79,
-  "return_pct": 0.59,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "target",
+  "last_price": 345.0,
+  "return_pct": 1.11,
+  "exit_price": 345.0,
+  "exit_utc": "2026-11-05T16:50:00Z",
   "days": 1
  },
  {
@@ -77,8 +98,8 @@
   "contract": "660P 05/11/2026",
   "contract_mid": 1.045,
   "status": "open",
-  "last_price": 661.01,
-  "return_pct": -0.2,
+  "last_price": 653.47,
+  "return_pct": 0.94,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
