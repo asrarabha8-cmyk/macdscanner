@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-06T23:35:45+00:00",
+ "generated_at": "2026-11-06T23:46:23+00:00",
  "cycle": "2026-11",
  "universe_size": 3617,
- "stage1_candidates": 1275,
- "stage2_evaluated": 300,
+ "stage1_candidates": 1119,
+ "stage2_evaluated": 299,
  "shortlist_size": 25,
  "thresholds": {
   "min_dollar_volume": 5000000,
@@ -25,36 +25,38 @@
  ],
  "shortlist": [
   {
-   "ticker": "CALX",
-   "price": 30.6,
-   "high52": 64.12,
-   "drawdown": 0.523,
-   "dollar_vol": 37123723,
-   "name": "Calix, Inc",
+   "ticker": "MU",
+   "price": 690.0,
+   "high52": 1213.18,
+   "drawdown": 0.431,
+   "dollar_vol": 26006174108,
+   "name": "Micron Technology, Inc.",
    "sector": "Technology",
-   "market_cap": 1891148672,
-   "dilution": -0.0792,
+   "market_cap": 780682002432,
+   "dilution": 0.0044,
    "gate_flags": [],
    "gate_pass": true,
-   "rev_growth_last": 0.1367,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.5329,
-   "q3_score": 0.5,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 2.5633,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.8676,
+   "q3_score": 1.0,
    "q3_why": [
-    "نمو +14% بهامش 53% — دون العتبة الكاملة"
+    "نمو +256% بهامش 87% — 3/3 فترة سنوي"
    ],
-   "net_cash": 38310000,
-   "fcf_quarter": 3428000,
+   "net_cash": 33185000000,
+   "fcf_quarter": 32863000000,
    "runway_quarters": 99,
    "q4_score": 1.0,
    "q4_why": [
     "صافي نقد موجب، تدفق حر موجب"
    ],
-   "fwd_eps": 2.46,
-   "hist_pe_3y": 97.0,
-   "fair_value": 238.91,
-   "gap_pct": 6.808,
-   "auto_score": 1.5,
+   "fwd_eps": 207.76,
+   "hist_pe_3y": 14.4,
+   "fair_value": 2989.48,
+   "gap_pct": 3.333,
+   "auto_score": 2.0,
    "manual_pending": [
     "١ المشكلة",
     "٢ لماذا الآن",
@@ -65,512 +67,43 @@
     "ضعف رقابي",
     "استمرارية المنشأة"
    ],
-   "notes": []
+   "notes": [
+    "فجوة +333% مشكوك فيها — تحقق يدوياً"
+   ]
   },
   {
-   "ticker": "TTD",
-   "price": 12.93,
-   "high52": 44.2,
-   "drawdown": 0.707,
-   "dollar_vol": 254352611,
-   "name": "The Trade Desk, Inc.",
-   "sector": "Communication Services",
-   "market_cap": 6113241088,
-   "dilution": -0.0311,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.0303,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.7422,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +3% بهامش 74% — دون العتبة الكاملة"
-   ],
-   "net_cash": 688869000,
-   "fcf_quarter": 135999000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 1.01,
-   "hist_pe_3y": 84.8,
-   "fair_value": 86.05,
-   "gap_pct": 5.655,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "MNDY",
-   "price": 87.93,
-   "high52": 189.59,
-   "drawdown": 0.536,
-   "dollar_vol": 101197105,
-   "name": "monday.com Ltd.",
+   "ticker": "RMBS",
+   "price": 74.53,
+   "high52": 170.66,
+   "drawdown": 0.563,
+   "dollar_vol": 200421284,
+   "name": "Rambus, Inc.",
    "sector": "Technology",
-   "market_cap": 3717163264,
-   "dilution": -0.18,
+   "market_cap": 7981863424,
+   "dilution": -0.0064,
    "gate_flags": [],
    "gate_pass": true,
-   "rev_growth_last": 0.2194,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.883,
-   "q3_score": 0.5,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2713,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.783,
+   "q3_score": 1.0,
    "q3_why": [
-    "نمو +22% بهامش 88% — دون العتبة الكاملة"
+    "نمو +27% بهامش 78% — 2/3 فترة سنوي"
    ],
-   "net_cash": 615914000,
-   "fcf_quarter": 50458000,
+   "net_cash": 90314000,
+   "fcf_quarter": 95879000,
    "runway_quarters": 99,
    "q4_score": 1.0,
    "q4_why": [
     "صافي نقد موجب، تدفق حر موجب"
    ],
-   "fwd_eps": 6.7,
-   "hist_pe_3y": 84.1,
-   "fair_value": 563.21,
-   "gap_pct": 5.405,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "VCYT",
-   "price": 24.16,
-   "high52": 60.49,
-   "drawdown": 0.601,
-   "dollar_vol": 66140706,
-   "name": "Veracyte, Inc.",
-   "sector": "Healthcare",
-   "market_cap": 1942240000,
-   "dilution": 0.0168,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.1549,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.7221,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +15% بهامش 72% — دون العتبة الكاملة"
-   ],
-   "net_cash": 259414000,
-   "fcf_quarter": 42967000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 1.94,
-   "hist_pe_3y": 67.6,
-   "fair_value": 131.3,
-   "gap_pct": 4.435,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "SNDK",
-   "price": 835.06,
-   "high52": 2335.0,
-   "drawdown": 0.642,
-   "dollar_vol": 15800821209,
-   "name": "Sandisk Corporation",
-   "sector": "Technology",
-   "market_cap": 118820151296,
-   "dilution": -0.027,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 3.7795,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.8501,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +378% بهامش 85% — دون العتبة الكاملة"
-   ],
-   "net_cash": 4958000000,
-   "fcf_quarter": 6309000000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 289.05,
-   "hist_pe_3y": 15.2,
-   "fair_value": 4388.7,
-   "gap_pct": 4.256,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "POWI",
-   "price": 40.26,
-   "high52": 86.99,
-   "drawdown": 0.537,
-   "dollar_vol": 40349093,
-   "name": "Power Integrations, Inc.",
-   "sector": "Technology",
-   "market_cap": 2249458688,
-   "dilution": 0.0085,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.0266,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.5434,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +3% بهامش 54% — دون العتبة الكاملة"
-   ],
-   "net_cash": 70612000,
-   "fcf_quarter": 17678000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 1.86,
-   "hist_pe_3y": 104.0,
-   "fair_value": 193.53,
-   "gap_pct": 3.807,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "RDDT",
-   "price": 95.1,
-   "high52": 258.93,
-   "drawdown": 0.633,
-   "dollar_vol": 921887608,
-   "name": "Reddit, Inc.",
-   "sector": "Communication Services",
-   "market_cap": 18363213824,
-   "dilution": 0.0117,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.5301,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.9153,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +53% بهامش 92% — دون العتبة الكاملة"
-   ],
-   "net_cash": 1326174000,
-   "fcf_quarter": 362568000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 9.29,
-   "hist_pe_3y": 48.9,
-   "fair_value": 454.35,
-   "gap_pct": 3.778,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "KLIC",
-   "price": 64.01,
-   "high52": 133.47,
-   "drawdown": 0.52,
-   "dollar_vol": 58875046,
-   "name": "Kulicke and Soffa Industries, I",
-   "sector": "Technology",
-   "market_cap": 3349586944,
-   "dilution": 0.008,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 1.2263,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.478,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +123% بهامش 48% — دون العتبة الكاملة"
-   ],
-   "net_cash": 330455000,
-   "fcf_quarter": 40939000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 5.9,
-   "hist_pe_3y": 45.2,
-   "fair_value": 266.83,
-   "gap_pct": 3.169,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "HL",
-   "price": 14.74,
-   "high52": 31.79,
-   "drawdown": 0.536,
-   "dollar_vol": 598411567,
-   "name": "Hecla Mining Company",
-   "sector": "Basic Materials",
-   "market_cap": 9901998080,
-   "dilution": 0.0027,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.8029,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.5067,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +80% بهامش 51% — دون العتبة الكاملة"
-   ],
-   "net_cash": 680358000,
-   "fcf_quarter": 151237000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 0.95,
-   "hist_pe_3y": 58.3,
-   "fair_value": 55.45,
-   "gap_pct": 2.762,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "ALAB",
-   "price": 190.71,
-   "high52": 483.02,
-   "drawdown": 0.605,
-   "dollar_vol": 1241183659,
-   "name": "Astera Labs, Inc.",
-   "sector": "Technology",
-   "market_cap": 33332690944,
-   "dilution": 0.0268,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 1.5367,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.7228,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +154% بهامش 72% — دون العتبة الكاملة"
-   ],
-   "net_cash": 205250000,
-   "fcf_quarter": 133892000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 7.11,
-   "hist_pe_3y": 100.2,
-   "fair_value": 712.53,
-   "gap_pct": 2.736,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "VRT",
-   "price": 182.86,
-   "high52": 376.06,
-   "drawdown": 0.514,
-   "dollar_vol": 1430748282,
-   "name": "Vertiv Holdings, LLC",
-   "sector": "Industrials",
-   "market_cap": 70412148736,
-   "dilution": 0.0065,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.6118,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.3811,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +61% بهامش 38% — دون العتبة الكاملة"
-   ],
-   "net_cash": 156000000,
-   "fcf_quarter": 652200000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 9.84,
-   "hist_pe_3y": 43.9,
-   "fair_value": 432.18,
-   "gap_pct": 1.363,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "IPGP",
-   "price": 65.31,
-   "high52": 153.91,
-   "drawdown": 0.576,
-   "dollar_vol": 35268857,
-   "name": "IPG Photonics Corporation",
-   "sector": "Technology",
-   "market_cap": 2776206592,
-   "dilution": 0.009,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.1464,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.4071,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +15% بهامش 41% — دون العتبة الكاملة"
-   ],
-   "net_cash": 694476000,
-   "fcf_quarter": 28789000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 2.33,
-   "hist_pe_3y": 60.0,
-   "fair_value": 139.93,
-   "gap_pct": 1.143,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "ROOT",
-   "price": 43.37,
-   "high52": 90.86,
-   "drawdown": 0.523,
-   "dollar_vol": 10292106,
-   "name": "Root, Inc.",
-   "sector": "Financial Services",
-   "market_cap": 658887808,
-   "dilution": -0.0014,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.0165,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.3944,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +2% بهامش 39% — دون العتبة الكاملة"
-   ],
-   "net_cash": 311800000,
-   "fcf_quarter": 53800000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 3.06,
-   "hist_pe_3y": 29.8,
-   "fair_value": 91.31,
-   "gap_pct": 1.105,
-   "auto_score": 1.5,
+   "fwd_eps": 3.88,
+   "hist_pe_3y": 32.5,
+   "fair_value": 126.35,
+   "gap_pct": 0.695,
+   "auto_score": 2.0,
    "manual_pending": [
     "١ المشكلة",
     "٢ لماذا الآن",
@@ -595,12 +128,14 @@
    "dilution": 0.0002,
    "gate_flags": [],
    "gate_pass": true,
-   "rev_growth_last": 0.5438,
-   "rev_growth_streak": 1,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2602,
+   "rev_growth_streak": 2,
    "gross_margin": 0.523,
-   "q3_score": 0.5,
+   "q3_score": 1.0,
    "q3_why": [
-    "نمو +54% بهامش 52% — دون العتبة الكاملة"
+    "نمو +26% بهامش 52% — 2/3 فترة سنوي"
    ],
    "net_cash": 3701940000,
    "fcf_quarter": 3239955000,
@@ -610,10 +145,10 @@
     "صافي نقد موجب، تدفق حر موجب"
    ],
    "fwd_eps": 12.24,
-   "hist_pe_3y": 33.5,
-   "fair_value": 410.14,
-   "gap_pct": 1.046,
-   "auto_score": 1.5,
+   "hist_pe_3y": 26.4,
+   "fair_value": 323.11,
+   "gap_pct": 0.612,
+   "auto_score": 2.0,
    "manual_pending": [
     "١ المشكلة",
     "٢ لماذا الآن",
@@ -627,78 +162,965 @@
    "notes": []
   },
   {
-   "ticker": "NOK",
-   "price": 7.66,
-   "high52": 16.85,
-   "drawdown": 0.545,
-   "dollar_vol": 769168736,
-   "name": "Nokia Corporation Sponsored",
+   "ticker": "ASML",
+   "price": 1424.75,
+   "high52": 1984.25,
+   "drawdown": 0.282,
+   "dollar_vol": 2396306450,
+   "name": "ASML Holding N.V. - New York Re",
    "sector": "Technology",
-   "market_cap": 43347447808,
-   "dilution": 0.0029,
+   "market_cap": 549123915776,
+   "dilution": 0.0,
    "gate_flags": [],
    "gate_pass": true,
-   "rev_growth_last": 0.0966,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.422,
-   "q3_score": 0.5,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1558,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.5745,
+   "q3_score": 1.0,
    "q3_why": [
-    "نمو +10% بهامش 42% — دون العتبة الكاملة"
+    "نمو +16% بهامش 57% — 2/3 فترة سنوي"
    ],
-   "net_cash": 675000000,
-   "fcf_quarter": -99000000,
-   "runway_quarters": 40.9,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، مدرج 41 أرباع"
-   ],
-   "fwd_eps": 0.48,
-   "hist_pe_3y": 31.3,
-   "fair_value": 15.14,
-   "gap_pct": 0.977,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "STRL",
-   "price": 252.82,
-   "high52": 993.74,
-   "drawdown": 0.746,
-   "dollar_vol": 318051887,
-   "name": "Sterling Infrastructure, Inc.",
-   "sector": "Industrials",
-   "market_cap": 7711651328,
-   "dilution": -0.0027,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 1.2698,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.2412,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +127% بهامش 24% — دون العتبة الكاملة"
-   ],
-   "net_cash": 51131000,
-   "fcf_quarter": 53262000,
+   "net_cash": 6067900000,
+   "fcf_quarter": 11350400000,
    "runway_quarters": 99,
    "q4_score": 1.0,
    "q4_why": [
     "صافي نقد موجب، تدفق حر موجب"
    ],
-   "fwd_eps": 28.1,
-   "hist_pe_3y": 17.6,
-   "fair_value": 495.7,
-   "gap_pct": 0.961,
+   "fwd_eps": 63.4,
+   "hist_pe_3y": 32.8,
+   "fair_value": 2081.05,
+   "gap_pct": 0.461,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "APO",
+   "price": 116.75,
+   "high52": 150.8,
+   "drawdown": 0.226,
+   "dollar_vol": 402110377,
+   "name": "Apollo Global Management, Inc. ",
+   "sector": "Financial Services",
+   "market_cap": 68960567296,
+   "dilution": -0.0076,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2273,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.961,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +23% بهامش 96% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 13088000000,
+   "fcf_quarter": 2881000000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 10.64,
+   "hist_pe_3y": 15.8,
+   "fair_value": 168.03,
+   "gap_pct": 0.439,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "ANET",
+   "price": 170.8,
+   "high52": 216.74,
+   "drawdown": 0.212,
+   "dollar_vol": 1143100913,
+   "name": "Arista Networks, Inc.",
+   "sector": "Technology",
+   "market_cap": 215789125632,
+   "dilution": 0.0055,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.286,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.6359,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +29% بهامش 64% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 2288100000,
+   "fcf_quarter": 1100200000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 5.64,
+   "hist_pe_3y": 37.4,
+   "fair_value": 210.89,
+   "gap_pct": 0.235,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "KGC",
+   "price": 22.24,
+   "high52": 37.92,
+   "drawdown": 0.413,
+   "dollar_vol": 210899779,
+   "name": "Kinross Gold Corporation",
+   "sector": "Basic Materials",
+   "market_cap": 26199568384,
+   "dilution": -0.0182,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.3695,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.5243,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +37% بهامش 52% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 1899200000,
+   "fcf_quarter": 274800000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 2.64,
+   "hist_pe_3y": 9.8,
+   "fair_value": 25.79,
+   "gap_pct": 0.16,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "AU",
+   "price": 92.99,
+   "high52": 123.84,
+   "drawdown": 0.249,
+   "dollar_vol": 258532268,
+   "name": "AngloGold Ashanti PLC",
+   "sector": "Basic Materials",
+   "market_cap": 47031480320,
+   "dilution": 0.0015,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.7078,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.4975,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +71% بهامش 50% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 1256000000,
+   "fcf_quarter": 883000000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 9.09,
+   "hist_pe_3y": 10.4,
+   "fair_value": 94.98,
+   "gap_pct": 0.021,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "AEM",
+   "price": 191.57,
+   "high52": 251.01,
+   "drawdown": 0.237,
+   "dollar_vol": 444595833,
+   "name": "Agnico Eagle Mines Limited",
+   "sector": "Basic Materials",
+   "market_cap": 96847544320,
+   "dilution": 0.011,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.4371,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.601,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +44% بهامش 60% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 3285047000,
+   "fcf_quarter": 846769000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 11.65,
+   "hist_pe_3y": 14.9,
+   "fair_value": 173.39,
+   "gap_pct": -0.095,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": []
+  },
+  {
+   "ticker": "PLTR",
+   "price": 160.38,
+   "high52": 209.05,
+   "drawdown": 0.233,
+   "dollar_vol": 4829455981,
+   "name": "Palantir Technologies Inc.",
+   "sector": "Technology",
+   "market_cap": 386435252224,
+   "dilution": 0.0075,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.5618,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.8343,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +56% بهامش 83% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 3394147000,
+   "fcf_quarter": 1196556000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 2.49,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "TSM",
+   "price": 375.44,
+   "high52": 485.8,
+   "drawdown": 0.227,
+   "dollar_vol": 4793412098,
+   "name": "Taiwan Semiconductor Manufactur",
+   "sector": "Technology",
+   "market_cap": 1947209826304,
+   "dilution": -0.0,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.3161,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.6641,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +32% بهامش 66% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 2638381000000,
+   "fcf_quarter": 476570000000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 23.39,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "CRWD",
+   "price": 216.9,
+   "high52": 278.86,
+   "drawdown": 0.222,
+   "dollar_vol": 2417861532,
+   "name": "CrowdStrike Holdings, Inc.",
+   "sector": "Technology",
+   "market_cap": 222091460608,
+   "dilution": 0.0154,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2171,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.7457,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +22% بهامش 75% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 4193668000,
+   "fcf_quarter": 376336000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 1.61,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "MPWR",
+   "price": 1190.44,
+   "high52": 1684.83,
+   "drawdown": 0.293,
+   "dollar_vol": 1007778861,
+   "name": "Monolithic Power Systems, Inc.",
+   "sector": "Technology",
+   "market_cap": 58055376896,
+   "dilution": 0.0017,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2643,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.5535,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +26% بهامش 55% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 539173000,
+   "fcf_quarter": 220578000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 46.34,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "ISRG",
+   "price": 452.8,
+   "high52": 592.85,
+   "drawdown": 0.236,
+   "dollar_vol": 981696057,
+   "name": "Intuitive Surgical, Inc.",
+   "sector": "Healthcare",
+   "market_cap": 159964299264,
+   "dilution": -0.0051,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2051,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.6837,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +21% بهامش 68% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 2978100000,
+   "fcf_quarter": 1111000000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 12.47,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "DASH",
+   "price": 179.67,
+   "high52": 236.93,
+   "drawdown": 0.242,
+   "dollar_vol": 884434848,
+   "name": "DoorDash, Inc.",
+   "sector": "Consumer Cyclical",
+   "market_cap": 78331863040,
+   "dilution": 0.0039,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2793,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.5297,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +28% بهامش 53% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 1755000000,
+   "fcf_quarter": 787000000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 8.02,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "MDB",
+   "price": 312.83,
+   "high52": 472.29,
+   "drawdown": 0.338,
+   "dollar_vol": 828122988,
+   "name": "MongoDB, Inc.",
+   "sector": "Technology",
+   "market_cap": 25200439296,
+   "dilution": -0.0089,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2279,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.7383,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +23% بهامش 74% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 973806000,
+   "fcf_quarter": 139406000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 7.9,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "TEAM",
+   "price": 153.68,
+   "high52": 227.61,
+   "drawdown": 0.325,
+   "dollar_vol": 626233297,
+   "name": "Atlassian Corporation",
+   "sector": "Technology",
+   "market_cap": 38902370304,
+   "dilution": -0.0376,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.2602,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.865,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +26% بهامش 87% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 6602000,
+   "fcf_quarter": 474693000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 6.7,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "HL",
+   "price": 14.74,
+   "high52": 31.79,
+   "drawdown": 0.536,
+   "dollar_vol": 598411567,
+   "name": "Hecla Mining Company",
+   "sector": "Basic Materials",
+   "market_cap": 9901998080,
+   "dilution": 0.0027,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.5303,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.5067,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +53% بهامش 51% — 2/3 فترة سنوي"
+   ],
+   "net_cash": 680358000,
+   "fcf_quarter": 151237000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 0.95,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "DT",
+   "price": 43.44,
+   "high52": 65.25,
+   "drawdown": 0.334,
+   "dollar_vol": 427883291,
+   "name": "Dynatrace, Inc.",
+   "sector": "Technology",
+   "market_cap": 12464852992,
+   "dilution": -0.0443,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1882,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.8056,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +19% بهامش 81% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 511104000,
+   "fcf_quarter": 36006000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 2.15,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "HUBS",
+   "price": 200.61,
+   "high52": 405.83,
+   "drawdown": 0.506,
+   "dollar_vol": 336471307,
+   "name": "HubSpot, Inc.",
+   "sector": "Technology",
+   "market_cap": 9797082112,
+   "dilution": -0.0707,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1917,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.8262,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +19% بهامش 83% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 897306000,
+   "fcf_quarter": 162070000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 16.7,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "ONON",
+   "price": 37.36,
+   "high52": 50.63,
+   "drawdown": 0.262,
+   "dollar_vol": 316755924,
+   "name": "On Holding AG",
+   "sector": "Consumer Cyclical",
+   "market_cap": 12486260736,
+   "dilution": 0.0123,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.3001,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.6535,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +30% بهامش 65% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 642200000,
+   "fcf_quarter": 197400000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 2.07,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "DUOL",
+   "price": 160.42,
+   "high52": 209.08,
+   "drawdown": 0.233,
+   "dollar_vol": 180206991,
+   "name": "Duolingo, Inc.",
+   "sector": "Technology",
+   "market_cap": 7568336384,
+   "dilution": 0.0103,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.3871,
+   "rev_growth_streak": 3,
+   "gross_margin": 0.7286,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +39% بهامش 73% — 3/3 فترة سنوي"
+   ],
+   "net_cash": 1155391000,
+   "fcf_quarter": 75340000,
+   "runway_quarters": 99,
+   "q4_score": 1.0,
+   "q4_why": [
+    "صافي نقد موجب، تدفق حر موجب"
+   ],
+   "fwd_eps": 7.12,
+   "hist_pe_3y": null,
+   "fair_value": null,
+   "gap_pct": null,
+   "auto_score": 2.0,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "لا مرساة تقييم — EPS آجل سالب أو مضاعف تاريخي غير مستقر"
+   ]
+  },
+  {
+   "ticker": "PINS",
+   "price": 18.96,
+   "high52": 27.79,
+   "drawdown": 0.318,
+   "dollar_vol": 277194978,
+   "name": "Pinterest, Inc.",
+   "sector": "Communication Services",
+   "market_cap": 10873708544,
+   "dilution": -0.1383,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1579,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.7772,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +16% بهامش 78% — 2/3 فترة سنوي"
+   ],
+   "net_cash": -541989000,
+   "fcf_quarter": 300268000,
+   "runway_quarters": 99,
+   "q4_score": 0.5,
+   "q4_why": [
+    "صافي دَين"
+   ],
+   "fwd_eps": 2.28,
+   "hist_pe_3y": 24.0,
+   "fair_value": 54.55,
+   "gap_pct": 1.877,
+   "auto_score": 1.5,
+   "manual_pending": [
+    "١ المشكلة",
+    "٢ لماذا الآن",
+    "٥ السور"
+   ],
+   "needs_web_check": [
+    "تأخير إيداع",
+    "ضعف رقابي",
+    "استمرارية المنشأة"
+   ],
+   "notes": [
+    "فجوة +188% مشكوك فيها — تحقق يدوياً"
+   ]
+  },
+  {
+   "ticker": "NFLX",
+   "price": 63.41,
+   "high52": 115.75,
+   "drawdown": 0.452,
+   "dollar_vol": 2640192361,
+   "name": "Netflix, Inc.",
+   "sector": "Communication Services",
+   "market_cap": 260382130176,
+   "dilution": -0.0274,
+   "gate_flags": [],
+   "gate_pass": true,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1585,
+   "rev_growth_streak": 2,
+   "gross_margin": 0.5278,
+   "q3_score": 1.0,
+   "q3_why": [
+    "نمو +16% بهامش 53% — 2/3 فترة سنوي"
+   ],
+   "net_cash": -6938119000,
+   "fcf_quarter": 2883513000,
+   "runway_quarters": 99,
+   "q4_score": 0.5,
+   "q4_why": [
+    "صافي دَين"
+   ],
+   "fwd_eps": 3.77,
+   "hist_pe_3y": 32.3,
+   "fair_value": 121.69,
+   "gap_pct": 0.919,
    "auto_score": 1.5,
    "manual_pending": [
     "١ المشكلة",
@@ -724,12 +1146,14 @@
    "dilution": -0.0055,
    "gate_flags": [],
    "gate_pass": true,
-   "rev_growth_last": 1.039,
-   "rev_growth_streak": 1,
+   "growth_basis": "سنوي",
+   "growth_points": 3,
+   "rev_growth_last": 0.1313,
+   "rev_growth_streak": 0,
    "gross_margin": 0.5979,
    "q3_score": 0.5,
    "q3_why": [
-    "نمو +104% بهامش 60% — دون العتبة الكاملة"
+    "نمو +13% بهامش 60% — دون العتبة الكاملة (سنوي)"
    ],
    "net_cash": 249411000,
    "fcf_quarter": 378432000,
@@ -739,353 +1163,9 @@
     "صافي نقد موجب، تدفق حر موجب"
    ],
    "fwd_eps": 11.99,
-   "hist_pe_3y": 34.7,
-   "fair_value": 416.49,
-   "gap_pct": 0.909,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "AG",
-   "price": 15.16,
-   "high52": 31.96,
-   "drawdown": 0.526,
-   "dollar_vol": 178437969,
-   "name": "First Majestic Silver Corp.",
-   "sector": "Basic Materials",
-   "market_cap": 7475106304,
-   "dilution": 0.0036,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.3807,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.4297,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +38% بهامش 43% — دون العتبة الكاملة"
-   ],
-   "net_cash": 735398000,
-   "fcf_quarter": 12381000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 0.99,
-   "hist_pe_3y": 28.0,
-   "fair_value": 27.83,
-   "gap_pct": 0.836,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "VPG",
-   "price": 44.21,
-   "high52": 149.91,
-   "drawdown": 0.705,
-   "dollar_vol": 25003648,
-   "name": "Vishay Precision Group, Inc.",
-   "sector": "Technology",
-   "market_cap": 588896192,
-   "dilution": 0.0031,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.067,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.4018,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +7% بهامش 40% — دون العتبة الكاملة"
-   ],
-   "net_cash": 41910000,
-   "fcf_quarter": 5488000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 1.79,
-   "hist_pe_3y": 40.5,
-   "fair_value": 72.51,
-   "gap_pct": 0.64,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "RMBS",
-   "price": 74.53,
-   "high52": 170.66,
-   "drawdown": 0.563,
-   "dollar_vol": 200421284,
-   "name": "Rambus, Inc.",
-   "sector": "Technology",
-   "market_cap": 7981863424,
-   "dilution": -0.0064,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.2228,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.783,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +22% بهامش 78% — دون العتبة الكاملة"
-   ],
-   "net_cash": 90314000,
-   "fcf_quarter": 95879000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 3.88,
-   "hist_pe_3y": 28.2,
-   "fair_value": 109.45,
-   "gap_pct": 0.469,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "VICR",
-   "price": 146.88,
-   "high52": 379.78,
-   "drawdown": 0.613,
-   "dollar_vol": 215702030,
-   "name": "Vicor Corporation",
-   "sector": "Technology",
-   "market_cap": 6778306560,
-   "dilution": 0.0195,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.7851,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.6833,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +79% بهامش 68% — دون العتبة الكاملة"
-   ],
-   "net_cash": 505977000,
-   "fcf_quarter": 34027000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 6.07,
-   "hist_pe_3y": 26.3,
-   "fair_value": 159.66,
-   "gap_pct": 0.087,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "TSEM",
-   "price": 137.34,
-   "high52": 316.85,
-   "drawdown": 0.567,
-   "dollar_vol": 450348018,
-   "name": "Tower Semiconductor Ltd.",
-   "sector": "Technology",
-   "market_cap": 15590515712,
-   "dilution": 0.0087,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.1436,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.3397,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +14% بهامش 34% — دون العتبة الكاملة"
-   ],
-   "net_cash": 97021000,
-   "fcf_quarter": -5524000,
-   "runway_quarters": 45.4,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، مدرج 45 أرباع"
-   ],
-   "fwd_eps": 6.94,
-   "hist_pe_3y": 20.2,
-   "fair_value": 140.52,
-   "gap_pct": 0.023,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "POWL",
-   "price": 133.12,
-   "high52": 321.8,
-   "drawdown": 0.586,
-   "dollar_vol": 108847259,
-   "name": "Powell Industries, Inc.",
-   "sector": "Industrials",
-   "market_cap": 4849780736,
-   "dilution": 0.0061,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.089,
-   "rev_growth_streak": 0,
-   "gross_margin": 0.3057,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +9% بهامش 31% — دون العتبة الكاملة"
-   ],
-   "net_cash": 631037000,
-   "fcf_quarter": 93702000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 6.99,
-   "hist_pe_3y": 15.1,
-   "fair_value": 105.84,
-   "gap_pct": -0.205,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "AMSC",
-   "price": 23.39,
-   "high52": 58.72,
-   "drawdown": 0.602,
-   "dollar_vol": 21325633,
-   "name": "American Superconductor Corpora",
-   "sector": "Industrials",
-   "market_cap": 1133363712,
-   "dilution": 0.0179,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 0.4278,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.2821,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +43% بهامش 28% — دون العتبة الكاملة"
-   ],
-   "net_cash": 162692000,
-   "fcf_quarter": 28780000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 1.35,
-   "hist_pe_3y": 12.5,
-   "fair_value": 16.95,
-   "gap_pct": -0.275,
-   "auto_score": 1.5,
-   "manual_pending": [
-    "١ المشكلة",
-    "٢ لماذا الآن",
-    "٥ السور"
-   ],
-   "needs_web_check": [
-    "تأخير إيداع",
-    "ضعف رقابي",
-    "استمرارية المنشأة"
-   ],
-   "notes": []
-  },
-  {
-   "ticker": "CRMD",
-   "price": 5.32,
-   "high52": 12.73,
-   "drawdown": 0.582,
-   "dollar_vol": 9330351,
-   "name": "CorMedix Inc.",
-   "sector": "Healthcare",
-   "market_cap": 414663808,
-   "dilution": -0.0087,
-   "gate_flags": [],
-   "gate_pass": true,
-   "rev_growth_last": 1.4992,
-   "rev_growth_streak": 1,
-   "gross_margin": 0.7502,
-   "q3_score": 0.5,
-   "q3_why": [
-    "نمو +150% بهامش 75% — دون العتبة الكاملة"
-   ],
-   "net_cash": 111542000,
-   "fcf_quarter": 85676000,
-   "runway_quarters": 99,
-   "q4_score": 1.0,
-   "q4_why": [
-    "صافي نقد موجب، تدفق حر موجب"
-   ],
-   "fwd_eps": 0.35,
-   "hist_pe_3y": 5.2,
-   "fair_value": 1.83,
-   "gap_pct": -0.656,
+   "hist_pe_3y": 34.8,
+   "fair_value": 417.56,
+   "gap_pct": 0.914,
    "auto_score": 1.5,
    "manual_pending": [
     "١ المشكلة",
@@ -1102,22 +1182,8 @@
  ],
  "rejected_by_gate": [
   {
-   "ticker": "FICO",
-   "name": "Fair Isaac Corporation",
-   "flags": [
-    "حقوق مساهمين سالبة"
-   ]
-  },
-  {
-   "ticker": "BRBR",
-   "name": "BellRing Brands, Inc.",
-   "flags": [
-    "حقوق مساهمين سالبة"
-   ]
-  },
-  {
-   "ticker": "AVEX",
-   "name": "AEVEX Corp.",
+   "ticker": "LVS",
+   "name": "Las Vegas Sands Corp.",
    "flags": [
     "حقوق مساهمين سالبة"
    ]
@@ -1130,10 +1196,59 @@
    ]
   },
   {
-   "ticker": "CENX",
-   "name": "Century Aluminum Company",
+   "ticker": "IT",
+   "name": "Gartner, Inc.",
    "flags": [
-    "تخفيف ملكية +6.1% سنوياً"
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "BKNG",
+   "name": "Booking Holdings Inc. Common St",
+   "flags": [
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "DPZ",
+   "name": "Domino's Pizza Inc",
+   "flags": [
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "LOW",
+   "name": "Lowe's Companies, Inc.",
+   "flags": [
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "WYNN",
+   "name": "Wynn Resorts, Limited",
+   "flags": [
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "DELL",
+   "name": "Dell Technologies Inc.",
+   "flags": [
+    "حقوق مساهمين سالبة"
+   ]
+  },
+  {
+   "ticker": "LITE",
+   "name": "Lumentum Holdings Inc.",
+   "flags": [
+    "تخفيف ملكية +26.9% سنوياً"
+   ]
+  },
+  {
+   "ticker": "NBIS",
+   "name": "Nebius Group N.V.",
+   "flags": [
+    "تخفيف ملكية +8.0% سنوياً"
    ]
   },
   {
@@ -1144,59 +1259,17 @@
    ]
   },
   {
-   "ticker": "CC",
-   "name": "Chemours Company (The)",
+   "ticker": "PANW",
+   "name": "Palo Alto Networks, Inc.",
    "flags": [
-    "حقوق مساهمين سالبة"
+    "تخفيف ملكية +17.8% سنوياً"
    ]
   },
   {
-   "ticker": "CRDO",
-   "name": "Credo Technology Group Holding ",
+   "ticker": "SNOW",
+   "name": "Snowflake Inc.",
    "flags": [
-    "تخفيف ملكية +5.2% سنوياً"
-   ]
-  },
-  {
-   "ticker": "COHR",
-   "name": "Coherent Corp.",
-   "flags": [
-    "تخفيف ملكية +5.1% سنوياً"
-   ]
-  },
-  {
-   "ticker": "FIGR",
-   "name": "Figure Technology Solutions, In",
-   "flags": [
-    "تخفيف ملكية +4.7% سنوياً"
-   ]
-  },
-  {
-   "ticker": "BROS",
-   "name": "Dutch Bros Inc.",
-   "flags": [
-    "تخفيف ملكية +8.5% سنوياً"
-   ]
-  },
-  {
-   "ticker": "RSI",
-   "name": "Rush Street Interactive, Inc.",
-   "flags": [
-    "تخفيف ملكية +15.4% سنوياً"
-   ]
-  },
-  {
-   "ticker": "ORCL",
-   "name": "Oracle Corporation",
-   "flags": [
-    "تخفيف ملكية +5.3% سنوياً"
-   ]
-  },
-  {
-   "ticker": "INTC",
-   "name": "Intel Corporation",
-   "flags": [
-    "تخفيف ملكية +6.3% سنوياً"
+    "تخفيف ملكية +3.0% سنوياً"
    ]
   },
   {
@@ -1207,24 +1280,81 @@
    ]
   },
   {
-   "ticker": "EMBC",
-   "name": "Embecta Corp.",
+   "ticker": "SOFI",
+   "name": "SoFi Technologies, Inc.",
+   "flags": [
+    "تخفيف ملكية +7.1% سنوياً"
+   ]
+  },
+  {
+   "ticker": "NTRA",
+   "name": "Natera, Inc.",
+   "flags": [
+    "تخفيف ملكية +4.4% سنوياً"
+   ]
+  },
+  {
+   "ticker": "TWST",
+   "name": "Twist Bioscience Corporation",
+   "flags": [
+    "تخفيف ملكية +3.4% سنوياً"
+   ]
+  },
+  {
+   "ticker": "RBRK",
+   "name": "Rubrik, Inc.",
+   "flags": [
+    "حقوق مساهمين سالبة",
+    "تخفيف ملكية +3.5% سنوياً"
+   ]
+  },
+  {
+   "ticker": "TLN",
+   "name": "Talen Energy Corporation",
+   "flags": [
+    "تخفيف ملكية +3.6% سنوياً"
+   ]
+  },
+  {
+   "ticker": "ARES",
+   "name": "Ares Management Corporation",
+   "flags": [
+    "تخفيف ملكية +3.2% سنوياً"
+   ]
+  },
+  {
+   "ticker": "AS",
+   "name": "Amer Sports, Inc.",
+   "flags": [
+    "تخفيف ملكية +4.9% سنوياً"
+   ]
+  },
+  {
+   "ticker": "OWL",
+   "name": "Blue Owl Capital Inc.",
+   "flags": [
+    "تخفيف ملكية +3.8% سنوياً"
+   ]
+  },
+  {
+   "ticker": "TTAN",
+   "name": "ServiceTitan, Inc.",
+   "flags": [
+    "تخفيف ملكية +3.0% سنوياً"
+   ]
+  },
+  {
+   "ticker": "WING",
+   "name": "Wingstop Inc.",
    "flags": [
     "حقوق مساهمين سالبة"
    ]
   },
   {
-   "ticker": "DY",
-   "name": "Dycom Industries, Inc.",
+   "ticker": "ORCL",
+   "name": "Oracle Corporation",
    "flags": [
-    "تخفيف ملكية +4.1% سنوياً"
-   ]
-  },
-  {
-   "ticker": "MRVL",
-   "name": "Marvell Technology, Inc.",
-   "flags": [
-    "تخفيف ملكية +5.9% سنوياً"
+    "تخفيف ملكية +5.3% سنوياً"
    ]
   },
   {
@@ -1235,150 +1365,101 @@
    ]
   },
   {
-   "ticker": "GIL",
-   "name": "Gildan Activewear, Inc.",
+   "ticker": "PCG",
+   "name": "Pacific Gas & Electric Co.",
    "flags": [
-    "تخفيف ملكية +24.2% سنوياً"
+    "تخفيف ملكية +36.6% سنوياً"
    ]
   },
   {
-   "ticker": "WDC",
-   "name": "Western Digital Corporation",
+   "ticker": "MLM",
+   "name": "Martin Marietta Materials, Inc.",
    "flags": [
-    "تخفيف ملكية +10.1% سنوياً"
+    "تخفيف ملكية +17.9% سنوياً"
    ]
   },
   {
-   "ticker": "GILT",
-   "name": "Gilat Satellite Networks Ltd.",
+   "ticker": "MRVL",
+   "name": "Marvell Technology, Inc.",
    "flags": [
-    "تخفيف ملكية +19.9% سنوياً"
+    "تخفيف ملكية +5.9% سنوياً"
    ]
   },
   {
-   "ticker": "INOD",
-   "name": "Innodata Inc.",
+   "ticker": "BE",
+   "name": "Bloom Energy Corporation",
    "flags": [
-    "تخفيف ملكية +7.9% سنوياً"
+    "تخفيف ملكية +5.5% سنوياً"
    ]
   },
   {
-   "ticker": "PZZA",
-   "name": "Papa John's International, Inc.",
+   "ticker": "MSTR",
+   "name": "Strategy Inc",
    "flags": [
-    "حقوق مساهمين سالبة"
+    "تخفيف ملكية +35.2% سنوياً"
    ]
   },
   {
-   "ticker": "WLDN",
-   "name": "Willdan Group, Inc.",
-   "flags": [
-    "تخفيف ملكية +3.0% سنوياً"
-   ]
-  },
-  {
-   "ticker": "IDR",
-   "name": "Idaho Strategic Resources, Inc.",
-   "flags": [
-    "تخفيف ملكية +4.8% سنوياً"
-   ]
-  },
-  {
-   "ticker": "MBC",
-   "name": "MasterBrand, Inc.",
-   "flags": [
-    "تخفيف ملكية +60.5% سنوياً"
-   ]
-  },
-  {
-   "ticker": "UUUU",
-   "name": "Energy Fuels Inc",
-   "flags": [
-    "تخفيف ملكية +10.2% سنوياً"
-   ]
-  },
-  {
-   "ticker": "ACMR",
-   "name": "ACM Research, Inc.",
-   "flags": [
-    "تخفيف ملكية +7.3% سنوياً"
-   ]
-  },
-  {
-   "ticker": "DOCN",
-   "name": "DigitalOcean Holdings, Inc.",
-   "flags": [
-    "تخفيف ملكية +28.2% سنوياً"
-   ]
-  },
-  {
-   "ticker": "VSH",
-   "name": "Vishay Intertechnology, Inc.",
-   "flags": [
-    "تخفيف ملكية +13.1% سنوياً"
-   ]
-  },
-  {
-   "ticker": "TTI",
-   "name": "Tetra Technologies, Inc.",
-   "flags": [
-    "تخفيف ملكية +10.7% سنوياً"
-   ]
-  },
-  {
-   "ticker": "TPB",
-   "name": "Turning Point Brands, Inc.",
+   "ticker": "COHR",
+   "name": "Coherent Corp.",
    "flags": [
     "تخفيف ملكية +5.1% سنوياً"
    ]
   },
   {
-   "ticker": "AEHR",
-   "name": "Aehr Test Systems",
+   "ticker": "CRCL",
+   "name": "Circle Internet Group, Inc.",
    "flags": [
-    "تخفيف ملكية +8.4% سنوياً"
+    "تخفيف ملكية +3.9% سنوياً"
    ]
   },
   {
-   "ticker": "RUN",
-   "name": "Sunrun Inc.",
+   "ticker": "IONQ",
+   "name": "IonQ, Inc.",
    "flags": [
-    "تخفيف ملكية +3.3% سنوياً"
+    "تخفيف ملكية +17.1% سنوياً"
    ]
   },
   {
-   "ticker": "YSS",
-   "name": "York Space Systems Inc.",
+   "ticker": "CDE",
+   "name": "Coeur Mining, Inc.",
    "flags": [
-    "تخفيف ملكية +3.6% سنوياً"
+    "تخفيف ملكية +59.2% سنوياً"
    ]
   },
   {
-   "ticker": "BRUN",
-   "name": "Boost Run Inc.",
+   "ticker": "MDLN",
+   "name": "Medline Inc.",
    "flags": [
-    "تخفيف ملكية +57.5% سنوياً"
+    "تخفيف ملكية +8.3% سنوياً"
    ]
   },
   {
-   "ticker": "AAOI",
-   "name": "Applied Optoelectronics, Inc.",
+   "ticker": "FIG",
+   "name": "Figma, Inc.",
    "flags": [
-    "تخفيف ملكية +24.0% سنوياً"
+    "تخفيف ملكية +4.3% سنوياً"
    ]
   },
   {
-   "ticker": "SHAZ",
-   "name": "SharonAI Holdings, Inc.",
+   "ticker": "QXO",
+   "name": "QXO, Inc.",
    "flags": [
-    "تخفيف ملكية +95.9% سنوياً"
+    "تخفيف ملكية +7.6% سنوياً"
    ]
   },
   {
-   "ticker": "ASTS",
-   "name": "AST SpaceMobile, Inc.",
+   "ticker": "LSCC",
+   "name": "Lattice Semiconductor Corporati",
    "flags": [
-    "تخفيف ملكية +10.2% سنوياً"
+    "تخفيف ملكية +3.9% سنوياً"
+   ]
+  },
+  {
+   "ticker": "VIAV",
+   "name": "Viavi Solutions Inc.",
+   "flags": [
+    "تخفيف ملكية +10.5% سنوياً"
    ]
   }
  ]
