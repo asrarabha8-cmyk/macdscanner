@@ -14,11 +14,11 @@
   "contract": "660P 09/11/2026",
   "contract_mid": 7.215,
   "status": "open",
-  "last_price": 658.42,
+  "last_price": 658.39,
   "return_pct": 0.0,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "CRWV-intraday-2026-11-06T14:51:19Z",
