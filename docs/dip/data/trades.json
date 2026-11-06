@@ -1,7 +1,7 @@
 {
  "forward_start": "2026-11-04",
  "contracts": {},
- "updated": "2026-11-05T01:44Z",
+ "updated": "2026-11-06T01:06Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -391,7 +391,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.15,
+   "entry": 402.14,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
@@ -1227,7 +1227,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2025-11-17",
-   "entry": 658.56,
+   "entry": 658.57,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2025-11-24",
@@ -1504,10 +1504,10 @@
    "entry_date": "2026-10-30",
    "entry": 755.72,
    "kind": "backfill",
-   "status": "open",
-   "exit_date": null,
-   "exit": null,
-   "pct": null,
+   "status": "closed",
+   "exit_date": "2026-11-04",
+   "exit": 766.81,
+   "pct": 1.46,
    "days": 3
   },
   {
@@ -1518,7 +1518,7 @@
    "status": "open",
    "exit_date": null,
    "exit": null,
-   "pct": null,
+   "pct": 0.21,
    "days": 3
   }
  ]
