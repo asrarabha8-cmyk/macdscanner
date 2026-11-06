@@ -35,6 +35,7 @@ MIN_PRICE          = 5.0          # استبعاد أسهم القروش
 MIN_DOLLAR_VOL     = 5_000_000    # فلتر السيولة اليومي
 MIN_MARKET_CAP     = 300_000_000  # أقل من ٣٠٠ مليون = ضجيج
 DRAWDOWN_MIN       = 0.20         # ≥ ٢٠٪ تحت قمة ٥٢ أسبوعاً (بوابة التسعير الخاطئ)
+DRAWDOWN_MAX       = 0.60         # > ٦٠٪ عادةً كسر حقيقي لا تسعير خاطئ
 
 GROSS_MARGIN_PASS  = 0.40         # السؤال ٣: هامش إجمالي
 GROSS_MARGIN_FAIL  = 0.20
@@ -124,7 +125,7 @@ def stage1(tickers: list[str]) -> pd.DataFrame:
                     continue
                 high52 = float(close.max())
                 drawdown = (high52 - price) / high52
-                if drawdown < DRAWDOWN_MIN:
+                if not (DRAWDOWN_MIN <= drawdown <= DRAWDOWN_MAX):
                     continue
                 out.append({"ticker": t, "price": round(price, 2),
                             "high52": round(high52, 2),
@@ -224,19 +225,34 @@ def evaluate(t: str, base: dict) -> dict | None:
     revenue = _row(inc, "Total Revenue", "Operating Revenue")
     gp = _row(inc, "Gross Profit")
 
+    # نمو سنوي لكل ربع متاح. yfinance يعيد عادةً ٥ أرباع فقط، فنأخذ ما يتوفر
+    # ونحكم على عدده بدل اشتراط سلسلة ثابتة الطول.
     growths = []
     if revenue is not None and len(revenue) >= 5:
-        for i in range(min(4, len(revenue) - 4)):
+        for i in range(len(revenue) - 4):
             cur, yr_ago = float(revenue.iloc[i]), float(revenue.iloc[i + 4])
             if yr_ago > 0:
                 growths.append((cur - yr_ago) / yr_ago)
-    elif revenue is not None and len(revenue) >= 2:
-        cur, prev = float(revenue.iloc[0]), float(revenue.iloc[1])
-        if prev > 0:
-            growths.append((cur - prev) / prev)
+    # yfinance يعيد عادةً ٥ أرباع = نقطة نمو واحدة، وهي أرق من أن تثبت طلباً.
+    # نكمّلها بالنمو السنوي من القوائم السنوية حتى تصير السلسلة قابلة للحكم.
+    annual_growths = []
+    try:
+        ann_rev = _row(tk.income_stmt, "Total Revenue", "Operating Revenue")
+        if ann_rev is not None and len(ann_rev) >= 2:
+            for i in range(len(ann_rev) - 1):
+                cur, prev = float(ann_rev.iloc[i]), float(ann_rev.iloc[i + 1])
+                if prev > 0:
+                    annual_growths.append((cur - prev) / prev)
+    except Exception:  # noqa: BLE001
+        pass
 
-    rec["rev_growth_last"] = round(growths[0], 4) if growths else None
-    rec["rev_growth_streak"] = len([g for g in growths if g >= REV_GROWTH_PASS])
+    series, basis = (growths, "ربعي") if len(growths) >= 3 else \
+                    ((annual_growths, "سنوي") if len(annual_growths) >= len(growths) else (growths, "ربعي"))
+    rec["growth_basis"] = basis
+    rec["growth_points"] = len(series)
+
+    rec["rev_growth_last"] = round(series[0], 4) if series else None
+    rec["rev_growth_streak"] = len([g for g in series if g >= REV_GROWTH_PASS])
 
     margin = None
     if gp is not None and revenue is not None and float(revenue.iloc[0]) > 0:
@@ -245,18 +261,25 @@ def evaluate(t: str, base: dict) -> dict | None:
         margin = float(info["grossMargins"])
     rec["gross_margin"] = round(margin, 4) if margin is not None else None
 
-    if growths and margin is not None:
-        strong_growth = len([g for g in growths if g >= REV_GROWTH_PASS]) >= max(2, len(growths) - 1)
+    if series and margin is not None:
+        hits = len([g for g in series if g >= REV_GROWTH_PASS])
+        majority = hits >= max(1, (len(series) + 1) // 2)
+        # الحكم الكامل يتطلب ٣ فترات على الأقل؛ أقل من ذلك شهادة أرق من أن تثبت طلباً
+        enough = len(series) >= 3
+        strong_growth = majority and series[0] >= REV_GROWTH_PASS
+
         if float(revenue.iloc[0]) <= 0:
             q3, q3_why = 0.0, ["إيراد صفر"]
         elif margin < GROSS_MARGIN_FAIL:
             q3, q3_why = 0.0, [f"هامش إجمالي {margin:.0%} — تحت العتبة"]
-        elif growths[0] < 0:
-            q3, q3_why = 0.0, [f"الإيراد منكمش {growths[0]:+.0%}"]
+        elif series[0] < 0:
+            q3, q3_why = 0.0, [f"الإيراد منكمش {series[0]:+.0%} ({basis})"]
+        elif strong_growth and margin >= GROSS_MARGIN_PASS and enough:
+            q3, q3_why = 1.0, [f"نمو {series[0]:+.0%} بهامش {margin:.0%} — {hits}/{len(series)} فترة {basis}"]
         elif strong_growth and margin >= GROSS_MARGIN_PASS:
-            q3, q3_why = 1.0, [f"نمو {growths[0]:+.0%} بهامش {margin:.0%}"]
+            q3, q3_why = 0.5, [f"نمو {series[0]:+.0%} بهامش {margin:.0%} — {len(series)} فترة فقط، تحقّق من السلسلة"]
         else:
-            q3, q3_why = 0.5, [f"نمو {growths[0]:+.0%} بهامش {margin:.0%} — دون العتبة الكاملة"]
+            q3, q3_why = 0.5, [f"نمو {series[0]:+.0%} بهامش {margin:.0%} — دون العتبة الكاملة ({basis})"]
     else:
         q3_why = ["بيانات إيراد غير كافية"]
 
@@ -320,16 +343,26 @@ def evaluate(t: str, base: dict) -> dict | None:
                 px_y = hist[hist.index.year == yr]
                 if len(px_y):
                     pes.append(float(px_y.mean()) / eps_y)
-            pes = [p for p in pes if 3 < p < 120]
-            if pes:
-                hist_pe = float(np.mean(pes))
+            # نطاق ضيق: مضاعف فوق ٤٥ ليس مرساة تقييم بل أثر ربح شبه معدوم.
+            # الوسيط لا المتوسط، وسنتان على الأقل، وإلا فلا مرساة.
+            pes = [p for p in pes if 5 < p < 45]
+            if len(pes) >= 2:
+                hist_pe = float(np.median(pes))
     except Exception:  # noqa: BLE001
         pass
 
+    # فحص سلامة الـEPS الآجل: ربح سهم يقارب السعر أو يتجاوزه = بيانات خاطئة
+    # مضاعف آجل ضمني تحت ٣ = بيانات خاطئة لا فرصة
+    if fwd_eps is not None and (fwd_eps <= 0 or fwd_eps > rec["price"] / 3):
+        notes.append("EPS آجل غير معقول مقابل السعر — أُهمل")
+        fwd_eps = None
+
     fv, gap = None, None
-    if fwd_eps and fwd_eps > 0 and hist_pe:
+    if fwd_eps and hist_pe:
         fv = fwd_eps * hist_pe
         gap = (fv - rec["price"]) / rec["price"]
+        if gap > 1.5:
+            notes.append(f"فجوة {gap:+.0%} مشكوك فيها — تحقق يدوياً")
     rec["fwd_eps"] = round(fwd_eps, 2) if fwd_eps else None
     rec["hist_pe_3y"] = round(hist_pe, 1) if hist_pe else None
     rec["fair_value"] = round(fv, 2) if fv else None
@@ -373,10 +406,11 @@ def main() -> None:
     if cand.empty:
         print("لا مرشحين في المرحلة ١")
         return
-    cand = cand.sort_values("drawdown", ascending=False)
     print(f"  {len(cand)} مرشحاً اجتازوا فلتر السيولة والهبوط")
 
-    # نحدّ المرحلة ٢ بأعمق ٣٠٠ هبوطاً حتى لا تطول الجلسة
+    # اختيار المرحلة ٢ بالسيولة لا بعمق الهبوط: الترتيب بالهبوط يُدخل الحطام
+    # ويُخرج الشركة النازلة ٢٥٪ — وهي بالضبط موضع التسعير الخاطئ.
+    cand = cand.sort_values("dollar_vol", ascending=False)
     short = cand.head(300).to_dict("records")
 
     print("المرحلة ٢: بوابة الإقصاء + الأسئلة ٣ و٤ و٦…")
