@@ -1,5 +1,33 @@
 [
  {
+  "id": "MSFT-intraday-2026-11-06T14:50:58Z",
+  "ticker": "MSFT",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-06T14:50:58Z",
+  "score": 70,
+  "entry": 530.17,
+  "stop": 528.5795,
+  "target": 535.0,
+  "rr": 3.0368,
+  "contract": "532.5C 09/11/2026",
+  "contract_mid": 6.0,
+  "status": "open",
+  "last_price": 530.17,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 735.26,
+   "vwap": 735.5015,
+   "up": false,
+   "bar": "2026-11-06T09:35:00-05:00"
+  }
+ },
+ {
   "id": "MSFT-intraday-2026-11-05T14:52:46Z",
   "ticker": "MSFT",
   "mode": "intraday",
