@@ -1507,7 +1507,7 @@
    "status": "open",
    "exit_date": null,
    "exit": null,
-   "pct": NaN,
+   "pct": null,
    "days": 3
   },
   {
@@ -1518,7 +1518,7 @@
    "status": "open",
    "exit_date": null,
    "exit": null,
-   "pct": NaN,
+   "pct": null,
    "days": 3
   }
  ]

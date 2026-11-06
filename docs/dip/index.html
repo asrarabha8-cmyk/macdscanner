@@ -45,7 +45,7 @@ td.n{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr;text-a
 </div>
 <script>
 let store={trades:[]},kind="forward";
-const fmt=(v,d=2)=>(v>0?"+":"")+v.toFixed(d);
+const fmt=(v,d=2)=>v==null?"-":(v>0?"+":"")+v.toFixed(d);
 function render(){
   const all=store.trades.filter(t=>t.kind===kind),trades=all.filter(t=>t.status==="closed");
   const total=trades.reduce((s,t)=>s+t.pct,0),wins=trades.filter(t=>t.pct>0).length;

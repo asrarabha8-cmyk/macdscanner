@@ -28,7 +28,7 @@ def daily_bars(symbol):
     if isinstance(frame.columns, pd.MultiIndex):
         frame.columns = [column[0] for column in frame.columns]
     frame.index = pd.to_datetime(frame.index).tz_localize(None)
-    return frame.rename(columns=str.lower)[["close"]]
+    return frame.rename(columns=str.lower)[["close"]].dropna()
 
 
 def rsi(close, length):
@@ -171,7 +171,7 @@ def main():
     update_contracts(trades, contracts, now.date())
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    DATA_FILE.write_text(json.dumps({"forward_start": forward_start, "contracts": contracts, "updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "trades": trades}, ensure_ascii=False, indent=1), encoding="utf-8")
+    DATA_FILE.write_text(json.dumps({"forward_start": forward_start, "contracts": contracts, "updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "trades": trades}, ensure_ascii=False, indent=1, allow_nan=False), encoding="utf-8")
     print("trades:", len(trades))
 
 
