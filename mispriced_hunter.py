@@ -352,8 +352,8 @@ def evaluate(t: str, base: dict) -> dict | None:
         pass
 
     # فحص سلامة الـEPS الآجل: ربح سهم يقارب السعر أو يتجاوزه = بيانات خاطئة
-    # مضاعف آجل ضمني تحت ٣ = بيانات خاطئة لا فرصة
-    if fwd_eps is not None and (fwd_eps <= 0 or fwd_eps > rec["price"] / 3):
+    # مضاعف آجل ضمني تحت ٥ = بيانات خاطئة لا فرصة (MU: ٣.٣× بهامش ٨٧٪ لمصنّع ذاكرة)
+    if fwd_eps is not None and (fwd_eps <= 0 or fwd_eps > rec["price"] / 5):
         notes.append("EPS آجل غير معقول مقابل السعر — أُهمل")
         fwd_eps = None
 
