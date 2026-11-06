@@ -1,5 +1,26 @@
 [
  {
+  "id": "QQQ-intraday-2026-11-06T18:50:44Z",
+  "ticker": "QQQ",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-06T18:50:44Z",
+  "score": 73,
+  "entry": 658.42,
+  "stop": 660.3953,
+  "target": 655.0,
+  "rr": 1.7314,
+  "contract": "660P 09/11/2026",
+  "contract_mid": 7.215,
+  "status": "open",
+  "last_price": 658.42,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "CRWV-intraday-2026-11-06T14:51:19Z",
   "ticker": "CRWV",
   "mode": "intraday",
