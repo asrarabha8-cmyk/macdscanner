@@ -30,6 +30,9 @@ RED_FLAGS = [
     r"\bresign", r"\bsteps down\b", r"\bshort seller\b", r"\bhalt(ed)?\b", r"\bplunge",
 ]
 _RED = re.compile("|".join(RED_FLAGS), re.I)
+# إعلانات مكاتب المحاماة (class action) تتكرر يومياً وما تحرك السعر
+_SPAM = re.compile(r"investors? (to|who)|secure counsel|deadline|law firm|llc urges|rosen|pomerantz|"
+                   r"bronstein|levi & korsinsky|faruqi|glancy|bragar|schall|kessler topaz", re.I)
 
 
 def _iso(t: dt.datetime) -> str:
@@ -76,7 +79,8 @@ def check(ticker: str, when: dt.datetime | None = None, days: int = 3) -> dict:
             out["neg_titles"].append(title)
         else:
             out["neu"] += 1
-        if _RED.search(title):
+        # الخبر الخطير لازم يكون عن السهم نفسه: التقييم سلبي له + كلمة خطيرة، وليس إعلان محامين
+        if sent == "negative" and _RED.search(title) and not _SPAM.search(title):
             out["red"] += 1
             out["red_titles"].append(title)
     out["score"] = out["pos"] - out["neg"]

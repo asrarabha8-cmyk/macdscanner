@@ -69,7 +69,8 @@ def main() -> None:
             continue
         wr = g["win"].mean() * 100
         mv = g["move_pct"].mean()
-        lines.append(f"| {AR[f]} | {len(g)} | {wr:.1f} | {mv:.2f} |")
+        ev = g.assign(d=g["time_utc"].str[:10]).drop_duplicates(["d", "scanner"]).shape[0]
+        lines.append(f"| {AR[f]} | {len(g)} ({ev} حدث مستقل) | {wr:.1f} | {mv:.2f} |")
         tg.append(f"{AR[f]}: {ar_num(len(g))} تنبيه — فوز {ar_num(f'{wr:.0f}')}٪")
 
     bad = ok[ok["flag"].isin(["red", "negative"])]
@@ -78,9 +79,10 @@ def main() -> None:
         d = rest["win"].mean() * 100 - bad["win"].mean() * 100
         verdict = (f"التنبيهات بدون أخبار سلبية تفوز أكثر بـ {d:.1f} نقطة"
                    if d > 0 else f"ما فيه أفضلية لتجنب الأخبار السلبية ({d:.1f} نقطة)")
+        ev_bad = bad.assign(d=bad["time_utc"].str[:10]).drop_duplicates(["d", "scanner"]).shape[0]
         lines += ["", f"**الخلاصة:** {verdict} (عينة سلبية = {len(bad)})"]
         tg += ["", "الخلاصة: " + verdict.replace(".", "٫")]
-        if len(bad) < 20:
+        if ev_bad < 20:
             lines.append("⚠️ العينة السلبية صغيرة — النتيجة مبدئية.")
             tg.append("⚠️ العينة صغيرة — النتيجة مبدئية")
 
