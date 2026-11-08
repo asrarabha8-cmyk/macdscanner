@@ -1,5 +1,21 @@
 [
  {
+  "run_utc": "2026-11-08T12:45:42Z",
+  "finished_utc": "2026-11-08T12:45:57Z",
+  "duration_s": 15,
+  "data_date": "2026-11-08",
+  "event": "repository_dispatch",
+  "status": "ok",
+  "universe_source": "TradingView",
+  "universe_count": 271,
+  "scanned": 267,
+  "failed": 4,
+  "signals": 0,
+  "watch": 12,
+  "misses": 1,
+  "alert_sent": true
+ },
+ {
   "run_utc": "2026-11-05T12:46:26Z",
   "finished_utc": "2026-11-05T12:46:44Z",
   "duration_s": 17,
