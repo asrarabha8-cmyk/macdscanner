@@ -14,11 +14,11 @@
   "contract": "64C 13/11/2026",
   "contract_mid": 0.89,
   "status": "open",
-  "last_price": 63.605,
-  "return_pct": 0.0,
+  "last_price": 63.995,
+  "return_pct": 0.61,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "QQQ-intraday-2026-11-06T18:50:44Z",
