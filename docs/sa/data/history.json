@@ -29,9 +29,9 @@
   "rr": 1.43,
   "vol_ratio": 2.53,
   "status": "open",
-  "days": 2,
-  "last_close": 125.0,
-  "return_pct": -1.26,
+  "days": 3,
+  "last_close": 125.1,
+  "return_pct": -1.18,
   "max_high": 130.0,
   "min_low": 122.7
  },
