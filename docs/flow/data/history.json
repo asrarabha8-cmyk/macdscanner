@@ -1,5 +1,26 @@
 [
  {
+  "id": "NFLX-intraday-2026-11-09T16:51:23Z",
+  "ticker": "NFLX",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-09T16:51:23Z",
+  "score": 80,
+  "entry": 63.605,
+  "stop": 63.4142,
+  "target": 65.0,
+  "rr": 7.3107,
+  "contract": "64C 13/11/2026",
+  "contract_mid": 0.89,
+  "status": "open",
+  "last_price": 63.605,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "QQQ-intraday-2026-11-06T18:50:44Z",
   "ticker": "QQQ",
   "mode": "intraday",
