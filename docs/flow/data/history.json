@@ -1,5 +1,26 @@
 [
  {
+  "id": "AVGO-intraday-2026-11-10T15:51:19Z",
+  "ticker": "AVGO",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-10T15:51:19Z",
+  "score": 95,
+  "entry": 330.88,
+  "stop": 328.2235,
+  "target": 335.0,
+  "rr": 1.5509,
+  "contract": "330C 11/11/2026",
+  "contract_mid": 5.9,
+  "status": "open",
+  "last_price": 330.88,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NFLX-intraday-2026-11-09T16:51:23Z",
   "ticker": "NFLX",
   "mode": "intraday",
