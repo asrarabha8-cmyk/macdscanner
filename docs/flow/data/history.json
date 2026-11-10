@@ -1,5 +1,26 @@
 [
  {
+  "id": "NVDA-intraday-2026-11-10T18:51:37Z",
+  "ticker": "NVDA",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-10T18:51:37Z",
+  "score": 76,
+  "entry": 168.62,
+  "stop": 170.0039,
+  "target": 165.0,
+  "rr": 2.6159,
+  "contract": "167.5P 11/11/2026",
+  "contract_mid": 2.445,
+  "status": "open",
+  "last_price": 168.62,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "AVGO-intraday-2026-11-10T15:51:19Z",
   "ticker": "AVGO",
   "mode": "intraday",
