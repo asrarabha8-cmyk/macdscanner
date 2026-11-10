@@ -14,11 +14,11 @@
   "contract": "167.5P 11/11/2026",
   "contract_mid": 2.445,
   "status": "open",
-  "last_price": 168.62,
-  "return_pct": 0.0,
+  "last_price": 167.3995,
+  "return_pct": 0.72,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "AVGO-intraday-2026-11-10T15:51:19Z",
