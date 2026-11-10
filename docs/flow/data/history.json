@@ -13,11 +13,11 @@
   "rr": 7.3107,
   "contract": "64C 13/11/2026",
   "contract_mid": 0.89,
-  "status": "open",
-  "last_price": 63.795,
-  "return_pct": 0.3,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "expired",
+  "last_price": 63.905,
+  "return_pct": 0.47,
+  "exit_price": 63.905,
+  "exit_utc": "2026-11-09T20:55:00Z",
   "days": 1
  },
  {
