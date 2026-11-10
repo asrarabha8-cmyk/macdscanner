@@ -1,7 +1,7 @@
 {
  "forward_start": "2026-11-04",
  "contracts": {},
- "updated": "2026-11-07T01:08Z",
+ "updated": "2026-11-10T02:55Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -1515,11 +1515,11 @@
    "entry_date": "2026-10-30",
    "entry": 690.49,
    "kind": "backfill",
-   "status": "open",
-   "exit_date": null,
-   "exit": null,
-   "pct": -6.29,
-   "days": 4
+   "status": "closed",
+   "exit_date": "2026-11-09",
+   "exit": 679.35,
+   "pct": -1.62,
+   "days": 6
   }
  ]
 }
