@@ -1,5 +1,26 @@
 [
  {
+  "id": "NFLX-intraday-2026-11-11T17:51:29Z",
+  "ticker": "NFLX",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-11T17:51:29Z",
+  "score": 89,
+  "entry": 64.105,
+  "stop": 63.4509,
+  "target": 65.0,
+  "rr": 1.3683,
+  "contract": "64C 13/11/2026",
+  "contract_mid": 0.775,
+  "status": "open",
+  "last_price": 64.105,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "CRWV-intraday-2026-11-11T16:51:39Z",
   "ticker": "CRWV",
   "mode": "intraday",
@@ -14,11 +35,11 @@
   "contract": "61C 13/11/2026",
   "contract_mid": 2.085,
   "status": "open",
-  "last_price": 60.535,
-  "return_pct": 0.0,
+  "last_price": 61.48,
+  "return_pct": 1.56,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-11-11T16:51:15Z",
@@ -35,11 +56,11 @@
   "contract": "175C 13/11/2026",
   "contract_mid": 3.75,
   "status": "open",
-  "last_price": 175.335,
-  "return_pct": 0.0,
+  "last_price": 176.9899,
+  "return_pct": 0.94,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-11-10T18:51:37Z",
