@@ -14,11 +14,11 @@
   "contract": "295C 13/11/2026",
   "contract_mid": 3.375,
   "status": "open",
-  "last_price": 295.265,
-  "return_pct": 0.0,
+  "last_price": 294.0612,
+  "return_pct": -0.41,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "NFLX-intraday-2026-11-11T17:51:29Z",
@@ -35,8 +35,8 @@
   "contract": "64C 13/11/2026",
   "contract_mid": 0.775,
   "status": "open",
-  "last_price": 63.9903,
-  "return_pct": -0.18,
+  "last_price": 64.255,
+  "return_pct": 0.23,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -56,8 +56,8 @@
   "contract": "61C 13/11/2026",
   "contract_mid": 2.085,
   "status": "open",
-  "last_price": 61.545,
-  "return_pct": 1.67,
+  "last_price": 60.535,
+  "return_pct": 0.0,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -77,8 +77,8 @@
   "contract": "175C 13/11/2026",
   "contract_mid": 3.75,
   "status": "open",
-  "last_price": 177.2209,
-  "return_pct": 1.08,
+  "last_price": 175.155,
+  "return_pct": -0.1,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
