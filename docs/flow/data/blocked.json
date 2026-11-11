@@ -1,5 +1,33 @@
 [
  {
+  "id": "PLTR-intraday-2026-11-11T15:51:22Z",
+  "ticker": "PLTR",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-11T15:51:22Z",
+  "score": 77,
+  "entry": 172.53,
+  "stop": 173.1971,
+  "target": 165.0,
+  "rr": 11.2877,
+  "contract": "172.5P 13/11/2026",
+  "contract_mid": 2.86,
+  "status": "open",
+  "last_price": 172.53,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0,
+  "market": {
+   "ticker": "SPY",
+   "last": 756.77,
+   "vwap": 756.3493,
+   "up": true,
+   "bar": "2026-11-11T10:35:00-05:00"
+  }
+ },
+ {
   "id": "TSLA-intraday-2026-11-06T19:51:09Z",
   "ticker": "TSLA",
   "mode": "intraday",
