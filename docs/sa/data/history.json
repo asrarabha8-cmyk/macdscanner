@@ -1,5 +1,35 @@
 [
  {
+  "code": "4323",
+  "name": "Sumou Real Estate Co.",
+  "sector": "Finance",
+  "date": "2026-11-11",
+  "entry": 26.28,
+  "stop": 24.62,
+  "target": 26.83,
+  "rr": 0.33,
+  "vol_ratio": 3.15,
+  "status": "open",
+  "days": 0,
+  "last_close": 26.28,
+  "return_pct": 0.0
+ },
+ {
+  "code": "2288",
+  "name": "Nofoth Food Products Co",
+  "sector": "Consumer Non-Durables",
+  "date": "2026-11-11",
+  "entry": 6.65,
+  "stop": 6.08,
+  "target": 7.18,
+  "rr": 0.93,
+  "vol_ratio": 8.74,
+  "status": "open",
+  "days": 0,
+  "last_close": 6.65,
+  "return_pct": 0.0
+ },
+ {
   "code": "4147",
   "name": "Consolidated Grunenfelder Saady Holding Co.",
   "sector": "Producer Manufacturing",
@@ -29,9 +59,9 @@
   "rr": 1.43,
   "vol_ratio": 2.53,
   "status": "open",
-  "days": 4,
-  "last_close": 125.3,
-  "return_pct": -1.03,
+  "days": 5,
+  "last_close": 128.0,
+  "return_pct": 1.11,
   "max_high": 130.0,
   "min_low": 122.7
  },
