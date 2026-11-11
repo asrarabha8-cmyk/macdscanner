@@ -1,5 +1,26 @@
 [
  {
+  "id": "GOOGL-intraday-2026-11-11T18:51:34Z",
+  "ticker": "GOOGL",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-11T18:51:34Z",
+  "score": 75,
+  "entry": 295.265,
+  "stop": 291.8468,
+  "target": 300.0,
+  "rr": 1.3852,
+  "contract": "295C 13/11/2026",
+  "contract_mid": 3.375,
+  "status": "open",
+  "last_price": 295.265,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NFLX-intraday-2026-11-11T17:51:29Z",
   "ticker": "NFLX",
   "mode": "intraday",
@@ -14,11 +35,11 @@
   "contract": "64C 13/11/2026",
   "contract_mid": 0.775,
   "status": "open",
-  "last_price": 64.105,
-  "return_pct": 0.0,
+  "last_price": 63.9903,
+  "return_pct": -0.18,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "CRWV-intraday-2026-11-11T16:51:39Z",
@@ -35,8 +56,8 @@
   "contract": "61C 13/11/2026",
   "contract_mid": 2.085,
   "status": "open",
-  "last_price": 61.48,
-  "return_pct": 1.56,
+  "last_price": 61.545,
+  "return_pct": 1.67,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
@@ -56,8 +77,8 @@
   "contract": "175C 13/11/2026",
   "contract_mid": 3.75,
   "status": "open",
-  "last_price": 176.9899,
-  "return_pct": 0.94,
+  "last_price": 177.2209,
+  "return_pct": 1.08,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
