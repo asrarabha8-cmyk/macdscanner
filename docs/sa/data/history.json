@@ -9,10 +9,14 @@
   "target": 26.83,
   "rr": 0.33,
   "vol_ratio": 3.15,
-  "status": "open",
-  "days": 0,
-  "last_close": 26.28,
-  "return_pct": 0.0
+  "status": "target",
+  "days": 1,
+  "last_close": 27.0,
+  "return_pct": 2.09,
+  "max_high": 27.32,
+  "min_low": 26.0,
+  "exit_date": "2026-11-12",
+  "exit_price": 26.83
  },
  {
   "code": "2288",
@@ -25,9 +29,11 @@
   "rr": 0.93,
   "vol_ratio": 8.74,
   "status": "open",
-  "days": 0,
-  "last_close": 6.65,
-  "return_pct": 0.0
+  "days": 1,
+  "last_close": 6.52,
+  "return_pct": -1.95,
+  "max_high": 6.82,
+  "min_low": 6.5
  },
  {
   "code": "4147",
@@ -59,10 +65,10 @@
   "rr": 1.43,
   "vol_ratio": 2.53,
   "status": "open",
-  "days": 5,
-  "last_close": 128.0,
-  "return_pct": 1.11,
-  "max_high": 130.0,
+  "days": 6,
+  "last_close": 129.9,
+  "return_pct": 2.61,
+  "max_high": 130.6,
   "min_low": 122.7
  },
  {
