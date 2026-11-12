@@ -1,10 +1,11 @@
 name: Failed ORB Log
 
 on:
-  schedule:
-    # Runs after the close. Two times to cover daylight saving.
-    - cron: "25 20 * * 1-5"
-    - cron: "25 21 * * 1-5"
+  # موقوف 2026-11-12 بعد مراجعة النتائج — أزل التعليق لإعادة التشغيل
+  # schedule:
+  #  # Runs after the close. Two times to cover daylight saving.
+  #  - cron: "25 20 * * 1-5"
+  #  - cron: "25 21 * * 1-5"
   workflow_dispatch:
     inputs:
       backfill_from:

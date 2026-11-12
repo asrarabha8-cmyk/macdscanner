@@ -4,8 +4,9 @@ on:
   workflow_dispatch: {}
   repository_dispatch:
     types: [bottom]          # تشغيل من مهمة Claude المجدولة
-  schedule:
-    - cron: "15 22 * * 1-5"  # احتياطي: 1:15 فجراً بتوقيت الرياض (cron في GitHub غير مضمون)
+  # موقوف 2026-11-12 بعد مراجعة النتائج — أزل التعليق لإعادة التشغيل
+  # schedule:
+  #  - cron: "15 22 * * 1-5"  # احتياطي: 1:15 فجراً بتوقيت الرياض (cron في GitHub غير مضمون)
 
 permissions:
   contents: write            # logs/bottom + لقطات logs/perp
