@@ -712,7 +712,8 @@
   "2026-11-05": "none",
   "2026-11-06": "none",
   "2026-11-09": "none",
-  "2026-11-10": "trade"
+  "2026-11-10": "trade",
+  "2026-11-11": "trade"
  },
  "trades": [
   {
@@ -10194,9 +10195,24 @@
    "reason": "target",
    "r": 1.757,
    "kind": "forward"
+  },
+  {
+   "date": "2026-11-11",
+   "side": "sell",
+   "signal_time": "11:05",
+   "exit_time": "11:25",
+   "range_high": 757.95,
+   "range_low": 754.9,
+   "entry": 757.72,
+   "stop": 759.01,
+   "target": 754.9,
+   "exit": 759.01,
+   "reason": "stop",
+   "r": -1.041,
+   "kind": "forward"
   }
  ],
  "forward_start": "2026-11-04",
- "updated": "2026-11-11T01:18Z",
+ "updated": "2026-11-12T01:57Z",
  "source": "Polygon"
 }
