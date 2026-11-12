@@ -13,12 +13,12 @@
   "rr": 1.5775,
   "contract": null,
   "contract_mid": null,
-  "status": "open",
-  "last_price": 63.36,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 63.0,
+  "return_pct": 0.57,
+  "exit_price": 63.0,
+  "exit_utc": "2026-11-12T20:25:00Z",
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-11-12T18:51:22Z",
@@ -35,8 +35,8 @@
   "contract": "167.5C 13/11/2026",
   "contract_mid": 2.8,
   "status": "open",
-  "last_price": 163.5757,
-  "return_pct": -1.54,
+  "last_price": 163.59,
+  "return_pct": -1.53,
   "exit_price": null,
   "exit_utc": null,
   "days": 1
