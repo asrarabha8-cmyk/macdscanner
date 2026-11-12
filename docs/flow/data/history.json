@@ -1,5 +1,26 @@
 [
  {
+  "id": "NFLX-intraday-2026-11-12T19:51:11Z",
+  "ticker": "NFLX",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-12T19:51:11Z",
+  "score": 70,
+  "entry": 63.36,
+  "stop": 63.5882,
+  "target": 63.0,
+  "rr": 1.5775,
+  "contract": null,
+  "contract_mid": null,
+  "status": "open",
+  "last_price": 63.36,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "NVDA-intraday-2026-11-12T18:51:22Z",
   "ticker": "NVDA",
   "mode": "intraday",
@@ -14,11 +35,11 @@
   "contract": "167.5C 13/11/2026",
   "contract_mid": 2.8,
   "status": "open",
-  "last_price": 166.1398,
-  "return_pct": 0.0,
+  "last_price": 163.5757,
+  "return_pct": -1.54,
   "exit_price": null,
   "exit_utc": null,
-  "days": 0
+  "days": 1
  },
  {
   "id": "GOOGL-intraday-2026-11-11T18:51:34Z",
