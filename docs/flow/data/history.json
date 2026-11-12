@@ -1,5 +1,26 @@
 [
  {
+  "id": "NVDA-intraday-2026-11-12T18:51:22Z",
+  "ticker": "NVDA",
+  "mode": "intraday",
+  "direction": "bull",
+  "source": "scan",
+  "time_utc": "2026-11-12T18:51:22Z",
+  "score": 80,
+  "entry": 166.1398,
+  "stop": 161.5289,
+  "target": 175.0,
+  "rr": 1.9216,
+  "contract": "167.5C 13/11/2026",
+  "contract_mid": 2.8,
+  "status": "open",
+  "last_price": 166.1398,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "GOOGL-intraday-2026-11-11T18:51:34Z",
   "ticker": "GOOGL",
   "mode": "intraday",
