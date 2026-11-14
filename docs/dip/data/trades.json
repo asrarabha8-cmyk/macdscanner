@@ -1,7 +1,7 @@
 {
  "forward_start": "2026-11-04",
  "contracts": {},
- "updated": "2026-11-13T02:05Z",
+ "updated": "2026-11-14T01:00Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -329,7 +329,7 @@
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-03-01",
-   "exit": 312.95,
+   "exit": 312.96,
    "pct": -2.25,
    "days": 6
   },
@@ -424,7 +424,7 @@
   {
    "symbol": "QQQ",
    "entry_date": "2021-08-18",
-   "entry": 351.16,
+   "entry": 351.15,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-08-20",
