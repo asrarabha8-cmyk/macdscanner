@@ -1,6 +1,36 @@
 [
  {
   "kind": "scan",
+  "mode": "intraday",
+  "run_utc": "2026-11-17T14:51:29Z",
+  "finished_utc": "2026-11-17T14:51:52Z",
+  "duration_s": 22,
+  "event": "repository_dispatch",
+  "tickers": [
+   "SPY",
+   "QQQ",
+   "NVDA",
+   "TSLA",
+   "AAPL",
+   "MSFT",
+   "AMZN",
+   "META",
+   "GOOGL",
+   "AMD",
+   "AVGO",
+   "PLTR",
+   "NFLX",
+   "CRWV"
+  ],
+  "scanned": 14,
+  "errors": 0,
+  "enter": 1,
+  "wait": 3,
+  "alerts": 1,
+  "status": "ok"
+ },
+ {
+  "kind": "scan",
   "mode": "swing",
   "run_utc": "2026-11-16T20:51:28Z",
   "finished_utc": "2026-11-16T20:51:57Z",
