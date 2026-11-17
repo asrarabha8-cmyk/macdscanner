@@ -1,5 +1,26 @@
 [
  {
+  "id": "MSFT-intraday-2026-11-17T16:51:21Z",
+  "ticker": "MSFT",
+  "mode": "intraday",
+  "direction": "bear",
+  "source": "scan",
+  "time_utc": "2026-11-17T16:51:21Z",
+  "score": 73,
+  "entry": 499.56,
+  "stop": 505.9505,
+  "target": 490.0,
+  "rr": 1.496,
+  "contract": "500P 18/11/2026",
+  "contract_mid": 7.625,
+  "status": "open",
+  "last_price": 499.56,
+  "return_pct": 0.0,
+  "exit_price": null,
+  "exit_utc": null,
+  "days": 0
+ },
+ {
   "id": "AVGO-intraday-2026-11-17T14:51:46Z",
   "ticker": "AVGO",
   "mode": "intraday",
