@@ -13,11 +13,11 @@
   "rr": 1.496,
   "contract": "500P 18/11/2026",
   "contract_mid": 7.625,
-  "status": "open",
-  "last_price": 504.84,
-  "return_pct": -1.06,
-  "exit_price": null,
-  "exit_utc": null,
+  "status": "stop",
+  "last_price": 505.9505,
+  "return_pct": -1.28,
+  "exit_price": 505.9505,
+  "exit_utc": "2026-11-17T19:10:00Z",
   "days": 1
  },
  {
