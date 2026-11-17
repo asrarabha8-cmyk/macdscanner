@@ -13,12 +13,12 @@
   "rr": 7.2915,
   "contract": "337.5P 18/11/2026",
   "contract_mid": 6.4,
-  "status": "open",
-  "last_price": 337.38,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "stop",
+  "last_price": 338.3921,
+  "return_pct": -0.3,
+  "exit_price": 338.3921,
+  "exit_utc": "2026-11-17T14:55:00Z",
+  "days": 1
  },
  {
   "id": "NFLX-intraday-2026-11-12T19:51:11Z",
