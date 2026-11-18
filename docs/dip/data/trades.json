@@ -12,7 +12,7 @@
    "buy_source": "ask"
   }
  },
- "updated": "2026-11-17T04:09Z",
+ "updated": "2026-11-18T02:35Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -402,7 +402,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.14,
+   "entry": 402.15,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
@@ -820,7 +820,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2024-01-03",
-   "entry": 453.93,
+   "entry": 453.94,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2024-01-08",
@@ -1238,7 +1238,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2025-11-17",
-   "entry": 658.56,
+   "entry": 658.57,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2025-11-24",
@@ -1540,8 +1540,8 @@
    "status": "open",
    "exit_date": null,
    "exit": null,
-   "pct": 0.0,
-   "days": 0
+   "pct": -1.01,
+   "days": 1
   }
  ]
 }
