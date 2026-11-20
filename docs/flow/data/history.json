@@ -13,12 +13,12 @@
   "rr": 1.5792,
   "contract": "282.5P 20/11/2026",
   "contract_mid": 4.4,
-  "status": "open",
-  "last_price": 281.95,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "target",
+  "last_price": 280.0,
+  "return_pct": 0.69,
+  "exit_price": 280.0,
+  "exit_utc": "2026-11-18T16:40:00Z",
+  "days": 1
  },
  {
   "id": "NVDA-intraday-2026-11-18T15:51:06Z",
@@ -34,12 +34,12 @@
   "rr": 1.4035,
   "contract": "152.5P 20/11/2026",
   "contract_mid": 3.425,
-  "status": "open",
-  "last_price": 153.28,
-  "return_pct": 0.0,
-  "exit_price": null,
-  "exit_utc": null,
-  "days": 0
+  "status": "expired",
+  "last_price": 150.86,
+  "return_pct": 1.58,
+  "exit_price": 150.86,
+  "exit_utc": "2026-11-18T20:55:00Z",
+  "days": 1
  },
  {
   "id": "AVGO-intraday-2026-11-18T14:51:50Z",
