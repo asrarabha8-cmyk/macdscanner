@@ -12,7 +12,7 @@
    "buy_source": "ask"
   }
  },
- "updated": "2026-11-19T02:45Z",
+ "updated": "2026-11-20T01:53Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -402,7 +402,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.15,
+   "entry": 402.14,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
