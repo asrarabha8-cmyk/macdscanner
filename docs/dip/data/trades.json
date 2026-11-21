@@ -12,7 +12,7 @@
    "buy_source": "ask"
   }
  },
- "updated": "2026-11-21T01:43Z",
+ "updated": "2026-11-21T02:46Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -340,7 +340,7 @@
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-03-01",
-   "exit": 312.95,
+   "exit": 312.96,
    "pct": -2.25,
    "days": 6
   },
@@ -402,7 +402,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.14,
+   "entry": 402.15,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
@@ -435,7 +435,7 @@
   {
    "symbol": "QQQ",
    "entry_date": "2021-08-18",
-   "entry": 351.16,
+   "entry": 351.15,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-08-20",
@@ -1540,8 +1540,8 @@
    "status": "open",
    "exit_date": null,
    "exit": null,
-   "pct": -3.25,
-   "days": 3
+   "pct": -6.78,
+   "days": 4
   }
  ]
 }
