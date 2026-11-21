@@ -5,6 +5,7 @@ on:
   repository_dispatch:
     types: [hunter]          # تشغيل من مهمة Claude المجدولة أول كل شهر
   schedule:
+    - cron: "13 4 28 * *"    # يوم 28 من كل شهر (بدل مهمة Claude)
     - cron: "0 4 1 * *"      # احتياطي: أول كل شهر (cron في GitHub غير مضمون)
 
 permissions:

@@ -3,11 +3,10 @@
 name: Flow Scan
 
 on:
-  # جدولة GitHub تُسقط التشغيلات، فصارت مهمة Claude مجدولة ترسل repository_dispatch
-  # (flow_scan) كل ساعة وقت الجلسة، ومرة سوينغ قرب الإغلاق.
-  # schedule:
-  #   - cron: "*/30 13-20 * * 1-5"   # intraday
-  #   - cron: "35 19,20 * * 1-5"     # swing
+  # جدولة GitHub نفسها بدل مهمة Claude (توفيرًا للاستهلاك). السكربت يتجاهل أي تشغيل خارج الجلسة.
+  schedule:
+    - cron: "41 13-20 * * 1-5"     # intraday كل ساعة
+    - cron: "35 19,20 * * 1-5"     # swing قرب الإغلاق (صيفي/شتوي)
   repository_dispatch:
     types: [flow_scan]   # client_payload: {mode: intraday|swing}
   workflow_dispatch:
