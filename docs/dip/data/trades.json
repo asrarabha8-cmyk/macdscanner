@@ -12,7 +12,7 @@
    "buy_source": "ask"
   }
  },
- "updated": "2026-11-20T02:33Z",
+ "updated": "2026-11-21T01:43Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -340,7 +340,7 @@
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-03-01",
-   "exit": 312.96,
+   "exit": 312.95,
    "pct": -2.25,
    "days": 6
   },
@@ -659,7 +659,7 @@
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2023-05-05",
-   "exit": 395.08,
+   "exit": 395.07,
    "pct": 1.84,
    "days": 1
   },
