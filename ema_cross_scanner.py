@@ -58,8 +58,25 @@ def ema(series: pd.Series, span: int) -> pd.Series:
     return series.ewm(span=span, adjust=False).mean()
 
 
+def closed_weeks(df: pd.DataFrame, now: dt.datetime | None = None) -> pd.DataFrame:
+    """يحذف الشمعة الأسبوعية الجارية إذا لم تُغلق بعد.
+
+    مؤشر yfinance الأسبوعي يبدأ يوم الاثنين، والشمعة تُغلق الجمعة 16:00 نيويورك
+    (21:00 UTC تقريباً). يوم السبت تكون آخر شمعة مكتملة فتبقى.
+    """
+    if df.empty:
+        return df
+    now = now or dt.datetime.now(dt.timezone.utc)
+    start = pd.Timestamp(df.index[-1]).tz_localize(None).normalize()
+    close_utc = start + pd.Timedelta(days=4, hours=21, minutes=30)
+    if pd.Timestamp(now).tz_convert("UTC").tz_localize(None) < close_utc:
+        return df.iloc[:-1]
+    return df
+
+
 def check(df: pd.DataFrame) -> dict | None:
     """يفحص آخر شمعة أسبوعية مغلقة بحثاً عن تقاطع طازج."""
+    df = closed_weeks(df)
     if len(df) < MIN_WEEKS:
         return None
 
@@ -67,22 +84,22 @@ def check(df: pd.DataFrame) -> dict | None:
     f = ema(close, FAST_EMA)
     s = ema(close, SLOW_EMA)
 
-    # -2 آخر شمعة مغلقة، -1 الشمعة الجارية غير المكتملة
-    up = f.iloc[-2] > s.iloc[-2] and f.iloc[-3] <= s.iloc[-3]
-    dn = f.iloc[-2] < s.iloc[-2] and f.iloc[-3] >= s.iloc[-3]
+    # -1 آخر شمعة مغلقة بعد حذف الشمعة الجارية، -2 التي قبلها
+    up = f.iloc[-1] > s.iloc[-1] and f.iloc[-2] <= s.iloc[-2]
+    dn = f.iloc[-1] < s.iloc[-1] and f.iloc[-2] >= s.iloc[-2]
     if not (up or dn):
         return None
 
-    price = float(close.iloc[-2])
-    gap = abs(f.iloc[-2] - s.iloc[-2]) / price * 100
+    price = float(close.iloc[-1])
+    gap = abs(f.iloc[-1] - s.iloc[-1]) / price * 100
 
     return {
         "dir": "up" if up else "down",
         "price": price,
-        "ema_fast": float(f.iloc[-2]),
-        "ema_slow": float(s.iloc[-2]),
+        "ema_fast": float(f.iloc[-1]),
+        "ema_slow": float(s.iloc[-1]),
         "gap_pct": gap,
-        "date": df.index[-2],
+        "date": df.index[-1],
     }
 
 
