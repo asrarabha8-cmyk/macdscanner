@@ -17,4 +17,4 @@ jobs:
       - name: Scan without Telegram
         env:
           PORTFOLIO: ${{ secrets.PORTFOLIO }}
-        run: python ema_cross_scanner.py
+        run: python ema_cross_lastweek.py
