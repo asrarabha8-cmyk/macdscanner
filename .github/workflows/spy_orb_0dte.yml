@@ -1,7 +1,7 @@
 name: SPY 0DTE ORB Alert
 
 on:
-  # GitHub's own schedule replaces the Claude scheduled task (saves Claude usage).
+  # GitHub's own schedule replaces the Claude scheduled task (saves Claude usage). Re-saved by owner so the schedule runs.
   # Several start times cover GitHub's delays and daylight saving; the script waits until
   # 9:45 New York, skips a day it already handled, and stops if it is too late.
   schedule:
