@@ -1,0 +1,40 @@
+# Gap Fade Watch — ماسح تلاشي الفجوات (متابعة ورقية)
+name: Gap Fade Watch
+
+on:
+  schedule:
+    - cron: "47 22 * * 1-5"   # بعد إغلاق السوق الأمريكي
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gap-fade
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet pandas
+      - name: Scan
+        env:
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT:  ${{ secrets.TG_CHAT }}
+        run: python gap_fade/gap_fade.py
+      - name: Commit log
+        if: always()
+        run: |
+          git config user.name  "gap-fade-bot"
+          git config user.email "gap-fade-bot@users.noreply.github.com"
+          git add logs/gap_fade || true
+          git diff --cached --quiet || git commit -m "gap fade log $(date -u +%F)"
+          git pull --rebase --autostash || true
+          git push || true
