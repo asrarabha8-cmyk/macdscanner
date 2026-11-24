@@ -16,7 +16,7 @@
    "pct": -55.9
   }
  },
- "updated": "2026-11-24T04:57Z",
+ "updated": "2026-11-24T05:29Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -439,7 +439,7 @@
   {
    "symbol": "QQQ",
    "entry_date": "2021-08-18",
-   "entry": 351.15,
+   "entry": 351.16,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-08-20",
