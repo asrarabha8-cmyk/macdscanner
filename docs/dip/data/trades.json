@@ -4,15 +4,19 @@
   "SPY|2026-11-16": {
    "symbol": "SPY",
    "entry_date": "2026-11-16",
-   "status": "open",
+   "status": "closed",
    "expiry": "2026-12-11",
    "strike": 740.0,
    "contract": "SPY261211C00740000",
    "buy": 15.7,
-   "buy_source": "ask"
+   "buy_source": "ask",
+   "exit_date": "2026-11-23",
+   "sell": 6.93,
+   "sell_source": "bid",
+   "pct": -55.9
   }
  },
- "updated": "2026-11-21T02:46Z",
+ "updated": "2026-11-24T04:57Z",
  "trades": [
   {
    "symbol": "SPY",
@@ -340,7 +344,7 @@
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-03-01",
-   "exit": 312.96,
+   "exit": 312.95,
    "pct": -2.25,
    "days": 6
   },
@@ -402,7 +406,7 @@
   {
    "symbol": "SPY",
    "entry_date": "2021-07-16",
-   "entry": 402.15,
+   "entry": 402.14,
    "kind": "backfill",
    "status": "closed",
    "exit_date": "2021-07-21",
@@ -1537,11 +1541,11 @@
    "entry_date": "2026-11-16",
    "entry": 739.95,
    "kind": "forward",
-   "status": "open",
-   "exit_date": null,
-   "exit": null,
-   "pct": -6.78,
-   "days": 4
+   "status": "closed",
+   "exit_date": "2026-11-23",
+   "exit": 722.29,
+   "pct": -2.39,
+   "days": 5
   }
  ]
 }
